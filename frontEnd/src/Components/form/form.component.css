@@ -1,0 +1,8 @@
+/* CSS Reset */
+input {
+    outline: none; /* Remove default focus outline */
+  }
+  
+select{
+    outline: none;
+}

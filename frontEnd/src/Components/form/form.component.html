@@ -1,0 +1,254 @@
+<div class="min-h-screen bg-[#FCFCFC]">
+  <!-- Navbar -->
+  <header
+    class="flex items-center justify-between h-24 bg-blue-600 text-white px-6"
+  >
+    <h1 class="text-xl font-bold">My Website</h1>
+  </header>
+
+  <!-- Main Content Area -->
+  <div class="flex">
+    <!-- Left Sidebar -->
+    <aside class="w-72 bg-blue-200 shadow-md p-4">
+      <h2 class="text-lg font-semibold mb-4">Sidebar</h2>
+      <ul class="space-y-2">
+        <li><a href="#" class="text-blue-600">Link 1</a></li>
+        <li><a href="#" class="text-blue-600">Link 2</a></li>
+        <li><a href="#" class="text-blue-600">Link 3</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Area -->
+    <main class="flex-1 p-5">
+      <div class="w-3/4">
+        <!-- firstmain -->
+        <h2 class="text-xl font-semibol">POST A JOB</h2>
+        <div>
+          <!-- firstmain-1 -->
+          <div>
+            <label
+              for="first_name"
+              class="block mb-2 mt-5 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Job Title
+            </label>
+            <input
+              type="text"
+              id="first_name"
+              class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-0 "
+              placeholder="Add job title, role, vacancies etc"
+              required
+            />
+          </div>
+          <!-- firstmain-2 -->
+          <div class="flex justify-center gap-3 items-center mt-3">
+            <div class="w-[65%]">
+              <label
+                for="first_name"
+                class="text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Tags
+              </label>
+              <input
+                type="text"
+                id="first_name"
+                class="border border-gray-300 text-gray-900 text-sm mt-2 rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-0 dark:focus:border-blue-500"
+                placeholder="Job keyword, tags etc..."
+                required
+              />
+            </div>
+
+            <div class="w-[35%]">
+              <label
+                for="countries"
+                class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                >Select your country</label
+              >
+              <select
+                id="countries"
+                class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 mt-2"
+              >
+                <option>Select</option>
+                <option>Canada</option>
+                <option>France</option>
+                <option>Germany</option>
+              </select>
+            </div>
+          </div>
+          <!--secondmmamin -->
+          <div class="mt-4">
+            <h2 class="text-lg font-semibol">Salery</h2>
+            <div class="w-[65%]">
+              <div class="flex justify-center gap-4 mt-4">
+                <div class="min-salary w-1/2">
+                  <label
+                    for="website-admin"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >Min Salery</label
+                  >
+                  <div class="flex">
+                    <input
+                    type="text"
+                    class="block w-full rounded-s-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 rounded-e-0  transition-all duration-300 hover:border-gray-500"
+                    placeholder="Minimum salary..."
+                  />
+                  
+                    <span
+                      class="inline-flex items-center px-3 text-sm text-gray-900 rounded-e-md border rounded-s-0 bg-[#F1F2F4B2] border-e-2 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600"
+                    >
+                      <span>USD</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="max-salary w-[50%]">
+                  <label
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >Max Salery</label
+                  >
+                  <div class="flex">
+                    <input
+                    type="text"
+                    class="block w-full rounded-s-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 rounded-e-0  transition-all duration-300 hover:border-gray-500"
+                    placeholder="Maximum salary..."
+                  />
+                    <span
+                      class="inline-flex items-center px-3 text-sm text-gray-900 rounded-e-md border rounded-s-0 border-gray-300 border-e-2 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600"
+                    >
+                      <span>USD</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h2 class="text-lg font-semibol">Advance Information</h2>
+              <!-- //secondmmamin-2 -->
+              <div class="flex gap-4 justify-center items-center">
+                <div class="w-[35%] mt-4">
+                  <label
+                    for="countries"
+                    class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                    >Education</label
+                  >
+                  <select
+                    id="countries"
+                    class="border mt-2 border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5"
+                  >
+                    <option>Select</option>
+                    <option>Canada</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                  </select>
+                </div>
+                <div class="w-[35%] mt-4">
+                  <label
+                    for="countries"
+                    class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                    >Experience</label
+                  >
+                  <select
+                    id="countries"
+                    class="border mt-2 border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5"
+                  >
+                    <option>Select</option>
+                    <option>Canada</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                  </select>
+                </div>
+                <div class="w-[35%] mt-4">
+                  <label
+                    for="countries"
+                    class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                    >Job Type</label
+                  >
+                  <select
+                    id="countries"
+                    class="border mt-2 border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5"
+                  >
+                    <option>Select</option>
+                    <option>Canada</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                  </select>
+                </div>
+              </div>
+              <!-- //secondmmamin-3 -->
+              <div class="flex gap-4 justify-center items-center">
+                <div class="w-[35%] mt-4">
+                  <label
+                    for="countries"
+                    class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                    >Education</label
+                  >
+                  <select
+                    id="countries"
+                    class="border mt-2 border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5"
+                  >
+                    <option>Select</option>
+                    <option>Canada</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                  </select>
+                </div>
+                <div class="w-[35%] mt-4">
+                  <label
+                    for="countries"
+                    class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                    >Expiration Date</label
+                  >
+                  <input
+                    type="date"
+                    class="block w-full text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 rounded-md  transition-all duration-300 hover:border-gray-500"
+                    placeholder="Minimum salery..."
+                  />
+                </div>
+                <div class="w-[35%] mt-4">
+                  <label
+                    for="countries"
+                    class="text-sm font-semibold text-gray-900 mb-2 mt-5 dark:text-white"
+                    >Job Type</label
+                  >
+                  <select
+                    id="countries"
+                    class="border mt-2 border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5"
+                  >
+                    <option>Select</option>
+                    <option>Canada</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- thirdmain -->
+
+          <div class="mt-4" id="Description & Responsibility">
+            <h2 class="text-lg font-semibol">Description & Responsibility</h2>
+            <!-- thirdmain-1 -->
+            <label
+              class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white"
+              >Description</label
+            >
+            <app-textarea></app-textarea>
+            <!-- thirdmain-2 -->
+            <div id="Responsibilities">
+              <label
+                class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white"
+                >Responsibilities</label
+              >
+              <app-textarea></app-textarea>
+            </div>
+            <button
+              class="py-4 bg-[#0A65CC] rounded-sm text-white pl-4 pr-8 mt-6 flex justify-center items-center gap-3"
+            >
+              Post a Job
+              <span><img src="assets/icons/fi_arrow-right.svg" alt="" /></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

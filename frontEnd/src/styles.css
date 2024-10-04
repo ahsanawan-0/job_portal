@@ -1,1 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ngx-editor-icon-color: #767f8c;
+  --ngx-editor-icon-hover-color: #4a5568;
+  --ngx-editor-icon-active-color: #1a73e8;
+}
+
+.NgxEditor__MenuItem svg {
+  fill: var(--ngx-editor-icon-color);
+}
+
+.NgxEditor__MenuItem:hover svg {
+  fill: var(--ngx-editor-icon-hover-color);
+}
+
+.NgxEditor__MenuItem--Active svg {
+  fill: var(--ngx-editor-icon-active-color);
+}
+.NgxEditor__MenuItem {
+  cursor: pointer !important;
+  margin-bottom: 12px;
+}
+.NgxEditor__Wrapper .NgxEditor {
+  height: 150px;
+}
