@@ -6,10 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        borderColor: '#E4E5E8', // Border color
-        placeholder: '#9199A3',  // Placeholder color
-        button: '#0A65CC',       // Button color
-        backgroundcolor: '#FCFCFC',      // Background color
+        borderColor: "#E4E5E8", // Border color
+        placeholder: "#9199A3", // Placeholder color
+        button: "#0A65CC", // Button color
+        textcolor: "#767F8C",
+        backgroundcolor: "#FCFCFC", // Background color
       },
     },
   },
