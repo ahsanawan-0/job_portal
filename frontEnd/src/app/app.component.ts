@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+// import { ExitInterviewModalComponent } from '../modals/exit-interview-modal/exit-interview-modal.component';
 import { JobDetailComponent } from '../pages/job-detail/job-detail.component';
 // import { ApplyJobModalComponent } from '../Components/apply-job-modal/apply-job-modal.component';
 

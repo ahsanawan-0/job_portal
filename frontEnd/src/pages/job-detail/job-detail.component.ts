@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { ApplyJobModalComponent } from '../../Components/apply-job-modal/apply-job-modal.component';
+import { Component, inject } from '@angular/core';
+import { ApplyJobModalComponent } from '../../modals/apply-job-modal/apply-job-modal.component';
 import { FormsModule } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-job-detail',
   standalone: true,
-  imports: [CommonModule,ApplyJobModalComponent],
+  imports: [FormsModule, CommonModule],
   templateUrl: './job-detail.component.html',
-  styleUrl: './job-detail.component.css'
+  styleUrls: ['./job-detail.component.css'],
+  
 })
 export class JobDetailComponent {
-  isApplyModalVisible = false;
-
+  private modalService = inject(NgbModal);
   openApplyModal() {
-    this.isApplyModalVisible = true;
+    const modalRef = this.modalService.open(ApplyJobModalComponent);
   }
 }

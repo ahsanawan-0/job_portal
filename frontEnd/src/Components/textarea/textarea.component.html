@@ -1,13 +1,14 @@
 <div class="NgxEditor__Wrapper">
-    <!-- Editor Area -->
-    <ngx-editor
-      [editor]="editor"
-      [(ngModel)]="html"
-      [disabled]="false"
-      [placeholder]="'Type here...'"
-      class="editor-area "      ></ngx-editor>
-  
-    <!-- Toolbar at the bottom -->
-    <ngx-editor-menu [editor]="editor" class="editor-menu  "></ngx-editor-menu>
-  </div>
-  
+  <!-- Editor Area -->
+  <ngx-editor
+    [editor]="editor"
+    [disabled]="false"
+    [placeholder]="'Type here...'"
+    class="editor-area"
+    [(ngModel)]="content"
+    (ngModelChange)="onContentChange($event)"
+  ></ngx-editor>
+
+  <!-- Toolbar at the bottom -->
+  <ngx-editor-menu [editor]="editor" class="editor-menu"></ngx-editor-menu>
+</div>

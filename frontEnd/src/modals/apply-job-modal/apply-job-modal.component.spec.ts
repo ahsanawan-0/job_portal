@@ -20,4 +20,5 @@ describe('ApplyJobModalComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  
 });
