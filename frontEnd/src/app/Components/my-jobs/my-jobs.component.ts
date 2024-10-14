@@ -12,12 +12,37 @@ import { Router } from '@angular/router';
 })
 export class MyJobsComponent {
   route = inject(Router);
-  dropdown: boolean = false;
-  onClickThreeDots() {
-    this.dropdown = !this.dropdown;
+  dropdownIndex: number | null = null;
+
+  jobs = Array.from({ length: 30 }, (_, i) => i + 1);
+  itemsPerPage = 12;
+  currentPage = 1;
+  paginatedJobs: number[] = [];
+
+  constructor() {
+    this.updatePaginatedJobs();
+  }
+
+  onClickThreeDots(index: number) {
+    if (this.dropdownIndex === index) {
+      this.dropdownIndex = null;
+    } else {
+      this.dropdownIndex = index;
+    }
   }
 
   onClickViewApplication() {
     this.route.navigateByUrl('job-applications');
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.updatePaginatedJobs();
+  }
+
+  updatePaginatedJobs(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedJobs = this.jobs.slice(startIndex, endIndex);
   }
 }

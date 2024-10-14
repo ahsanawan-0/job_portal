@@ -1,1 +1,66 @@
-<p>exit-interview-result works!</p>
+<div main class="font-sans">
+  <div class="flex flex-col gap-2">
+    <div class="flex gap-2 items-center">
+      <img src="assets/icons/fi_arrow-left.svg" />
+      <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+    </div>
+    <p class="font-medium text-2xl text-custom-black">
+      Exit Interviews Results
+    </p>
+  </div>
+  <div results class="py-7">
+    <div>
+      <p class="font-medium text-base text-custom-black">All Results List</p>
+    </div>
+    <div>
+      <div
+        grid
+        class="grid grid-cols-4 bg-[#F1F2F4] text-[#474C54] font-normal text-xs pl-5 py-3 mt-5"
+      >
+        <div class="col-span-2">
+          <p>Name</p>
+        </div>
+        <div>
+          <p>EMPLOYEE ID</p>
+        </div>
+        <div>
+          <p>ACTIONS</p>
+        </div>
+      </div>
+      <div
+        class="grid grid-cols-4 py-5 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8]"
+        *ngFor="let item of paginatedResults"
+      >
+        <div class="col-span-2">
+          <p class="font-medium text-base">Francisco Johnson</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <img src="assets/icons/Users.svg" />
+          <p
+            class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+          >
+            #547892352
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <button
+            class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
+          >
+            View Answers
+          </button>
+          <img
+            src="assets/icons/DotsThreeVertical.svg"
+            class="cursor-pointer"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <app-pagination
+      [totalItems]="results.length"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </div>
+</div>

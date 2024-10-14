@@ -1,19 +1,22 @@
 <div class="flex justify-between items-center pt-5 font-sans">
-  <div>
-    <img src="assets/icons/fi_arrow-left-blue.svg" />
+  <div
+    class="cursor-pointer"
+    [ngClass]="{ 'opacity-50 pointer-events-none': activePage === 1 }"
+  >
+    <img src="assets/icons/fi_arrow-left-blue.svg" (click)="previousPage()" />
   </div>
   <div class="flex">
     <div
-      *ngFor="let page of pages"
-      class="rounded-[50px] cursor-pointer"
+      *ngFor="let page of totalPagesArray"
+      class="w-12 h-12 rounded-full cursor-pointer justify-center items-center"
       [ngClass]="{
         'bg-custom-blue': activePage === page,
-        'hover:bg-[#F1F2F4]': activePage !== page
+        'hover:bg-[#f2f3f5]': activePage !== page
       }"
       (click)="setActivePage(page)"
     >
       <p
-        class="font-semibold text-base text-center p-4"
+        class="font-semibold text-base text-center p-3"
         [ngClass]="{
           'text-white': activePage === page,
           'text-custom-black': activePage !== page && isHovered[page],
@@ -27,7 +30,12 @@
     </div>
   </div>
 
-  <div>
-    <img src="assets/icons/RightArrowCircle.svg" />
+  <div
+    class="cursor-pointer"
+    [ngClass]="{
+      'opacity-50 pointer-events-none': activePage === totalPagesArray.length
+    }"
+  >
+    <img src="assets/icons/RightArrowCircle.svg" (click)="nextPage()" />
   </div>
 </div>

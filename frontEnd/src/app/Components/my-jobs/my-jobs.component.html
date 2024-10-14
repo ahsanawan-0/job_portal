@@ -11,117 +11,123 @@
 </div>
 
 <div table class="mt-9">
-  <table class="min-w-full">
-    <thead class="bg-[#F1F2F4]">
-      <tr>
-        <th
-          class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[10px] text-left"
+  <div class="overflow-auto h-[400px]">
+    <table class="min-w-full">
+      <thead class="bg-[#F1F2F4] sticky top-0 z-10">
+        <tr>
+          <th
+            class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[10px] text-left"
+          >
+            {{ "jobs" | uppercase }}
+          </th>
+          <th
+            class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[30px] text-left"
+          >
+            {{ "status" | uppercase }}
+          </th>
+          <th
+            class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[30px] text-left"
+          >
+            {{ "applications" | uppercase }}
+          </th>
+          <th
+            class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[30px] text-left"
+          >
+            {{ "actions" | uppercase }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let item of paginatedJobs; let i = index"
+          class="shadow-[inset_0_-1px_0_0_#E4E5E8]"
         >
-          {{ "jobs" | uppercase }}
-        </th>
-        <th
-          class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[30px] text-left"
-        >
-          {{ "status" | uppercase }}
-        </th>
-        <th
-          class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[30px] text-left"
-        >
-          {{ "applications" | uppercase }}
-        </th>
-        <th
-          class="font-sans font-normal text-[12px] leading-[18px] text-[#474C54] py-[10px] pl-[30px] text-left"
-        >
-          {{ "actions" | uppercase }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
-        class="shadow-[inset_0_-1px_0_0_#E4E5E8]"
-      >
-        <td class="py-[10px] pl-[10px] text-left">
-          <div class="flex flex-col gap-[8px]">
-            <p
-              class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]"
-            >
-              UI/UI Designer
-            </p>
-            <div
-              class="text-custom-gray font-sans font-normal text-[12px] leading-[20px] flex gap-[10px] items-center"
-            >
-              <p>Full Time</p>
+          <td class="py-[10px] pl-[10px] text-left">
+            <div class="flex flex-col gap-[8px]">
+              <p
+                class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]"
+              >
+                UI/UI Designer
+              </p>
+              <div
+                class="text-custom-gray font-sans font-normal text-[12px] leading-[20px] flex gap-[10px] items-center"
+              >
+                <p>Full Time</p>
 
-              <p class="mb-3 text-[23px]">.</p>
+                <p class="mb-3 text-[23px]">.</p>
 
-              <p>27 days remaining</p>
+                <p>27 days remaining</p>
+              </div>
             </div>
-          </div>
-        </td>
+          </td>
 
-        <td class="py-[10px] pl-[30px] text-left">
-          <div class="flex gap-[4px]">
-            <img src="assets/icons/CheckCircle.svg" />
-            <p
-              class="font-sans font-medium text-[14px] leading-[20px] text-custom-green"
-            >
-              Active
-            </p>
-          </div>
-        </td>
-        <td class="py-[10px] pl-[30px] text-left">
-          <div class="flex gap-2 items-center">
-            <img src="assets/icons/Users.svg" />
-            <p
-              class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
-            >
-              798 Applications
-            </p>
-          </div>
-        </td>
-        <td class="py-[10px] pl-[30px] text-left">
-          <div class="flex gap-2 relative">
-            <button
-              (click)="onClickViewApplication()"
-              class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
-            >
-              View Applications
-            </button>
-            <img
-              src="assets/icons/DotsThreeVertical.svg"
-              (click)="onClickThreeDots()"
-              class="cursor-pointer"
-            />
-            <div
-              *ngIf="dropdown"
-              class="absolute bg-white shadow-md rounded-md mt-14 ml-10 py-3 border"
-            >
-              <ul class="list-none py-2 pl-2 pr-7">
-                <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-                  <div class="flex gap-2">
-                    <img src="assets/icons/Eye.svg" />
-                    <p class="font-sans font-medium text-sm text-[#5E6670]">
-                      View Detail
-                    </p>
-                  </div>
-                </li>
-                <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-                  <div class="flex gap-2">
-                    <img src="assets/icons/XCircle.svg" />
-                    <p class="font-sans font-normal text-sm text-[#5E6670]">
-                      Mark as expired
-                    </p>
-                  </div>
-                </li>
-              </ul>
+          <td class="py-[10px] pl-[30px] text-left">
+            <div class="flex gap-[4px]">
+              <img src="assets/icons/CheckCircle.svg" />
+              <p
+                class="font-sans font-medium text-[14px] leading-[20px] text-custom-green"
+              >
+                Active
+              </p>
             </div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+          <td class="py-[10px] pl-[30px] text-left">
+            <div class="flex gap-2 items-center">
+              <img src="assets/icons/Users.svg" />
+              <p
+                class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+              >
+                798 Applications
+              </p>
+            </div>
+          </td>
+          <td class="py-[10px] pl-[30px] text-left">
+            <div class="flex gap-2 relative">
+              <button
+                (click)="onClickViewApplication()"
+                class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
+              >
+                View Applications
+              </button>
+              <img
+                src="assets/icons/DotsThreeVertical.svg"
+                (click)="onClickThreeDots(i)"
+                class="cursor-pointer"
+              />
+              <div
+                *ngIf="dropdownIndex === i"
+                class="absolute bg-white shadow-md rounded-md mt-14 ml-10 py-3 border z-10"
+              >
+                <ul class="list-none py-2 pl-2 pr-7">
+                  <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+                    <div class="flex gap-2">
+                      <img src="assets/icons/Eye.svg" />
+                      <p class="font-sans font-medium text-sm text-[#5E6670]">
+                        View Detail
+                      </p>
+                    </div>
+                  </li>
+                  <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+                    <div class="flex gap-2">
+                      <img src="assets/icons/XCircle.svg" />
+                      <p class="font-sans font-normal text-sm text-[#5E6670]">
+                        Mark as expired
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <div>
-    <app-pagination></app-pagination>
+    <app-pagination
+      [totalItems]="jobs.length"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
   </div>
 </div>
