@@ -1,0 +1,47 @@
+<div 
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  (click)="closeModal()"
+>
+  <div
+    class="bg-white p-6 rounded-md shadow-lg relative w-2/5 max-w-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Close (X) Button -->
+    <button
+      class="absolute -top-7 -right-5 text-gray-600 text-xl font-bold"
+      aria-label="Close Modal"
+      (click)="closeModal()"
+    >
+      <img src="assets/icons/IconButton.svg" alt="">
+    </button>
+
+    <!-- Modal Header -->
+    <h2 class="text-2xl font-semibold mb-4">Exit Interview: UI/UX Designer</h2>
+
+    <!-- Modal Content with Copy Link -->
+    <label class="block text-[#18191C] mb-2">Copy Link</label>
+    <div class="mb-4 flex items-center border border-gray-300 rounded-md">
+      <img
+        src="/assets/icons/fi_link.svg"
+        alt="Copy Link"
+        class="cursor-pointer p-2"
+        (click)="copyLink()"
+      />
+      <input 
+        type="text" 
+        readonly 
+        value="https://www.jobportalbysdsol.com/exitinterviewuiuxdesigner" 
+        class="border-0 text-sm w-full px-3 py-2 focus:outline-none text-[#0A65CC]"
+      />
+    </div>
+
+    <!-- Modal Footer Button -->
+    <button
+      type="button"
+      class="bg-[#E7F0FA] text-[#0A65CC] w-full px-4 py-2 rounded-sm font-semibold"
+      (click)="copyLink()"
+    >
+      Copy
+    </button>
+  </div>
+</div>

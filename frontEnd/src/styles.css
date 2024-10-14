@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ngx-editor-icon-color: #767f8c;
+  --ngx-editor-icon-hover-color: #4a5568;
+  --ngx-editor-icon-active-color: #1a73e8;
+}
+
+.NgxEditor__MenuItem svg {
+  fill: var(--ngx-editor-icon-color);
+}
+
+
+.NgxEditor__MenuItem:hover svg {
+  fill: var(--ngx-editor-icon-hover-color);
+}
+
+.NgxEditor__MenuItem--Active svg {
+  fill: var(--ngx-editor-icon-active-color);
+}
+
+.NgxEditor__MenuItem {
+  cursor: pointer !important;
+}
+
+.NgxEditor__Content {
+  min-height: 160px !important;
+    overflow-y: auto; 
+
+    max-height: 400px; 
+}
+.NgxEditor__MenuBar {
+  border: none;
+}
+
+.editor {
+  border: 1px solid rgba(99, 98, 98, 0.2);
+  border-radius: 5px;
+  /* overflow: hidden;  */
+  /* display: flex;
+  flex-direction: column;  */
+}
+
+.editor .NgxEditor__MenuBar {
+  /* border-top-left-radius: 4px; */
+  /* border-top-right-radius: 4px; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: #fff; 
+  z-index: 999; 
+}
+
+.editor .NgxEditor {
+  /* flex-grow: 1;  */
+  /* border-top-left-radius: 0;  */
+  /* border-top-right-radius: 0; */
+  border: none; 
+}
+
+
+
+.editor .CodeMirror pre {
+  white-space: pre !important; 
+}
+
+.editor .NgxEditor__MenuBar {
+  padding: 10px;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 20px; 
+}
+
+ol {
+  list-style-type: decimal; 
+  padding-left: 20px; 
+}
+
+.NgxEditor__Content ul, 
+.NgxEditor__Content ol {
+  list-style-position: inside; 
+  padding-left: 20px;
+}
+
+.NgxEditor__Content li {
+  margin-bottom: 5px; 
+}

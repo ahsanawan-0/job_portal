@@ -1,0 +1,74 @@
+
+  <!-- Main Area -->
+<main class="flex-1 p-5 bg-[#FCFCFC]">
+    <div class="w-full">
+        <div class="flex justify-between mb-6">
+            <div class="text-2xl text-[#18191C]">Create Exit Interview Form</div>
+            <div>
+                <button class="bg-[#0A65CC] text-white flex justify-center gap-4 px-5 py-3 rounded-md" (click)="openApplyModal()">
+                    <span><img src="assets/icons/ShareNetwork.svg" alt="" /></span> Share Link
+                </button>
+            </div>
+        </div>
+
+        <div class="space-y-4 w-2/3">
+            <div>
+                <label for="formTitle1" class="block text-[#18191C] text-sm font-medium mb-2">Form Title</label>
+                <input type="text" [(ngModel)]="formTitle" placeholder="Enter Form Title" id="formTitle1" class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none" />
+            </div>
+
+            <div *ngFor="let question of questions; let i = index" class="space-y-4">
+                <div>
+                    <label class="block text-[#18191C] text-sm font-medium mb-2">{{ question.label }}</label>
+
+                    <input *ngIf="question.type === 'text'" type="text" placeholder="Enter your answer" class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none" />
+                    
+                    <textarea *ngIf="question.type === 'textarea'" placeholder="Enter your answer" class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"></textarea>
+
+                    <div *ngIf="question.type === 'radio'">
+                        <label class="block text-[#18191C] text-sm font-medium mb-2">Options:</label>
+                        <div *ngFor="let option of question.options; let j = index">
+                            <input type="text" [(ngModel)]="question.options[j]" placeholder="Enter option" class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none mb-2" />
+                        </div>
+                    </div>
+
+                    <button type="button" (click)="deleteQuestion(i)" class="text-red-500">×</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex space-x-4 mt-6">
+            <div>
+                <label for="questionType" class="block text-[#18191C] text-sm font-medium mb-2">Question Type</label>
+                <select id="questionType" [(ngModel)]="newQuestionType" class="border border-borderColor rounded-md px-3 py-2 focus:outline-none">
+                    <option value="text">Text</option>
+                    <option value="textarea">Textarea</option>
+                    <option value="radio">Radio</option>
+                </select>
+            </div>
+
+            <div *ngIf="newQuestionType === 'radio'">
+                <label for="radioOptions" class="block text-[#18191C] text-sm font-medium mb-2">Number of Radio Options</label>
+                <input type="number" [(ngModel)]="newRadioOptionsCount" id="radioOptions" min="2" class="border border-borderColor rounded-md px-3 py-2 focus:outline-none" />
+            </div>
+
+            <div class="flex">
+                <button (click)="addQuestion()" class="border border-[#0A65CC] rounded-md flex justify-center items-center gap-2 px-5 py-3 text-[#0A65CC] font-semibold">
+                    <img src="/assets/icons/fi_plus-circle.svg" alt="Add" /> Add Question
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-4" *ngIf="newQuestionType === 'radio'">
+            <label class="block text-[#18191C] text-sm font-medium mb-2">Question Input</label>
+            <input type="text" [(ngModel)]="newQuestionLabel" placeholder="Enter your question" class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none" />
+        </div>
+
+        <div class="flex justify-start mt-6">
+            <button (click)="saveForm()" class="bg-[#0A65CC] text-white px-6 py-3 rounded-md flex justify-center items-center gap-3">
+                Save
+                <span><img src="assets/icons/fi_arrow-right.svg" alt="" /></span>
+            </button>
+        </div>
+    </div>
+</main>
