@@ -1,0 +1,389 @@
+<div main class="font-sans">
+  <div class="flex justify-between items-end">
+    <div class="flex flex-col gap-[6px]">
+      <div class="flex items-center gap-2">
+        <div>
+          <img src="assets/icons/fi_arrow-left.svg" />
+        </div>
+        <div>
+          <p class="font-normal text-sm text-custom-gray">
+            Technical Support Specialist
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <p class="font-medium text-custom-black text-xl">Job Applications</p>
+      </div>
+    </div>
+    <div class="font-medium text-sm flex items-center gap-3 relative">
+      <div>
+        <p class="text-[#5E6670]">Filter</p>
+      </div>
+      <div class="bg-custom-blue py-[6px] px-3 w-[53px] rounded">
+        <button class="text-white" (click)="toggleDropdown()">Sort</button>
+      </div>
+      <div
+        *ngIf="isDropdownVisible()"
+        class="absolute z-10 top-full right-0 mt-2 py-3 px-6 bg-white border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)] rounded-lg"
+      >
+        <div class="p-5 flex flex-col gap-3">
+          <p class="whitespace-nowrap font-medium text-xs text-[#9199A3]">
+            SORT APPLICATION
+          </p>
+          <div class="flex gap-2">
+            <input
+              type="radio"
+              id="newest"
+              name="sort"
+              class="peer w-5 h-5 text-custom-blue border-1.5 checked:border-custom-blue checked:bg-custom-blue focus:ring-custom-blue"
+            />
+            <label
+              for="newest"
+              class="peer-checked:font-medium font-medium text-sm text-[#5E6670] peer-checked:text-custom-black"
+              >Newest</label
+            >
+          </div>
+          <div class="flex gap-2">
+            <input
+              type="radio"
+              id="oldest"
+              name="sort"
+              class="peer w-5 h-5 text-custom-blue border-1.5 checked:border-custom-blue checked:bg-custom-blue focus:ring-custom-blue"
+            />
+            <label
+              for="oldest"
+              class="peer-checked:font-medium font-medium text-[#5E6670] text-sm peer-checked:text-custom-black"
+              >Oldest</label
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="my-6 flex gap-3">
+    <div
+      cards
+      class="border border-[#E4E5E8] w-1/4 py-4 px-5 rounded-md bg-[#F1F2F4]"
+    >
+      <div class="flex justify-between items-center relative">
+        <p class="font-medium font-sans text-sm text-custom-black">
+          All Applications (566)
+        </p>
+
+        <img
+          src="assets/icons/HorizontalDots.svg"
+          (click)="onClickThreeDots(0)"
+          [ngClass]="dropdown[0] ? 'filter-black' : 'filter-gray'"
+          class="cursor-pointer"
+        />
+        <div
+          *ngIf="dropdown[0]"
+          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
+        >
+          <ul class="list-none">
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Pencil.svg" />
+                <p class="font-sans font-medium text-sm text-[#5E6670]">
+                  Edit Column
+                </p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Trash.svg" />
+                <p class="font-sans font-medium text-sm text-[#E05151]">
+                  Delete
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        *ngFor="let item of [1, 2]"
+        class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
+      >
+        <div name class="flex items-center gap-3 p-4">
+          <img src="assets/images/Image.png" />
+
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold text-sm text-custom-black">
+              Ronald Richards
+            </p>
+
+            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+          </div>
+        </div>
+
+        <hr class="border border-[#E4E5E8] mx-4" />
+
+        <div info class="pl-5 pr-4 py-3">
+          <ul class="list-disc list-inside">
+            <li class="font-normal text-sm text-[#5E6670]">
+              7 Years Experience
+            </li>
+            <li class="font-normal text-sm text-[#5E6670]">
+              Applied: Oct 10, 2024
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
+          <img src="assets/icons/DownloadSimple.svg" />
+
+          <p class="font-medium text-sm text-custom-blue">Download CV</p>
+        </div>
+        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+          <img src="assets/icons/tick.svg" />
+          <img src="assets/icons/Cross.svg" />
+        </div>
+      </div>
+    </div>
+
+    <div
+      cards
+      class="border border-[#E4E5E8] w-1/4 py-4 px-5 rounded-md bg-[#F1F2F4]"
+    >
+      <div class="flex justify-between items-center relative">
+        <p class="font-medium font-sans text-sm text-custom-black">
+          Shortlisted (3)
+        </p>
+
+        <img
+          src="assets/icons/HorizontalDots.svg"
+          (click)="onClickThreeDots(1)"
+          [ngClass]="dropdown[1] ? 'filter-black' : 'filter-gray'"
+          class="cursor-pointer"
+        />
+        <div
+          *ngIf="dropdown[1]"
+          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
+        >
+          <ul class="list-none">
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Pencil.svg" />
+                <p class="font-sans font-medium text-sm text-[#5E6670]">
+                  Edit Column
+                </p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Trash.svg" />
+                <p class="font-sans font-medium text-sm text-[#E05151]">
+                  Delete
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        *ngFor="let item of [1, 2, 3]"
+        class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
+      >
+        <div name class="flex items-center gap-3 p-4">
+          <img src="assets/images/Image.png" />
+
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold text-sm text-custom-black">
+              Ronald Richards
+            </p>
+
+            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+          </div>
+        </div>
+
+        <hr class="border border-[#E4E5E8] mx-4" />
+
+        <div info class="pl-5 pr-4 py-3">
+          <ul class="list-disc list-inside">
+            <li class="font-normal text-sm text-[#5E6670]">
+              7 Years Experience
+            </li>
+            <li class="font-normal text-sm text-[#5E6670]">
+              Applied: Oct 10, 2024
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
+          <img src="assets/icons/DownloadSimple.svg" />
+
+          <p class="font-medium text-sm text-custom-blue">Download CV</p>
+        </div>
+        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+          <img src="assets/icons/tick.svg" />
+          <img src="assets/icons/Cross.svg" />
+        </div>
+      </div>
+    </div>
+
+    <div
+      cards
+      class="border border-[#E4E5E8] w-1/4 py-4 px-5 rounded-md bg-[#F1F2F4]"
+    >
+      <div class="flex justify-between items-center relative">
+        <p class="font-medium font-sans text-sm text-custom-black">
+          Test Invite (2)
+        </p>
+
+        <img
+          src="assets/icons/HorizontalDots.svg"
+          (click)="onClickThreeDots(2)"
+          [ngClass]="dropdown[2] ? 'filter-black' : 'filter-gray'"
+          class="cursor-pointer"
+        />
+        <div
+          *ngIf="dropdown[2]"
+          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
+        >
+          <ul class="list-none">
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Pencil.svg" />
+                <p class="font-sans font-medium text-sm text-[#5E6670]">
+                  Edit Column
+                </p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Trash.svg" />
+                <p class="font-sans font-medium text-sm text-[#E05151]">
+                  Delete
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        *ngFor="let item of [1, 2]"
+        class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
+      >
+        <div name class="flex items-center gap-3 p-4">
+          <img src="assets/images/Image.png" />
+
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold text-sm text-custom-black">
+              Ronald Richards
+            </p>
+
+            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+          </div>
+        </div>
+
+        <hr class="border border-[#E4E5E8] mx-4" />
+
+        <div info class="pl-5 pr-4 py-3">
+          <ul class="list-disc list-inside">
+            <li class="font-normal text-sm text-[#5E6670]">
+              7 Years Experience
+            </li>
+            <li class="font-normal text-sm text-[#5E6670]">
+              Applied: Oct 10, 2024
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
+          <img src="assets/icons/DownloadSimple.svg" />
+
+          <p class="font-medium text-sm text-custom-blue">Download CV</p>
+        </div>
+        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+          <img src="assets/icons/tick.svg" />
+          <img src="assets/icons/Cross.svg" />
+        </div>
+      </div>
+    </div>
+
+    <div
+      cards
+      class="border border-[#E4E5E8] w-1/4 py-4 px-5 rounded-md bg-[#F1F2F4]"
+    >
+      <div class="flex justify-between items-center relative">
+        <p class="font-medium font-sans text-sm text-custom-black">
+          Hired Candidates (2)
+        </p>
+
+        <img
+          src="assets/icons/HorizontalDots.svg"
+          (click)="onClickThreeDots(3)"
+          [ngClass]="dropdown[3] ? 'filter-black' : 'filter-gray'"
+          class="cursor-pointer"
+        />
+        <div
+          *ngIf="dropdown[3]"
+          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
+        >
+          <ul class="list-none">
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Pencil.svg" />
+                <p class="font-sans font-medium text-sm text-[#5E6670]">
+                  Edit Column
+                </p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div class="flex gap-2">
+                <img src="assets/icons/Trash.svg" />
+                <p class="font-sans font-medium text-sm text-[#E05151]">
+                  Delete
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        *ngFor="let item of [1, 2]"
+        class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
+      >
+        <div name class="flex items-center gap-3 p-4">
+          <img src="assets/images/Image.png" />
+
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold text-sm text-custom-black">
+              Ronald Richards
+            </p>
+
+            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+          </div>
+        </div>
+
+        <hr class="border border-[#E4E5E8] mx-4" />
+
+        <div info class="pl-5 pr-4 py-3">
+          <ul class="list-disc list-inside">
+            <li class="font-normal text-sm text-[#5E6670]">
+              7 Years Experience
+            </li>
+            <li class="font-normal text-sm text-[#5E6670]">
+              Applied: Oct 10, 2024
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
+          <img src="assets/icons/DownloadSimple.svg" />
+
+          <p class="font-medium text-sm text-custom-blue">Download CV</p>
+        </div>
+        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+          <img src="assets/icons/tick.svg" />
+          <img src="assets/icons/Cross.svg" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

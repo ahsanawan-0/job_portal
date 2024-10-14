@@ -1,0 +1,58 @@
+<div class="font-sans bg-[#FCFCFC]">
+  <div header class="flex justify-between">
+    <p class="font-medium text-2xl">Exit Interviews</p>
+    <div
+      class="bg-custom-blue py-4 px-8 flex gap-3 justify-center items-center rounded-[4px]"
+    >
+      <img src="assets/icons/fi_plus-circle.svg" />
+      <p class="font-medium text-white text-base">Create Form</p>
+    </div>
+  </div>
+  <div class="mt-8">
+    <div title>
+      <p class="font-medium text-base text-custom-black">
+        All Exit Interview List
+      </p>
+    </div>
+    <div
+      grid
+      class="grid grid-cols-4 bg-[#F1F2F4] text-[#474C54] font-normal text-xs pl-5 py-3 mt-5"
+    >
+      <div class="col-span-2">
+        <p>FORM TITLE</p>
+      </div>
+      <div>
+        <p>SUBMISSIONS</p>
+      </div>
+      <div>
+        <p>ACTIONS</p>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-4 py-6 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8]"
+      *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+    >
+      <div class="col-span-2">
+        <p class="font-medium text-base">UI/UX Designer</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <img src="assets/icons/Users.svg" />
+        <p
+          class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+        >
+          798 Applications
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <button
+          (click)="onClickViewResults()"
+          class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
+        >
+          View Results
+        </button>
+        <img src="assets/icons/DotsThreeVertical.svg" class="cursor-pointer" />
+      </div>
+    </div>
+  </div>
+</div>

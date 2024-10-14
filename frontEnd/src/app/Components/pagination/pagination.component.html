@@ -1,0 +1,33 @@
+<div class="flex justify-between items-center pt-5 font-sans">
+  <div>
+    <img src="assets/icons/fi_arrow-left-blue.svg" />
+  </div>
+  <div class="flex">
+    <div
+      *ngFor="let page of pages"
+      class="rounded-[50px] cursor-pointer"
+      [ngClass]="{
+        'bg-custom-blue': activePage === page,
+        'hover:bg-[#F1F2F4]': activePage !== page
+      }"
+      (click)="setActivePage(page)"
+    >
+      <p
+        class="font-semibold text-base text-center p-4"
+        [ngClass]="{
+          'text-white': activePage === page,
+          'text-custom-black': activePage !== page && isHovered[page],
+          'text-[#5E6670]': !isHovered[page] && activePage !== page
+        }"
+        (mouseover)="toggleHover(page, true)"
+        (mouseout)="toggleHover(page, false)"
+      >
+        0{{ page }}
+      </p>
+    </div>
+  </div>
+
+  <div>
+    <img src="assets/icons/RightArrowCircle.svg" />
+  </div>
+</div>
