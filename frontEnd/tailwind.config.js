@@ -23,6 +23,9 @@ module.exports = {
         "custom-blue": "#0A65CC",
         "custom-black": "#18191C",
       },
+      backgroundImage: {
+        "section-bg": "url('/assets/images/loginPic.png')",
+      },
     },
   },
   plugins: [],
