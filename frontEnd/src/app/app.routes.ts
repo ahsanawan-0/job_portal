@@ -8,8 +8,13 @@ import { MyJobsComponent } from './Components/my-jobs/my-jobs.component';
 import { ExitInterviewComponent } from './Components/exit-interview/exit-interview.component';
 import { ExitInterviewResultComponent } from './Components/exit-interview-result/exit-interview-result.component';
 import { LoaderComponent } from './Components/loader/loader.component';
+import { LoginComponent } from './Components/login/login.component';
 
 export const routes: Routes = [
+  {
+    path: '',
+    component: LoginComponent,
+  },
   {
     path: '',
     component: LayoutComponent,
