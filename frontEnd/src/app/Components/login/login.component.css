@@ -1,0 +1,29 @@
+.custom-radio {
+  appearance: none; /* Remove default styling */
+  width: 20px; /* Set width for the square shape */
+  height: 20px; /* Set height for the square shape */
+  border-radius: 3px; /* Custom border radius */
+  border: 1px solid #9dc1eb; /* Custom border color */
+  background: #ffffff; /* Background color */
+  opacity: 1; /* Full opacity */
+  cursor: pointer; /* Change cursor on hover */
+  position: relative; /* For positioning the inner checked circle */
+  outline: none; /* Remove outline on focus */
+}
+
+.custom-radio:checked {
+  background: #4f46e5; /* Background color when checked */
+  opacity: 1; /* Ensure the opacity is full when checked */
+}
+
+.custom-radio:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px; /* Inner circle size */
+  height: 12px; /* Inner circle size */
+  background-color: white; /* Inner circle color */
+  border-radius: 50%; /* Make it circular */
+  transform: translate(-50%, -50%); /* Center the inner circle */
+}
