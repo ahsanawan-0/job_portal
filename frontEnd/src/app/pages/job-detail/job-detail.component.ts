@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ApplyJobModalComponent } from '../../modals/apply-job-modal/apply-job-modal.component';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CreateJobService } from '../../Services/create_job/create-job.service';
+import { CreateJobService } from '../../services/create_job/create-job.service';
 
 @Component({
   selector: 'app-job-detail',
