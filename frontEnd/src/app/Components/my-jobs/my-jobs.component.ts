@@ -12,6 +12,10 @@ import { Router } from '@angular/router';
 })
 export class MyJobsComponent {
   route = inject(Router);
+  onClickPostJob() {
+    this.route.navigateByUrl('createJobPost');
+  }
+
   dropdownIndex: number | null = null;
 
   jobs = Array.from({ length: 30 }, (_, i) => i + 1);

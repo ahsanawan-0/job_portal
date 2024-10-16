@@ -9,10 +9,19 @@ import { ExitInterviewComponent } from './Components/exit-interview/exit-intervi
 import { ExitInterviewResultComponent } from './Components/exit-interview-result/exit-interview-result.component';
 import { LoaderComponent } from './Components/loader/loader.component';
 import { LoginComponent } from './Components/login/login.component';
+import { ExitInterviewFormComponent } from './Components/exit-interview-form/exit-interview-form.component';
+import { FormComponent } from './pages/create_job/form.component';
+import { JobDetailComponent } from './pages/job-detail/job-detail.component';
 
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+
+  {
+    path: 'login',
     component: LoginComponent,
   },
   {
@@ -39,6 +48,14 @@ export const routes: Routes = [
         path: 'exitInterviewResult',
         component: ExitInterviewResultComponent,
       },
+      {
+        path: 'exitInterviewForm',
+        component: ExitInterviewFormComponent,
+      },
+      {
+        path: 'createJobPost',
+        component: FormComponent,
+      },
 
       {
         path: 'test',
@@ -46,8 +63,13 @@ export const routes: Routes = [
       },
     ],
   },
+
   {
     path: 'loader',
     component: LoaderComponent,
+  },
+  {
+    path: 'jobDetail',
+    component: JobDetailComponent,
   },
 ];

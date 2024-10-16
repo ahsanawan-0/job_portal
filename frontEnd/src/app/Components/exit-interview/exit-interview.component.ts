@@ -14,4 +14,8 @@ export class ExitInterviewComponent {
   onClickViewResults() {
     this.route.navigateByUrl('exitInterviewResult');
   }
+
+  onClickCreateForm() {
+    this.route.navigateByUrl('exitInterviewForm');
+  }
 }
