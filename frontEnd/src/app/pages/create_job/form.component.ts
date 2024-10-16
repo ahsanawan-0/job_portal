@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { CreateJobService } from '../../Services/create_job/create-job.service'; // Adjust the path as necessary
+import { CreateJobService } from '../../services/create_job/create-job.service'; // Adjust the path as necessary
 import { PostJob } from '../../models/jobModel'; // Adjust the path to your job model
 import { TextareaComponent } from '../../Components/textarea/textarea.component';
 import { CommonModule } from '@angular/common';
