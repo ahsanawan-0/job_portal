@@ -1,0 +1,256 @@
+<div
+  class="flex justify-between items-center shadow-[inset_0_-1px_0_0_#E4E5E8] py-5 px-10 w-full"
+>
+  <!-- Left section: Logo -->
+  <div class="flex items-center space-x-2">
+    <img src="assets/logo/Logo.png" />
+  </div>
+  <!-- center section: search and country -->
+
+  <div
+    id="search"
+    class="flex w-[630px] px-5 py-3 gap-3 border border-borderColor bg-white rounded-lg"
+  >
+    <div id="country" class="flex gap-2 items-center flex-shrink-0">
+      <img src="./assets/images/image.png" class="" />
+      <p>Pakistan</p>
+      <img src="assets/icons/CaretDown.svg" alt="" />
+      <!-- Vertical line added here -->
+      <div class="border-l h-6 border-gray-400 mx-2"></div>
+    </div>
+
+    <div id="search" class="flex gap-3 items-center flex-grow">
+      <div><img src="./assets/icons/fi_search.svg" alt="" /></div>
+      <input
+        type="search"
+        name=""
+        id=""
+        placeholder="Job title, keyword, company"
+        class="border-none outline-none w-full bg-white"
+      />
+    </div>
+  </div>
+
+  <!-- Right section: Notifications and Profile -->
+  <div class="flex items-center space-x-6">
+    <div>
+      <img src="assets/icons/BellRinging.svg" alt="notifications" class="" />
+    </div>
+    <div>
+      <img src="assets/images/Ellipse18.png" alt="profile" />
+    </div>
+  </div>
+  <!-- below_nav -->
+</div>
+<div class="w-full flex justify-between px-10 py-5 bg-[#F1F2F4]">
+  <p class="text-lg font-medium">Job Details</p>
+  <div>
+    <ul class="list-none flex gap-3">
+      <li class="nav-item">Home</li>
+      <li class="nav-item">Find Job</li>
+      <li class="nav-item">Graphics & Design</li>
+      <li class="nav-item text-black">Job Details</li>
+    </ul>
+  </div>
+</div>
+<!-- jobcompacy -->
+<div
+  class="flex justify-between items-center w- px-10 py-10 w-full bg-[#FCFCFC]"
+>
+  <div id="left" class="w-1/2 flex justify-center items-center">
+    <div>
+      <img src="assets/images/Rectangle43.png" alt="" />
+    </div>
+    <div class="w-full p-3">
+      <div class="flex gap-3 items-center mb-3 text-2xl">
+        <h2>{{ job.jobTitle }}</h2>
+        <div
+          id="flags"
+          class="px-3 py-1 bg-[#FFEDED] text-[#FF4F4F] rounded-2xl text-sm"
+        >
+          Featured
+        </div>
+        <div
+          id="flags"
+          class="px-3 py-1 bg-[#E8F1FF] text-[#0066FF] rounded-2xl text-sm"
+        >
+          {{ job.jobType }}
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-4 w-full">
+        <div class="flex items-center gap-1">
+          <img src="assets/icons/fi_link.svg" alt="" />
+          <a href="https://instagram.com" class="text-base"
+            >https://instagram.com</a
+          >
+        </div>
+        <div class="flex items-center gap-1">
+          <img src="assets/icons/phone.svg" alt="" />
+          <span class="text-base">(406) 555-0120</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <img src="assets/icons/Envelope.svg" alt="" />
+          <span class="text-base">careers_instagram.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="Right" class="flex justify-center items-center gap-1 flex-col">
+    <div class="flex justify-center items-center gap-3">
+      <div class="bg-[#E7F0FA] p-3.5">
+        <img src="assets/icons/flag.svg" alt="" />
+      </div>
+      <div class="">
+        <button
+          class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white"
+          (click)="openApplyModal()"
+        >
+          Apply Now <img src="assets/icons/fi_arrow-right.svg" alt="" />
+        </button>
+      </div>
+    </div>
+    <div class=""></div>
+    <div>
+      Job expire in: {{ job.expirationDate | date : "mediumDate" }}
+      <span class="text-[#E05151]"></span>
+    </div>
+  </div>
+</div>
+<!-- ///main? -->
+<div class="flex w-full p-10 gap-12">
+  <div id="left_container" class="w-3/5">
+    <div id="Job_Description">
+      <h2 class="font-medium text-xl">Job Description</h2>
+      <p class="text-[#5E6670]">
+<div [innerHTML]="job.description"></div>
+    </div>
+    <div id="Responsibilities" class="mt-6">
+      <h3 class="font-medium text-xl">Responsibilities</h3>
+      <div [innerHTML]="job.responsibilities"></div>
+    </div>
+    <div class="flex items-center gap-4 mt-10">
+      <div>Share this job:</div>
+      <div class="flex gap-4">
+        <img src="/assets/logo/facebook_logo_button.png" alt="" />
+        <img src="/assets/logo/twitter_logo_button.png" alt="" />
+        <img src="/assets/logo/pinterest_logo_button.png" alt="" />
+      </div>
+    </div>
+  </div>
+  <div id="right_container" class="w-2/5">
+    <div
+      id="Job Overview"
+      class="p-6 border-2 border-borderColor rounded-md shadow-md"
+    >
+      <h2 class="font-medium text-xl">Job Overview</h2>
+
+      <div class="grid grid-cols-3 gap-6 py-7">
+        <!-- First row with 3 columns -->
+        <div class="flex flex-col items-start gap-4">
+          <img src="assets/icons/CalendarBlank.svg" alt="" />
+          <div>
+            <h4 class="text-textcolor">Job Posted:</h4>
+            <h3 class="font-semibold">
+              {{ job.createdAt | date : "mediumDate" }}
+            </h3>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-4">
+          <img src="assets/icons/Timer.svg" alt="" />
+          <div>
+            <h4 class="text-textcolor">Job Expiry:</h4>
+            <h3 class="font-semibold">{{ job.expirationDate| date : "mediumDate" }}</h3>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-4">
+          <img src="assets/icons/briefcase.svg" alt="" />
+          <div>
+            <h4 class="text-textcolor">Education:</h4>
+            <h3 class="font-semibold">{{job.education}}</h3>
+          </div>
+        </div>
+
+        <!-- Second row with 3 columns -->
+        <div class="flex flex-col items-start gap-4">
+          <img src="assets/icons/Wallet.svg" alt="" />
+          <div>
+            <h4 class="text-textcolor">Salary:</h4>
+<h3 class="font-semibold">
+  {{ job.minSalary | currency:'RS':'symbol':'1.0-0' }} - {{ job.maxSalary | currency:'RS':'symbol':'1.0-0' }}
+</h3>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-4">
+          <img src="assets/icons/MapPinLine.svg" alt="" />
+          <div>
+            <h4 class="text-textcolor">Location:</h4>
+            <h3 class="font-semibold">New York, USA</h3>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-4">
+          <img src="assets/icons/briefcase.svg" alt="" />
+          <div>
+            <h4 class="text-textcolor">Job Type:</h4>
+            <h3 class="font-semibold">{{job.jobType}}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experience Section -->
+      <div class="flex flex-col items-start py-4">
+        <img src="assets/icons/briefcase.svg" alt="" />
+        <h4 class="text-textcolor">Experience:</h4>
+        <h3 class="font-semibold">{{job.experience}} Years</h3>
+      </div>
+    </div>
+    <div
+      id="company_info"
+      class="p-6 border-2 border-borderColor rounded-md shadow-md mt-6"
+    >
+      <div class="flex gap-5 items-center">
+        <div><img src="assets/logo/insta_logo.png" alt="" /></div>
+        <div>
+          <div class="text-xl font-semibold">Instagram</div>
+          <div class="text-textcolor text-lg">Social networking service</div>
+        </div>
+      </div>
+      <div class="flex justify-between w-full my-4">
+        <div class="text-base text-textcolor">Founded in:</div>
+        <div class="text-base">March 21, 2006</div>
+      </div>
+      <div class="flex justify-between w-full mb-4">
+        <div class="text-base text-textcolor">Organization type:</div>
+        <div class="text-base">Private Company</div>
+      </div>
+      <div class="flex justify-between w-full mb-4">
+        <div class="text-base text-textcolor">Company size:</div>
+        <div class="text-base">120-300 Employers</div>
+      </div>
+      <div class="flex justify-between w-full mb-4">
+        <div class="text-base text-textcolor">Phone:</div>
+        <div class="text-base">(406) 555-0120</div>
+      </div>
+      <div class="flex justify-between w-full mb-4">
+        <div class="text-base text-textcolor">Email:</div>
+        <div class="text-base">twittergmail.com</div>
+      </div>
+      <div class="flex justify-between w-full mb-4">
+        <div class="text-base text-textcolor">Website:</div>
+        <div class="text-base">https://twitter.com</div>
+      </div>
+      <div class="flex justify-start gap-3 mt-8">
+        <img src="/assets/logo/blue_social/instagram.png" alt="" />
+        <img src="/assets/logo/blue_social/twitter.png" alt="" />
+        <img src="/assets/logo/blue_social/facebook.png" alt="" />
+        <img src="/assets/logo/blue_social/youtube.png" alt="" />
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <app-apply-job-modal [isVisible]="isApplyModalVisible"></app-apply-job-modal> -->

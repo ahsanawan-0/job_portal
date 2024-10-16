@@ -22,6 +22,11 @@ module.exports = {
         "custom-green": "#0BA02C",
         "custom-blue": "#0A65CC",
         "custom-black": "#18191C",
+        borderColor: "#E4E5E8", // Border color
+        placeholder: "#9199A3", // Placeholder color
+        button: "#0A65CC", // Button color
+        textcolor: "#767F8C",
+        backgroundcolor: "#FCFCFC", // Background color
       },
       backgroundImage: {
         "section-bg": "url('/assets/images/loginPic.png')",

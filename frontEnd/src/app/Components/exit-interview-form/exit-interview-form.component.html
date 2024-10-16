@@ -1,0 +1,195 @@
+<!-- Main Area -->
+<form [formGroup]="form">
+    <main class="flex-1 p-5 bg-[#FCFCFC]">
+      <div class="w-full">
+        <!-- Header Section -->
+        <div class="flex justify-between mb-6">
+          <div class="text-2xl text-[#18191C]">Create Exit Interview Form</div>
+          <div>
+            <button 
+              type="button"
+              class="bg-[#0A65CC] text-white flex justify-center gap-4 px-5 py-3 rounded-md" 
+              (click)="openApplyModal()"
+            >
+              <span><img src="assets/icons/ShareNetwork.svg" alt="Share" /></span> Share Link
+            </button>
+          </div>
+        </div>
+  
+        <!-- Form Content -->
+        <div class="space-y-4 w-2/3">
+          <!-- Form Title -->
+          <div>
+            <label for="formTitle" class="block text-[#18191C] text-sm font-medium mb-2">Form Title</label>
+            <input
+              type="text"
+              formControlName="title"
+              placeholder="Enter Form Title"
+              id="formTitle"
+              class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+            />
+            <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="text-red-500 text-sm">
+              Form title is required.
+            </div>
+          </div>
+  
+          <!-- Dynamic Questions -->
+          <div formArrayName="questions">
+            <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="space-y-4">
+              <div class="p-4 border border-borderColor rounded-md relative">
+                <!-- Remove Question Button -->
+                <button 
+                  type="button" 
+                  class="absolute top-2 right-2 text-red-500 text-xl"
+                  (click)="removeQuestion(i)"
+                  aria-label="Remove Question"
+                >
+                  &times;
+                </button>
+  
+                <!-- Question Label -->
+                <label class="block text-[#18191C] text-sm font-medium mb-2">Question {{i + 1}}</label>
+                <input
+                  type="text"
+                  formControlName="label"
+                  placeholder="Enter your question"
+                  class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none mb-2"
+                />
+                <div *ngIf="question.get('label')?.invalid && question.get('label')?.touched" class="text-red-500 text-sm">
+                  Question label is required.
+                </div>
+  
+                <!-- Question Type Specific Inputs -->
+                <div [ngSwitch]="question.get('type')?.value">
+                  <!-- Text Input -->
+                  <div *ngSwitchCase="'text'">
+                    <input
+                      type="text"
+                      placeholder="Enter your answer"
+                      class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+                      disabled
+                    />
+                  </div>
+  
+                  <!-- Textarea Input -->
+                  <div *ngSwitchCase="'textarea'">
+                    <textarea
+                      placeholder="Enter your answer"
+                      class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+                      disabled
+                    ></textarea>
+                  </div>
+  
+                  <!-- Radio Input -->
+                  <div *ngSwitchCase="'radio'">
+                    <label class="block text-[#18191C] text-sm font-medium mb-2">Options:</label>
+                    <div formArrayName="options">
+                      <div 
+                        *ngFor="let option of getOptions(i).controls; let j = index" 
+                        class="flex items-center mb-2"
+                      >
+                        <input
+                          type="radio"
+                          [name]="'question' + i"
+                          disabled
+                          class="mr-2"
+                        />
+                        <input
+                          type="text"
+                          [formControlName]="j"
+                          placeholder="Enter option"
+                          class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+                        />
+                        <button 
+                          type="button" 
+                          class="text-red-500 ml-2" 
+                          (click)="removeOption(i, j)"
+                          aria-label="Remove Option"
+                          [disabled]="getOptions(i).length <= 2"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      <!-- Add Option Button -->
+                      <button 
+                        type="button" 
+                        class="text-[#0A65CC] text-sm mt-2"
+                        (click)="addOption(i)"
+                        [disabled]="getOptions(i).length >= maxOptions"
+                      >
+                        + Add Option
+                      </button>
+                      <!-- Option Limit Message -->
+                      <div *ngIf="getOptions(i).length >= maxOptions" class="text-gray-500 text-sm mt-1">
+                        Maximum of {{maxOptions}} options reached.
+                      </div>
+                      <!-- Duplicate Options Error -->
+                      <div *ngIf="getOptions(i).hasError('duplicateOptions') && getOptions(i).touched" class="text-red-500 text-sm">
+                        Options must be unique.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Add Question Section -->
+          <div class="flex space-x-4 mt-6">
+            <!-- Question Type Selector -->
+            <div class="flex-1">
+              <label for="questionType" class="block text-[#18191C] text-sm font-medium mb-2">Question Type</label>
+              <select 
+                id="questionType"
+                formControlName="newQuestionType"
+                class="border border-borderColor rounded-md px-3 py-2 focus:outline-none w-full"
+              >
+                <option value="text">Text</option>
+                <option value="textarea">Textarea</option>
+                <option value="radio">Radio</option>
+              </select>
+            </div>
+  
+            <!-- Number of Radio Options (Visible Only for Radio Type) -->
+            <div class="flex-1" *ngIf="form.get('newQuestionType')?.value === 'radio'">
+              <label for="radioOptions" class="block text-[#18191C] text-sm font-medium mb-2">Number of Radio Options</label>
+              <input
+                type="number"
+                formControlName="newRadioOptionsCount"
+                id="radioOptions"
+                min="2"
+                class="border border-borderColor rounded-md px-3 py-2 focus:outline-none w-full"
+              />
+              <div *ngIf="form.get('newRadioOptionsCount')?.invalid && form.get('newRadioOptionsCount')?.touched" class="text-red-500 text-sm">
+                Please enter at least 2 options.
+              </div>
+            </div>
+  
+            <!-- Add Question Button -->
+            <div class="flex items-end">
+              <button 
+                type="button" 
+                (click)="addQuestion()" 
+                class="border border-[#0A65CC] rounded-md flex justify-center items-center gap-2 px-5 py-3 text-[#0A65CC] font-semibold"
+              >
+                <img src="/assets/icons/fi_plus-circle.svg" alt="Add" /> Add Question
+              </button>
+            </div>
+          </div>
+  
+          <!-- Save Button -->
+          <div class="flex justify-start mt-6">
+            <button 
+              type="button" 
+              (click)="saveForm()" 
+              class="bg-[#0A65CC] text-white px-6 py-3 rounded-md flex justify-center items-center gap-3"
+            >
+              Save
+              <span><img src="assets/icons/fi_arrow-right.svg" alt="Save" /></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </form>
+  

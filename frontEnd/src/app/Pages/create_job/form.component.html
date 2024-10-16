@@ -1,0 +1,335 @@
+<div class="min-h-screen bg-[#FCFCFC]">
+  <!-- Navbar -->
+  <header
+    class="flex items-center justify-between h-24 bg-blue-600 text-white px-6"
+  >
+    <h1 class="text-xl font-bold">My Website</h1>
+  </header>
+
+  <!-- Main Content Area -->
+  <div class="flex">
+    <!-- Left Sidebar -->
+    <aside class="w-72 bg-blue-200 shadow-md p-4">
+      <h2 class="text-lg font-semibold mb-4">Sidebar</h2>
+      <ul class="space-y-2">
+        <li><a href="#" class="text-blue-600">Link 1</a></li>
+        <li><a href="#" class="text-blue-600">Link 2</a></li>
+        <li><a href="#" class="text-blue-600">Link 3</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Area -->
+    <!-- src/pages/create_job/form.component.html -->
+
+    <main class="flex-1 p-5">
+      <div class="max-w-4xl">
+        <!-- Header -->
+        <h2 class="text-2xl font-semibold mb-6">POST A JOB</h2>
+
+        <!-- Success and Error Messages -->
+        <div
+          *ngIf="successMessage"
+          class="mb-4 p-4 bg-green-100 text-green-700 rounded"
+        >
+          {{ successMessage }}
+        </div>
+        <div
+          *ngIf="errorMessage"
+          class="mb-4 p-4 bg-red-100 text-red-700 rounded"
+        >
+          {{ errorMessage }}
+        </div>
+
+        <!-- Job Details Form -->
+        <form
+          (ngSubmit)="submitForm(form)"
+          #form="ngForm"
+          class="grid grid-cols-1 gap-6"
+        >
+          <!-- Job Title -->
+  <!-- Job Title -->
+<div>
+  <label for="job_title" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+    Job Title
+  </label>
+  <input
+    type="text"
+    id="job_title"
+    [(ngModel)]="jobTitle"
+    name="jobTitle"
+    class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+    placeholder="Add job title, role, vacancies etc"
+    required
+    #jobTitleCtrl="ngModel" 
+  />
+  <!-- Validation Feedback -->
+  <div *ngIf="jobTitleCtrl.invalid && (jobTitleCtrl.dirty || jobTitleCtrl.touched)" class="text-red-500 text-sm">
+    Job Title is required.
+  </div>
+</div>
+
+
+          <div class="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-4">
+            <!-- Tags -->
+            <div>
+              <label
+                for="tags"
+                class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
+                Tags
+              </label>
+              <input
+                type="text"
+                id="tags"
+                [(ngModel)]="tags"
+                name="tags"
+                class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                placeholder="Job keyword, tags etc..."
+                required
+              />
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label
+                for="location"
+                class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
+                Location
+              </label>
+              <select
+                id="location"
+                [(ngModel)]="location"
+                name="location"
+                class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              >
+                <option value="">Select</option>
+                <option value="Canada">Canada</option>
+                <option value="France">France</option>
+                <option value="Germany">Germany</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Salary Section -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Salary</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Min Salary -->
+              <div>
+                <label
+                  for="min_salary"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Min Salary
+                </label>
+                <input
+                  type="number"
+                  id="min_salary"
+                  [(ngModel)]="minSalary"
+                  name="minSalary"
+                  class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 transition-all duration-300 hover:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="Minimum salary..."
+                  required
+                />
+              </div>
+
+              <!-- Max Salary -->
+              <div>
+                <label
+                  for="max_salary"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Max Salary
+                </label>
+                <input
+                  type="number"
+                  id="max_salary"
+                  [(ngModel)]="maxSalary"
+                  name="maxSalary"
+                  class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 transition-all duration-300 hover:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="Maximum salary..."
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced Information -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Advanced Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Education -->
+              <div>
+                <label
+                  for="education"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Education
+                </label>
+                <select
+                  id="education"
+                  [(ngModel)]="education"
+                  name="education"
+                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="Bachelor's Degree">Bachelor's Degree</option>
+                  <option value="Master's Degree">Master's Degree</option>
+                  <option value="Ph.D.">Ph.D.</option>
+                </select>
+              </div>
+
+              <!-- Experience -->
+              <div>
+                <label
+                  for="experience"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Experience
+                </label>
+                <select
+                  id="experience"
+                  [(ngModel)]="experience"
+                  name="experience"
+                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="1-2 Years">1-2 Years</option>
+                  <option value="3-5 Years">3-5 Years</option>
+                  <option value="5+ Years">5+ Years</option>
+                </select>
+              </div>
+
+              <!-- Job Type -->
+              <div>
+                <label
+                  for="job_type"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Job Type
+                </label>
+                <select
+                  id="job_type"
+                  [(ngModel)]="jobType"
+                  name="jobType"
+                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="Full-Time">Full-Time</option>
+<option value="Part-Time">Part-Time</option>
+<option value="Contract">Contract</option>
+
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <!-- No of Vacancies -->
+              <div>
+                <label
+                  for="vacancies"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  No of Vacancies
+                </label>
+                <select
+                  id="vacancies"
+                  [(ngModel)]="vacancies"
+                  name="vacancies"
+                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value=1>1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+
+              <!-- Expiration Date -->
+              <div>
+                <label
+                  for="expiration_date"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Expiration Date
+                </label>
+                <input
+                  type="date"
+                  id="expiration_date"
+                  [(ngModel)]="expirationDate"
+                  name="expirationDate"
+                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Description using app-textarea Component -->
+          <div>
+            <label
+              for="description"
+              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+            >
+              Job Description
+            </label>
+            <app-textarea
+              id="description"
+              [(content)]="description"
+              name="description"
+              placeholder="Describe the job in detail"
+              required
+            ></app-textarea>
+          </div>
+
+          <!-- Responsibilities using app-textarea Component -->
+          <div>
+            <label
+              for="responsibilities"
+              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+            >
+              Responsibilities
+            </label>
+            <app-textarea
+              id="responsibilities"
+              [(content)]="responsibilities"
+              name="responsibilities"
+              placeholder="List the job responsibilities"
+              required
+            ></app-textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-start">
+            <button
+              type="submit"
+              class="py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
+            >
+              Post a Job
+              <img
+                src="assets/icons/fi_arrow-right.svg"
+                alt="Arrow Right Icon"
+                class="w-5 h-5"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- <button
+type="submit"
+class=" py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
+>
+Post a Job
+<img src="assets/icons/fi_arrow-right.svg" alt="Arrow Right Icon" class="w-5 h-5" />
+</button> -->

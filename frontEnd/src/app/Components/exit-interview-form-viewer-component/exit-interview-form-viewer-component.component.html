@@ -1,0 +1,70 @@
+<div *ngIf="isLoading" class="flex justify-center items-center h-screen">
+    <p>Loading form...</p>
+  </div>
+  
+  <div *ngIf="!isLoading && exitInterviewForm">
+    <h1 class="text-2xl font-bold mb-6">{{ exitInterviewForm.title }}</h1>
+  
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngFor="let question of exitInterviewForm.questions; let i = index" class="mb-4">
+        <label class="block text-lg font-medium mb-2">
+          {{ i + 1 }}. {{ question.label }}
+        </label>
+  
+        <!-- Text Input -->
+        <div *ngIf="question.type === 'text'">
+          <input
+            type="text"
+            [formControlName]="'question_' + i"
+            class="w-full border border-gray-300 p-2 rounded"
+            placeholder="Your answer"
+          />
+          <div *ngIf="form.get('question_' + i)?.invalid && form.get('question_' + i)?.touched" class="text-red-500 text-sm">
+            This field is required.
+          </div>
+        </div>
+  
+        <!-- Textarea Input -->
+        <div *ngIf="question.type === 'textarea'">
+          <textarea
+            [formControlName]="'question_' + i"
+            class="w-full border border-gray-300 p-2 rounded"
+            placeholder="Your answer"
+          ></textarea>
+          <div *ngIf="form.get('question_' + i)?.invalid && form.get('question_' + i)?.touched" class="text-red-500 text-sm">
+            This field is required.
+          </div>
+        </div>
+  
+        <!-- Radio Input -->
+        <div *ngIf="question.type === 'radio'">
+          <div *ngFor="let option of question.options; let j = index" class="flex items-center mb-2">
+            <input
+              type="radio"
+              [formControlName]="'question_' + i"
+              [value]="option"
+              class="mr-2"
+              id="question_{{i}}_option_{{j}}"
+            />
+            <label [for]="'question_' + i + '_option_' + j">{{ option }}</label>
+          </div>
+          <div *ngIf="form.get('question_' + i)?.invalid && form.get('question_' + i)?.touched" class="text-red-500 text-sm">
+            Please select an option.
+          </div>
+        </div>
+      </div>
+  
+      <button 
+        type="submit" 
+        [disabled]="form.invalid"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+  
+  <div *ngIf="!isLoading && errorMessage" class="text-red-500">
+    {{ errorMessage }}
+  </div>
+  
