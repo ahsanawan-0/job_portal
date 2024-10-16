@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LayoutComponent } from './Components/layout/layout.component';
 import { MainSectionComponent } from './Components/main-section/main-section.component';
 import { TestComponent } from './Components/test/test.component';
-import { DashboardComponent } from './Pages/dashboard/dashboard.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { JobApplicationsComponent } from './Components/job-applications/job-applications.component';
 import { MyJobsComponent } from './Components/my-jobs/my-jobs.component';
 import { ExitInterviewComponent } from './Components/exit-interview/exit-interview.component';
