@@ -17,8 +17,8 @@ interface Question {
   providedIn: 'root'
 })
 export class ExitInterviewService {
-  private formApiUrl = 'https://your-api-endpoint.com/exit-interview-form'; // Replace with your API URL
-  private submitApiUrl = 'https://your-api-endpoint.com/submit-exit-interview'; // Replace with your API URL
+  private formApiUrl = 'http://localhost:3000/api/exit-interview-form'; // Replace with your API URL
+  private submitApiUrl = 'http://localhost:3000/api/submit-exit-interview'; // Replace with your API URL
 
   constructor(private http: HttpClient) {}
 
