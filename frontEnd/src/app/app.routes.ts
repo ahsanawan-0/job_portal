@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LayoutComponent } from './Components/layout/layout.component';
 import { MainSectionComponent } from './Components/main-section/main-section.component';
 import { TestComponent } from './Components/test/test.component';
-import { DashboardComponent } from './Pages/dashboard/dashboard.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { JobApplicationsComponent } from './Components/job-applications/job-applications.component';
 import { MyJobsComponent } from './Components/my-jobs/my-jobs.component';
 import { ExitInterviewComponent } from './Components/exit-interview/exit-interview.component';
@@ -10,8 +10,8 @@ import { ExitInterviewResultComponent } from './Components/exit-interview-result
 import { LoaderComponent } from './Components/loader/loader.component';
 import { LoginComponent } from './Components/login/login.component';
 import { ExitInterviewFormComponent } from './Components/exit-interview-form/exit-interview-form.component';
-import { FormComponent } from './Pages/create_job/form.component';
-import { JobDetailComponent } from './Pages/job-detail/job-detail.component';
+import { FormComponent } from './pages/create_job/form.component';
+import { JobDetailComponent } from './pages/job-detail/job-detail.component';
 
 export const routes: Routes = [
   {

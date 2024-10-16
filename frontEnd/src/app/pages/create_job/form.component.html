@@ -1,9 +1,22 @@
-<div class="">
+<div class="min-h-screen bg-[#FCFCFC]">
   <!-- Navbar -->
+  <header
+    class="flex items-center justify-between h-24 bg-blue-600 text-white px-6"
+  >
+    <h1 class="text-xl font-bold">My Website</h1>
+  </header>
 
   <!-- Main Content Area -->
-  <div class="">
+  <div class="flex">
     <!-- Left Sidebar -->
+    <aside class="w-72 bg-blue-200 shadow-md p-4">
+      <h2 class="text-lg font-semibold mb-4">Sidebar</h2>
+      <ul class="space-y-2">
+        <li><a href="#" class="text-blue-600">Link 1</a></li>
+        <li><a href="#" class="text-blue-600">Link 2</a></li>
+        <li><a href="#" class="text-blue-600">Link 3</a></li>
+      </ul>
+    </aside>
 
     <!-- Main Area -->
     <!-- src/pages/create_job/form.component.html -->
@@ -34,35 +47,27 @@
           class="grid grid-cols-1 gap-6"
         >
           <!-- Job Title -->
-          <!-- Job Title -->
-          <div>
-            <label
-              for="job_title"
-              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-            >
-              Job Title
-            </label>
-            <input
-              type="text"
-              id="job_title"
-              [(ngModel)]="jobTitle"
-              name="jobTitle"
-              class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-              placeholder="Add job title, role, vacancies etc"
-              required
-              #jobTitleCtrl="ngModel"
-            />
-            <!-- Validation Feedback -->
-            <div
-              *ngIf="
-                jobTitleCtrl.invalid &&
-                (jobTitleCtrl.dirty || jobTitleCtrl.touched)
-              "
-              class="text-red-500 text-sm"
-            >
-              Job Title is required.
-            </div>
-          </div>
+  <!-- Job Title -->
+<div>
+  <label for="job_title" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+    Job Title
+  </label>
+  <input
+    type="text"
+    id="job_title"
+    [(ngModel)]="jobTitle"
+    name="jobTitle"
+    class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+    placeholder="Add job title, role, vacancies etc"
+    required
+    #jobTitleCtrl="ngModel" 
+  />
+  <!-- Validation Feedback -->
+  <div *ngIf="jobTitleCtrl.invalid && (jobTitleCtrl.dirty || jobTitleCtrl.touched)" class="text-red-500 text-sm">
+    Job Title is required.
+  </div>
+</div>
+
 
           <div class="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-4">
             <!-- Tags -->
@@ -216,8 +221,9 @@
                 >
                   <option value="">Select</option>
                   <option value="Full-Time">Full-Time</option>
-                  <option value="Part-Time">Part-Time</option>
-                  <option value="Contract">Contract</option>
+<option value="Part-Time">Part-Time</option>
+<option value="Contract">Contract</option>
+
                 </select>
               </div>
             </div>
@@ -239,7 +245,7 @@
                   required
                 >
                   <option value="">Select</option>
-                  <option value="1">1</option>
+                  <option value=1>1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
