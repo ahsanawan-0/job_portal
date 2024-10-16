@@ -3,7 +3,7 @@
 >
   <!-- Left section: Logo -->
   <div class="flex items-center space-x-2">
-    <img src="assets/logo/Logo.png" />
+    <img src="assets/icons/Logo.svg" />
   </div>
   <!-- center section: search and country -->
 
@@ -12,7 +12,7 @@
     class="flex w-[630px] px-5 py-3 gap-3 border border-borderColor bg-white rounded-lg"
   >
     <div id="country" class="flex gap-2 items-center flex-shrink-0">
-      <img src="./assets/images/image.png" class="" />
+      <img src="./assets/icons/Pakistan_flag.svg" class="" />
       <p>Pakistan</p>
       <img src="assets/icons/CaretDown.svg" alt="" />
       <!-- Vertical line added here -->
@@ -123,8 +123,8 @@
   <div id="left_container" class="w-3/5">
     <div id="Job_Description">
       <h2 class="font-medium text-xl">Job Description</h2>
-      <p class="text-[#5E6670]">
-<div [innerHTML]="job.description"></div>
+      <p class="text-[#5E6670]"></p>
+      <div [innerHTML]="job.description"></div>
     </div>
     <div id="Responsibilities" class="mt-6">
       <h3 class="font-medium text-xl">Responsibilities</h3>
@@ -162,7 +162,9 @@
           <img src="assets/icons/Timer.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Job Expiry:</h4>
-            <h3 class="font-semibold">{{ job.expirationDate| date : "mediumDate" }}</h3>
+            <h3 class="font-semibold">
+              {{ job.expirationDate | date : "mediumDate" }}
+            </h3>
           </div>
         </div>
 
@@ -170,7 +172,7 @@
           <img src="assets/icons/briefcase.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Education:</h4>
-            <h3 class="font-semibold">{{job.education}}</h3>
+            <h3 class="font-semibold">{{ job.education }}</h3>
           </div>
         </div>
 
@@ -179,9 +181,10 @@
           <img src="assets/icons/Wallet.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Salary:</h4>
-<h3 class="font-semibold">
-  {{ job.minSalary | currency:'RS':'symbol':'1.0-0' }} - {{ job.maxSalary | currency:'RS':'symbol':'1.0-0' }}
-</h3>
+            <h3 class="font-semibold">
+              {{ job.minSalary | currency : "RS" : "symbol" : "1.0-0" }} -
+              {{ job.maxSalary | currency : "RS" : "symbol" : "1.0-0" }}
+            </h3>
           </div>
         </div>
 
@@ -197,7 +200,7 @@
           <img src="assets/icons/briefcase.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Job Type:</h4>
-            <h3 class="font-semibold">{{job.jobType}}</h3>
+            <h3 class="font-semibold">{{ job.jobType }}</h3>
           </div>
         </div>
       </div>
@@ -206,7 +209,7 @@
       <div class="flex flex-col items-start py-4">
         <img src="assets/icons/briefcase.svg" alt="" />
         <h4 class="text-textcolor">Experience:</h4>
-        <h3 class="font-semibold">{{job.experience}} Years</h3>
+        <h3 class="font-semibold">{{ job.experience }} Years</h3>
       </div>
     </div>
     <div

@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ApplyJobModalComponent } from '../../modals/apply-job-modal/apply-job-modal.component';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CreateJobService } from '../../services/create_job/create-job.service';
+import { CreateJobService } from '../../Services/create_job/create-job.service';
 
 @Component({
   selector: 'app-job-detail',
@@ -18,14 +18,12 @@ export class JobDetailComponent implements OnInit {
 
   job: any; // To store job details
   jobId: string = '67094376e7de8c161a0093b3'; // Replace this with the actual job ID you want to fetch
-  
+
   // Solution 1: Use definite assignment assertion
 
   // Alternative Solutions:
   // safeDescription: SafeHtml | undefined; // Solution 3: Marking as optional
   // safeDescription: SafeHtml = ''; // Solution 2: Initialize with a default value
-
-
 
   ngOnInit() {
     this.getJobDetails();

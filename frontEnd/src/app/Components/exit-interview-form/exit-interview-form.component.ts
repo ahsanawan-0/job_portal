@@ -1,28 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  FormArray, 
-  Validators, 
+import { Component, inject, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators,
   ReactiveFormsModule,
   FormControl,
   AbstractControl,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Required for Reactive Forms
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
 
 @Component({
   selector: 'app-exit-interview-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './exit-interview-form.component.html',
-  styleUrls: ['./exit-interview-form.component.css']
+  styleUrls: ['./exit-interview-form.component.css'],
 })
 export class ExitInterviewFormComponent implements OnInit {
   form: FormGroup;
   maxOptions: number = 10; // Maximum allowed options for radio questions
+  private modalService = inject(NgbModal);
 
   constructor(private fb: FormBuilder) {
     // Initialize the main form with 'title', 'questions', 'newQuestionType', and 'newRadioOptionsCount'
@@ -30,7 +33,7 @@ export class ExitInterviewFormComponent implements OnInit {
       title: ['', Validators.required],
       questions: this.fb.array([]),
       newQuestionType: ['text', Validators.required],
-      newRadioOptionsCount: [2, [Validators.required, Validators.min(2)]]
+      newRadioOptionsCount: [2, [Validators.required, Validators.min(2)]],
     });
   }
 
@@ -51,9 +54,13 @@ export class ExitInterviewFormComponent implements OnInit {
         return null; // If not a FormArray, do not apply this validator
       }
 
-      const optionValues = control.controls.map(ctrl => ctrl.value.trim().toLowerCase());
+      const optionValues = control.controls.map((ctrl) =>
+        ctrl.value.trim().toLowerCase()
+      );
 
-      const duplicates = optionValues.filter((item, index) => optionValues.indexOf(item) !== index);
+      const duplicates = optionValues.filter(
+        (item, index) => optionValues.indexOf(item) !== index
+      );
 
       return duplicates.length > 0 ? { duplicateOptions: true } : null;
     };
@@ -76,9 +83,13 @@ export class ExitInterviewFormComponent implements OnInit {
     const questionGroup = this.fb.group({
       label: ['', Validators.required],
       type: [questionType, Validators.required],
-      options: questionType === 'radio' 
-        ? this.fb.array(this.createRadioOptions(radioOptionsCount), this.uniqueOptionsValidator())
-        : this.fb.array([])
+      options:
+        questionType === 'radio'
+          ? this.fb.array(
+              this.createRadioOptions(radioOptionsCount),
+              this.uniqueOptionsValidator()
+            )
+          : this.fb.array([]),
     });
 
     // Add the new question to the FormArray
@@ -144,9 +155,12 @@ export class ExitInterviewFormComponent implements OnInit {
    */
   removeOption(questionIndex: number, optionIndex: number): void {
     const options = this.getOptions(questionIndex);
-    if (options.length > 2) { // Ensure at least 2 options remain
+    if (options.length > 2) {
+      // Ensure at least 2 options remain
       options.removeAt(optionIndex);
-      console.log(`Removed Option ${optionIndex + 1} from Question ${questionIndex + 1}`);
+      console.log(
+        `Removed Option ${optionIndex + 1} from Question ${questionIndex + 1}`
+      );
     } else {
       alert('Radio questions must have at least 2 options.');
     }
@@ -157,7 +171,9 @@ export class ExitInterviewFormComponent implements OnInit {
    */
   saveForm(): void {
     if (this.form.invalid) {
-      alert('Please fill all required fields and ensure all radio options are unique.');
+      alert(
+        'Please fill all required fields and ensure all radio options are unique.'
+      );
       return;
     }
 
@@ -171,6 +187,7 @@ export class ExitInterviewFormComponent implements OnInit {
    */
   openApplyModal(): void {
     // Implement the logic to open the modal
-    alert('Share Link functionality to be implemented.');
+    // alert('Share Link functionality to be implemented.');
+    const modalRef = this.modalService.open(ExitInterviewModalComponent);
   }
 }
