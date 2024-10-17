@@ -11,11 +11,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
-<<<<<<< HEAD
-  origin: 'http://localhost:5173', // Replace with your frontend's URL
-=======
   origin: 'http://localhost:4200', // Replace with your frontend's URL
->>>>>>> branch_3
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Allow credentials (cookies) to be sent
 };
