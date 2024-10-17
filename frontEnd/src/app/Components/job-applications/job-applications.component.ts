@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ApplicationCardComponent } from '../application-card/application-card.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-applications',
@@ -10,6 +11,10 @@ import { ApplicationCardComponent } from '../application-card/application-card.c
   styleUrl: './job-applications.component.css',
 })
 export class JobApplicationsComponent {
+  route = inject(Router);
+  onClickArrowLeft() {
+    this.route.navigateByUrl('myjobs');
+  }
   isDropdownVisible = signal(false);
 
   toggleDropdown() {

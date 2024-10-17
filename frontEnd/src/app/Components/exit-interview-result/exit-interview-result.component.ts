@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-exit-interview-result',
@@ -10,6 +11,10 @@ import { PaginationComponent } from '../pagination/pagination.component';
   styleUrl: './exit-interview-result.component.css',
 })
 export class ExitInterviewResultComponent {
+  route = inject(Router);
+  onClickArrowLeft() {
+    this.route.navigateByUrl('exitinterview');
+  }
   results = Array.from({ length: 10 }, (_, i) => i + 1);
   itemsPerPage = 7;
   currentPage = 1;
