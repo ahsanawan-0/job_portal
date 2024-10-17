@@ -69,7 +69,7 @@ export const routes: Routes = [
     component: LoaderComponent,
   },
   {
-    path: 'jobDetail',
+    path: 'jobdetail',
     component: JobDetailComponent,
   },
 ];
