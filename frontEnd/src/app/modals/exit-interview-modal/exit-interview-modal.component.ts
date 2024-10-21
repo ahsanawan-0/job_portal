@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -9,15 +9,17 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './exit-interview-modal.component.html',
-  styleUrls: ['./exit-interview-modal.component.css']  // Corrected property name
+  styleUrls: ['./exit-interview-modal.component.css']
 })
 export class ExitInterviewModalComponent {
   private subscriptions: Subscription = new Subscription();
+  
+  public activeModal = inject(NgbActiveModal);
+  
+  @Input() link: string = ''; // Property to hold the link
 
-  public activeModal = inject(NgbActiveModal);  // Inject NgbActiveModal
   copyLink() {
-    const link = 'https://www.jobportalbysdsol.com/exitinterviewuiuxdesigner';
-    navigator.clipboard.writeText(link).then(() => {
+    navigator.clipboard.writeText(this.link).then(() => {
       alert('Link copied to clipboard!');
     }).catch(err => {
       console.error('Failed to copy: ', err);
@@ -25,10 +27,10 @@ export class ExitInterviewModalComponent {
   }
 
   closeModal(): void {
-    this.activeModal.dismiss();  // Used NgbActiveModal to close the modal
+    this.activeModal.dismiss();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();  // Clean up subscriptions
+    this.subscriptions.unsubscribe();
   }
 }

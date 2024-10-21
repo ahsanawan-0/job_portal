@@ -7,7 +7,8 @@ import {
   ReactiveFormsModule 
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ExitInterviewService } from '../exit-interview.service'; // Adjust the path as needed
+import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service'; // Adjust the path as needed
+import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 import { Observable } from 'rxjs';
 
 interface ExitInterviewForm {
@@ -25,8 +26,8 @@ interface Question {
   selector: 'app-exit-interview-form-viewer',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './exit-interview-form-viewer.component.html',
-  styleUrls: ['./exit-interview-form-viewer.component.css']
+  templateUrl: './exit-interview-form-viewer-component.component.html',
+  styleUrls: ['./exit-interview-form-viewer-component.component.css']
 })
 export class ExitInterviewFormViewerComponent implements OnInit {
   form: FormGroup;
@@ -36,23 +37,28 @@ export class ExitInterviewFormViewerComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private exitInterviewService: ExitInterviewService
+    private exitInterviewService: ExitInterviewService,
+    private route: ActivatedRoute // Inject ActivatedRoute
   ) {
     this.form = this.fb.group({});
   }
 
   ngOnInit(): void {
-    this.fetchForm();
+    // Get the formId from the route parameters
+    this.route.params.subscribe(params => {
+      const formId = params['id']; // Assuming your route has a parameter named 'id'
+      this.fetchForm(formId);
+    });
   }
 
-  fetchForm(): void {
-    this.exitInterviewService.getForm().subscribe({
-      next: (data) => {
+  fetchForm(id: string): void {
+    this.exitInterviewService.getForm(id).subscribe({
+      next: (data: any) => {
         this.exitInterviewForm = data;
         this.buildForm();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error fetching form:', error);
         this.errorMessage = 'Failed to load the form. Please try again later.';
         this.isLoading = false;
@@ -69,11 +75,8 @@ export class ExitInterviewFormViewerComponent implements OnInit {
     this.exitInterviewForm.questions.forEach((question, index) => {
       const controlName = `question_${index}`;
 
-      if (question.type === 'radio') {
-        formControls[controlName] = new FormControl('', Validators.required);
-      } else {
-        formControls[controlName] = new FormControl('', Validators.required);
-      }
+      // Use Validators.required for all question types
+      formControls[controlName] = new FormControl('', Validators.required);
     });
 
     this.form = this.fb.group(formControls);
@@ -95,11 +98,11 @@ export class ExitInterviewFormViewerComponent implements OnInit {
 
     // Submit the responses to the API
     this.exitInterviewService.submitForm(responses).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         alert('Your responses have been submitted successfully!');
         this.form.reset();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error submitting form:', error);
         alert('There was an error submitting your responses. Please try again.');
       }

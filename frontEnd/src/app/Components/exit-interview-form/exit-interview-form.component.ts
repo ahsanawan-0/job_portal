@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Required for Reactive Forms
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
+import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service';
 
 @Component({
   selector: 'app-exit-interview-form',
@@ -24,16 +25,17 @@ import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/e
 })
 export class ExitInterviewFormComponent implements OnInit {
   form: FormGroup;
-  maxOptions: number = 10; // Maximum allowed options for radio questions
+  maxOptions: number = 5; // Maximum allowed options for radio questions
   private modalService = inject(NgbModal);
+  dynamicLink: string = ''; // Define the dynamicLink property
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private exitInterviewService: ExitInterviewService) {
     // Initialize the main form with 'title', 'questions', 'newQuestionType', and 'newRadioOptionsCount'
     this.form = this.fb.group({
       title: ['', Validators.required],
       questions: this.fb.array([]),
       newQuestionType: ['text', Validators.required],
-      newRadioOptionsCount: [2, [Validators.required, Validators.min(2)]],
+      newRadioOptionsCount: [3, [Validators.required, Validators.min(2)]],
     });
   }
 
@@ -44,10 +46,6 @@ export class ExitInterviewFormComponent implements OnInit {
     return this.form.get('questions') as FormArray;
   }
 
-  /**
-   * Custom validator to ensure all radio options are unique within a FormArray.
-   * @returns ValidatorFn
-   */
   uniqueOptionsValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!(control instanceof FormArray)) {
@@ -97,17 +95,12 @@ export class ExitInterviewFormComponent implements OnInit {
 
     // Reset the question type and options count for the next question
     this.form.get('newQuestionType')?.setValue('text');
-    this.form.get('newRadioOptionsCount')?.setValue(2);
+    this.form.get('newRadioOptionsCount')?.setValue(3);
 
     console.log('Added Question:', questionGroup.value);
     console.log('Current Questions:', this.form.value.questions);
   }
 
-  /**
-   * Method to create an array of radio option FormControls.
-   * @param count Number of options to create.
-   * @returns Array of FormControl.
-   */
   createRadioOptions(count: number): FormControl[] {
     const options: FormControl[] = [];
     for (let i = 0; i < count; i++) {
@@ -116,28 +109,15 @@ export class ExitInterviewFormComponent implements OnInit {
     return options;
   }
 
-  /**
-   * Method to remove a question from the FormArray.
-   * @param index Index of the question to remove.
-   */
   removeQuestion(index: number): void {
     this.questions.removeAt(index);
     console.log(`Removed Question at index ${index}`);
   }
 
-  /**
-   * Getter to retrieve the 'options' FormArray for a specific question.
-   * @param questionIndex Index of the question.
-   * @returns FormArray of options.
-   */
   getOptions(questionIndex: number): FormArray {
     return this.questions.at(questionIndex).get('options') as FormArray;
   }
 
-  /**
-   * Method to add an option to a radio-type question.
-   * @param questionIndex Index of the question.
-   */
   addOption(questionIndex: number): void {
     const options = this.getOptions(questionIndex);
     if (options.length >= this.maxOptions) {
@@ -148,11 +128,6 @@ export class ExitInterviewFormComponent implements OnInit {
     console.log(`Added Option to Question ${questionIndex + 1}`);
   }
 
-  /**
-   * Method to remove an option from a radio-type question.
-   * @param questionIndex Index of the question.
-   * @param optionIndex Index of the option to remove.
-   */
   removeOption(questionIndex: number, optionIndex: number): void {
     const options = this.getOptions(questionIndex);
     if (options.length > 2) {
@@ -166,9 +141,6 @@ export class ExitInterviewFormComponent implements OnInit {
     }
   }
 
-  /**
-   * Method to save the form data.
-   */
   saveForm(): void {
     if (this.form.invalid) {
       alert(
@@ -176,18 +148,34 @@ export class ExitInterviewFormComponent implements OnInit {
       );
       return;
     }
-
+  
     const formData = this.form.value;
     console.log('Form Data:', formData);
-    // TODO: Replace the console.log with an API call to save the data
+  
+    this.exitInterviewService.createForm(formData).subscribe({
+      next: (response: any) => {
+        alert('Form created successfully!');
+        console.log('Form created:', response);
+        
+        // Generate a dynamic link using the form ID
+        const formId = response.form.uniqueLinkId; // Ensure the response contains the ID of the created form
+        const dynamicLink = `http://localhost:4200/exitInterviewViewForm/${formId}`;
+        
+        // Open the modal with the dynamic link
+        this.openApplyModal(dynamicLink); 
+        this.form.reset();
+      },
+      error: (error: any) => {
+        console.error('Error creating form:', error);
+        alert('There was an error creating the form.');
+      }
+    });
   }
 
-  /**
-   * Placeholder method for Share Link functionality.
-   */
-  openApplyModal(): void {
-    // Implement the logic to open the modal
-    // alert('Share Link functionality to be implemented.');
+
+  openApplyModal(dynamicLink: string): void {
+    this.dynamicLink = dynamicLink; // Assign the dynamicLink to the property
     const modalRef = this.modalService.open(ExitInterviewModalComponent);
+    modalRef.componentInstance.link = this.dynamicLink; // Pass the dynamic link to the modal
   }
 }

@@ -4,7 +4,8 @@ import { LayoutComponent } from './Components/layout/layout.component';
 // import { ExitInterviewModalComponent } from '../modals/exit-interview-modal/exit-interview-modal.component';
 // import { JobDetailComponent } from '../app/pages/job-detail/job-detail.component';
 // import { FormComponent } from '../app/pages/create_job/form.component';
-import { ExitInterviewFormComponent } from '../app/Components/exit-interview-form/exit-interview-form.component'
+// import { ExitInterviewFormComponent } from '../app/Components/exit-interview-form/exit-interview-form.component'
+import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
 // import { ApplyJobModalComponent } from '../Components/apply-job-modal/apply-job-modal.component';
 
 @Component({
