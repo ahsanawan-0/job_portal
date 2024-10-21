@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { ApplicationCardComponent } from '../application-card/application-card.component';
+
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-applications',
   standalone: true,
-  imports: [CommonModule, ApplicationCardComponent],
+  imports: [CommonModule],
   templateUrl: './job-applications.component.html',
   styleUrl: './job-applications.component.css',
 })
