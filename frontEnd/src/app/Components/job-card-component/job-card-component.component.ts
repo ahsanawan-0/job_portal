@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { jobCard } from '../../models/jobModel';
 
 @Component({
   selector: 'app-job-card-component',
@@ -14,7 +15,7 @@ export class JobCardComponentComponent {
   //   this.dropdown = !this.dropdown;
   //   console.log(this.dropdown);
   // }
-  @Input() jobs: any = 0;
+  @Input() jobs: jobCard[] = [];
   dropdownIndex: number | null = null;
   onClickThreeDots(index: number) {
     if (this.dropdownIndex === index) {

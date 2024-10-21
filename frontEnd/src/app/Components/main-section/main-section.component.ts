@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TestComponent } from '../test/test.component';
 import { JobCardComponentComponent } from '../job-card-component/job-card-component.component';
 import { CreateJobService } from '../../services/create_job/create-job.service';
+import { jobCard } from '../../models/jobModel';
 
 @Component({
   selector: 'app-main-section',
@@ -14,16 +15,7 @@ import { CreateJobService } from '../../services/create_job/create-job.service';
   styleUrl: './main-section.component.css',
 })
 export class MainSectionComponent implements OnInit {
-  jobs = [
-    {
-      title: 'UI/UI Designer',
-      type: 'Full Time',
-      remaining: '27 ',
-      status: 'Active',
-      applications: '798 ',
-    },
-  ];
-
+  jobs: jobCard[] = [];
   dropdown: boolean = false;
   onClickThreeDots() {
     this.dropdown = !this.dropdown;
@@ -34,16 +26,38 @@ export class MainSectionComponent implements OnInit {
     this.route.navigateByUrl('myjobs');
   }
 
-  applications: [] = [];
+  applications: any[] = [];
   service = inject(CreateJobService);
 
   ngOnInit(): void {
     this.getApplications();
+    console.log(this.applications);
   }
 
   getApplications() {
     this.service.getAllJobs().subscribe((res: any) => {
-      this.applications = res;
+      this.jobs = res.simplifiedJobs.map((job: any) => ({
+        title: job.jobTitle,
+        type: job.jobType,
+        remaining: this.calculateRemainingDays(job.expirationDate),
+        status: job.status,
+        applications: job.noOfApplications,
+      }));
+      console.log(this.jobs);
     });
+  }
+
+  calculateRemainingDays(expirationDate: string): string {
+    const now = new Date();
+    const expiration = new Date(expirationDate);
+    const remainingTime = expiration.getTime() - now.getTime();
+    const daysRemaining = Math.ceil(remainingTime / (1000 * 3600 * 24));
+    if (daysRemaining > 1) {
+      return `${daysRemaining} days remaining`;
+    } else if (daysRemaining === 1) {
+      return '1 day remaining';
+    } else {
+      return 'Expired';
+    }
   }
 }
