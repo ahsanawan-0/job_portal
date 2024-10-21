@@ -34,3 +34,15 @@ export interface ApiPostModel {
     __v: number;
   };
 }
+// models/jobResponse.interface.ts
+export interface JobResponse {
+  count: number; // Total number of jobs found
+  jobs: Job[];   // Array of Job objects
+}
+export interface Job {
+  id: string;                  // Unique identifier for the job
+  jobTitle: string;           // Title of the job
+  noOfApplications: number;   // Number of applications for the job
+  status: 'Active' | 'Inactive'; // Status of the job (Active or Inactive)
+  createdDate: Date;          // Date the job was created
+}

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ApiPostModel, PostJob } from '../../models/jobModel';
+import { ApiPostModel, JobResponse, PostJob } from '../../models/jobModel';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available application-wide
@@ -29,9 +29,15 @@ export class CreateJobService {
 
   // Method to get a job by ID
   getJobById(jobId: string): Observable<ApiPostModel> {
-    return this.http.get<ApiPostModel>(`${this.apiUrl}/jobs/${jobId}`).pipe(
+    return this.http.get<ApiPostModel>(`${this.apiUrl}/getSignleJob/${jobId}`).pipe(
       catchError(this.handleError)
     );
+  }
+  searchJobs(keyword: string): Observable<JobResponse>  {
+    // Encode the keyword for safe URL transmission
+    const encodedKeyword = encodeURIComponent(keyword);
+  
+    return this.http.get<JobResponse>(`${this.apiUrl}/jobs/search?keyword=${encodedKeyword}`);
   }
 
   // Method to update a job

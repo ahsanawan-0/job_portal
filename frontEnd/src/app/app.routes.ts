@@ -81,4 +81,5 @@ export const routes: Routes = [
     path: 'jobdetail',
     component: JobDetailComponent,
   },
+  
 ];
