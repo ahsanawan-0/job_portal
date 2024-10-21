@@ -107,7 +107,7 @@
           class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white"
           (click)="openApplyModal()"
         >
-          Apply Now <img src="assets/icons/fi_arrow-right.svg" alt="" />
+          Apply Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
         </button>
       </div>
     </div>
@@ -122,13 +122,13 @@
 <div class="flex w-full p-10 gap-12">
   <div id="left_container" class="w-3/5">
     <div id="Job_Description">
-      <h2 class="font-medium text-xl">Job Description</h2>
+      <h2 class="font-semibold text-xl mb-4">Job Description</h2>
       <p class="text-[#5E6670]"></p>
-      <div [innerHTML]="job.description"></div>
+      <div [innerHTML]="job.description" class="text-[#5E6670] text-base"></div>
     </div>
     <div id="Responsibilities" class="mt-6">
-      <h3 class="font-medium text-xl">Responsibilities</h3>
-      <div [innerHTML]="job.responsibilities"></div>
+      <h3 class="font-medium text-xl mb-4">Responsibilities</h3>
+      <div [innerHTML]="job.responsibilities" class="text-[#5E6670] text-base"></div>
     </div>
     <div class="flex items-center gap-4 mt-10">
       <div>Share this job:</div>
@@ -169,7 +169,7 @@
         </div>
 
         <div class="flex flex-col items-start gap-4">
-          <img src="assets/icons/briefcase.svg" alt="" />
+          <img src="assets/icons/briefcase_1.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Education:</h4>
             <h3 class="font-semibold">{{ job.education }}</h3>
@@ -182,8 +182,7 @@
           <div>
             <h4 class="text-textcolor">Salary:</h4>
             <h3 class="font-semibold">
-              {{ job.minSalary | currency : "RS" : "symbol" : "1.0-0" }} -
-              {{ job.maxSalary | currency : "RS" : "symbol" : "1.0-0" }}
+              {{ job.minSalary | currency : "RS" : "symbol" : "1.0-0" }}-{{ job.maxSalary | currency : "RS" : "symbol" : "1.0-0" }}
             </h3>
           </div>
         </div>
@@ -197,7 +196,7 @@
         </div>
 
         <div class="flex flex-col items-start gap-4">
-          <img src="assets/icons/briefcase.svg" alt="" />
+          <img src="assets/icons/briefcase_1.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Job Type:</h4>
             <h3 class="font-semibold">{{ job.jobType }}</h3>
@@ -209,7 +208,7 @@
       <div class="flex flex-col items-start py-4">
         <img src="assets/icons/briefcase.svg" alt="" />
         <h4 class="text-textcolor">Experience:</h4>
-        <h3 class="font-semibold">{{ job.experience }} Years</h3>
+        <h3 class="font-semibold">{{ job.experience }} </h3>
       </div>
     </div>
     <div

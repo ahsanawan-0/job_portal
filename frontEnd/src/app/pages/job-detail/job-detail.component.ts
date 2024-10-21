@@ -17,7 +17,7 @@ export class JobDetailComponent implements OnInit {
   private createJobService = inject(CreateJobService);
 
   job: any; // To store job details
-  jobId: string = '67094376e7de8c161a0093b3'; // Replace this with the actual job ID you want to fetch
+  jobId: string = '67126712603b47bfb864b1d9'; // Replace this with the actual job ID you want to fetch
 
   // Solution 1: Use definite assignment assertion
 

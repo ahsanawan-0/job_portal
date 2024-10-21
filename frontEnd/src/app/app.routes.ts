@@ -12,6 +12,7 @@ import { LoginComponent } from './Components/login/login.component';
 import { ExitInterviewFormComponent } from './Components/exit-interview-form/exit-interview-form.component';
 import { FormComponent } from './pages/create_job/form.component';
 import { JobDetailComponent } from './pages/job-detail/job-detail.component';
+import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'exitInterviewViewForm/:id',
+    component: ExitInterviewFormViewerComponent,
   },
   {
     path: '',
@@ -60,6 +65,10 @@ export const routes: Routes = [
       {
         path: 'test',
         component: TestComponent,
+      },
+      {
+        path: 'exitInterviewViewForm/:id',
+        component: ExitInterviewFormViewerComponent,
       },
     ],
   },
