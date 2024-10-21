@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2'; // Import SweetAlert2
@@ -22,6 +22,7 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   selectedResume: File | null = null; // Store selected file
   fileName: string | null = null; // Store the name of the selected file
+  jobId: string | null = null; // Variable to store jobId
 
   // Use inject() to get dependencies
   private fb = inject(FormBuilder);
@@ -29,6 +30,7 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   private jobApplicationService = inject(JobApplicationService);
   private modalService = inject(NgbModal);
   public activeModal = inject(NgbActiveModal);
+  private route = inject(ActivatedRoute); // Inject ActivatedRoute
 
   constructor() {
     this.applicationForm = this.fb.group({
@@ -41,7 +43,10 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Any additional initialization can go here
+    // Get jobId from query parameters
+    this.route.queryParams.subscribe(params => {
+      this.jobId = params['jobId']; // Extract jobId from query parameters
+    });
   }
 
   // Handle file selection
@@ -99,6 +104,7 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
     formData.append('experience', this.applicationForm.get('experience')?.value);
     formData.append('resume', this.selectedResume!, this.selectedResume!.name); // Add the file with its name
     formData.append('coverLetter', this.applicationForm.get('coverLetter')?.value);
+    formData.append('jobId', this.jobId!); // Include jobId in the FormData
     return formData;
   }
 

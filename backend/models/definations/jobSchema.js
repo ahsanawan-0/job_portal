@@ -80,6 +80,8 @@ const jobSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Array of applicant IDs
+
   },
   { timestamps: true }  // Automatically manage createdAt and updatedAt fields
 );

@@ -11,8 +11,8 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
-  origin: 'http://localhost:4200', // Replace with your frontend's URL
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: "http://localhost:4200", // Replace with your frontend's URL
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow credentials (cookies) to be sent
 };
 app.use(cors(corsOptions))

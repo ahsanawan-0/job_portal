@@ -7,29 +7,82 @@
   </div>
   <!-- center section: search and country -->
 
-  <div
-    id="search"
-    class="flex w-[630px] px-5 py-3 gap-3 border border-borderColor bg-white rounded-lg"
-  >
-    <div id="country" class="flex gap-2 items-center flex-shrink-0">
-      <img src="./assets/icons/Pakistan_flag.svg" class="" />
-      <p>Pakistan</p>
-      <img src="assets/icons/CaretDown.svg" alt="" />
-      <!-- Vertical line added here -->
-      <div class="border-l h-6 border-gray-400 mx-2"></div>
-    </div>
+<div
+  id="search"
+  class="relative flex w-[630px] px-5 py-3 gap-3 border border-borderColor bg-white rounded-lg"
+>
+  <div id="country" class="flex gap-2 items-center flex-shrink-0">
+    <img src="./assets/icons/Pakistan_flag.svg" />
+    <p>Pakistan</p>
+    <!-- Vertical line -->
+    <div class="border-l h-6 border-gray-400 mx-2"></div>
+  </div>
 
-    <div id="search" class="flex gap-3 items-center flex-grow">
-      <div><img src="./assets/icons/fi_search.svg" alt="" /></div>
-      <input
-        type="search"
-        name=""
-        id=""
-        placeholder="Job title, keyword, company"
-        class="border-none outline-none w-full bg-white"
-      />
+  <!-- Search Input -->
+  <div id="search-input" class="flex gap-3 items-center flex-grow">
+    <div>
+      <img src="./assets/icons/fi_search.svg" alt="" />
+    </div>
+    <input
+      type="search"
+      id="search-bar"
+      [(ngModel)]="searchQuery"
+      (input)="onSearch()"
+      placeholder="Job title, keyword"
+      class="border-none outline-none w-full bg-white"
+    />
+  </div>
+
+  <!-- Predictive Search Results Dropdown -->
+  <div
+    id="predictive-search-results"
+    *ngIf="showDropdown"
+    class="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-lg"
+  >
+    <h2 class=" font-medium text-gray-600 flex justify-center" >
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        role="presentation"
+        class="spinner"
+        viewBox="0 0 66 66"
+        xmlns="http://www.w3.org/2000/svg"
+        *ngIf="loading"
+      >
+        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+      </svg>
+    </h2>
+
+    <!-- Loop through search results -->
+    <div
+      *ngFor="let result of searchResults"
+      class="grid grid-cols-4 py-3 px-5 border-t hover:bg-gray-100"
+    >
+      <div class="col-span-2">
+        <p class="font-medium text-base">{{result.jobTitle }}</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <img src="assets/icons/Users.svg" />
+        <p class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]">
+          {{result.noOfApplications }} Applications
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <button
+          class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-2 px-4 rounded hover:bg-custom-blue hover:text-white transition duration-200"
+          (click)="viewResult(result.id)"
+        >
+          View Results
+        </button>
+      </div>
     </div>
   </div>
+</div>
+
+
+
+  <!-- Search Bar -->
+
 
   <!-- Right section: Notifications and Profile -->
   <div class="flex items-center space-x-6">
@@ -142,7 +195,7 @@
   <div id="right_container" class="w-2/5">
     <div
       id="Job Overview"
-      class="p-6 border-2 border-borderColor rounded-md shadow-md"
+      class="p-6 border-2 border-[#E7F0FA] rounded-md "
     >
       <h2 class="font-medium text-xl">Job Overview</h2>
 
@@ -182,8 +235,8 @@
           <div>
             <h4 class="text-textcolor">Salary:</h4>
             <h3 class="font-semibold">
-              {{ job.minSalary | currency : "RS" : "symbol" : "1.0-0" }}-{{ job.maxSalary | currency : "RS" : "symbol" : "1.0-0" }}
-            </h3>
+              <span>{{ job.minSalary | salaryWithSuffix }}</span> -
+              <span>{{ job.maxSalary | salaryWithSuffix }}</span>            </h3>
           </div>
         </div>
 
@@ -213,7 +266,7 @@
     </div>
     <div
       id="company_info"
-      class="p-6 border-2 border-borderColor rounded-md shadow-md mt-6"
+      class="p-6 border-2 border-[#E7F0FA] rounded-md mt-6"
     >
       <div class="flex gap-5 items-center">
         <div><img src="assets/logo/insta_logo.png" alt="" /></div>

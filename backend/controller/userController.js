@@ -1,11 +1,11 @@
 const User = require('../models/definations/userSchema');
+const jobModel = require('../models/jobModel'); // Import job model
 const sendEmail = require('../helpers/sendEmail'); // Import sendEmail function
 
 // Create a new user and store resume and cover letter
-
-const createUser = async (req, res) => {
+const UserApplyForJob = async (req, res) => {
   try {
-    const { name, email, experience, coverLetter } = req.body;
+    const { name, email, experience, coverLetter, jobId } = req.body; // Add jobId to request body
     
     // Check if a file was uploaded
     if (!req.file) {
@@ -33,11 +33,17 @@ const createUser = async (req, res) => {
     await newUser.save();
     console.log(`User ${name} with email ${email} created successfully.`);
 
+    // Apply for the job and update the applicants list
+    const updatedJob = await jobModel.applyForJob(jobId, newUser._id);
+    if (!updatedJob) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
     // Prepare job application details
     const job = {
-      title: "Job Title Here", // Replace with the actual job title if available
-      company: "Company Name Here", // Replace with the actual company name if available
-      location: "Job Location Here", // Replace with the actual job location if available
+      title: updatedJob.title, // Use the actual job title
+      company: updatedJob.company, // Use the actual company name
+      location: updatedJob.location, // Use the actual job location
       experienceRequired: experience,
     };
 
@@ -51,7 +57,7 @@ const createUser = async (req, res) => {
     }
 
     res.status(201).json({
-      message: 'User created successfully',
+      message: 'User created and applied for the job successfully',
       data: newUser,
     });
   } catch (error) {
@@ -60,7 +66,6 @@ const createUser = async (req, res) => {
   }
 };
 
-
 module.exports = {
-  createUser,
+  UserApplyForJob,
 };
