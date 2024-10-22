@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { jobCard } from '../../models/jobModel';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-card-component',
@@ -16,6 +17,8 @@ export class JobCardComponentComponent {
   //   console.log(this.dropdown);
   // }
   @Input() jobs: jobCard[] = [];
+  // @Input() onViewApplications: () => void = () => {};
+
   dropdownIndex: number | null = null;
   onClickThreeDots(index: number) {
     if (this.dropdownIndex === index) {
@@ -23,5 +26,10 @@ export class JobCardComponentComponent {
     } else {
       this.dropdownIndex = index;
     }
+  }
+
+  route = inject(Router);
+  onClickViewApplication() {
+    this.route.navigateByUrl('job-applications');
   }
 }

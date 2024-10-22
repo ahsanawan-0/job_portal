@@ -30,11 +30,19 @@
     </div>
   </div>
   <div class="flex gap-[4px] items-center">
-    <img src="assets/icons/CheckCircle.svg" class="w-5 h-5" />
+    <img
+      [src]="
+        job.status === 'Expired'
+          ? 'assets/icons/XCircleRed2.svg'
+          : 'assets/icons/CheckCircle.svg'
+      "
+      class="w-5 h-5"
+    />
     <p
       class="font-sans font-medium text-[14px] leading-[20px] text-custom-green"
+      [ngClass]="{ 'text-[#E05141]': job.status === 'Expired' }"
     >
-      {{ job.status }}
+      {{ job.status === "Expired" ? "Expired" : job.status }}
     </p>
   </div>
   <div class="flex gap-2 items-center">
@@ -45,6 +53,7 @@
   </div>
   <div class="flex justify-center items-center gap-2 relative">
     <button
+      (click)="onClickViewApplication()"
       class="font-sans font-semibold text-base py-3 px-6 whitespace-nowrap text-custom-blue bg-[#F1F2F4] cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
     >
       View Applications

@@ -50,6 +50,8 @@ export class MainSectionComponent implements OnInit {
   calculateRemainingDays(expirationDate: string): string {
     const now = new Date();
     const expiration = new Date(expirationDate);
+
+    console.log(expiration);
     const remainingTime = expiration.getTime() - now.getTime();
     const daysRemaining = Math.ceil(remainingTime / (1000 * 3600 * 24));
     if (daysRemaining > 1) {
@@ -57,7 +59,13 @@ export class MainSectionComponent implements OnInit {
     } else if (daysRemaining === 1) {
       return '1 day remaining';
     } else {
-      return 'Expired';
+      const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+      } as const;
+      return expiration.toLocaleDateString('en-US', options);
     }
   }
 }
