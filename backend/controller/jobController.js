@@ -32,11 +32,15 @@ module.exports = {
         !description ||
         !responsibilities
       ) {
-        return res.status(400).json({ message: 'Please fill all required fields.' });
+        return res
+          .status(400)
+          .json({ message: "Please fill all required fields." });
       }
 
       if (minSalary > maxSalary) {
-        return res.status(400).json({ message: 'Min Salary cannot be greater than Max Salary.' });
+        return res
+          .status(400)
+          .json({ message: "Min Salary cannot be greater than Max Salary." });
       }
 
       const jobData = {
@@ -96,7 +100,7 @@ module.exports = {
       const jobId = req.params.id;
 
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
-        return res.status(400).json({ message: 'Invalid Job ID.' });
+        return res.status(400).json({ message: "Invalid Job ID." });
       }
 
       const job = await jobModel.getJobById(jobId);
@@ -121,14 +125,17 @@ module.exports = {
       const updateData = req.body;
 
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
-        return res.status(400).json({ message: 'Invalid Job ID.' });
+        return res.status(400).json({ message: "Invalid Job ID." });
       }
 
       if (
-        (updateData.minSalary !== undefined && updateData.maxSalary !== undefined) &&
+        updateData.minSalary !== undefined &&
+        updateData.maxSalary !== undefined &&
         updateData.minSalary > updateData.maxSalary
       ) {
-        return res.status(400).json({ message: 'Min Salary cannot be greater than Max Salary.' });
+        return res
+          .status(400)
+          .json({ message: "Min Salary cannot be greater than Max Salary." });
       }
 
       const updatedJob = await jobModel.updateJob(jobId, updateData);
@@ -155,7 +162,7 @@ module.exports = {
       const jobId = req.params.id;
 
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
-        return res.status(400).json({ message: 'Invalid Job ID.' });
+        return res.status(400).json({ message: "Invalid Job ID." });
       }
 
       const deletedJob = await jobModel.deleteJob(jobId);
@@ -182,7 +189,9 @@ module.exports = {
       const { keyword } = req.query;
 
       if (!keyword) {
-        return res.status(400).json({ message: 'Keyword is required for search.' });
+        return res
+          .status(400)
+          .json({ message: "Keyword is required for search." });
       }
 
       const jobs = await jobModel.searchJobPosts(keyword);
@@ -193,6 +202,7 @@ module.exports = {
         noOfApplications: job.applicants.length,
         createdDate: job.createdAt
       }));
+
 
       res.status(200).json({
         count: simplifiedJobs.length,

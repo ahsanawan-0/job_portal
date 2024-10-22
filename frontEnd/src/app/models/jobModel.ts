@@ -37,12 +37,21 @@ export interface ApiPostModel {
 // models/jobResponse.interface.ts
 export interface JobResponse {
   count: number; // Total number of jobs found
-  jobs: Job[];   // Array of Job objects
+  jobs: Job[]; // Array of Job objects
 }
 export interface Job {
-  id: string;                  // Unique identifier for the job
-  jobTitle: string;           // Title of the job
-  noOfApplications: number;   // Number of applications for the job
+  id: string; // Unique identifier for the job
+  jobTitle: string; // Title of the job
+  noOfApplications: number; // Number of applications for the job
   status: 'Active' | 'Inactive'; // Status of the job (Active or Inactive)
-  createdDate: Date;          // Date the job was created
+  createdDate: Date; // Date the job was created
+}
+
+export interface jobCard {
+  title: string;
+  type: string;
+  remaining: string;
+  status: string;
+  applications: number;
+  expirationDate: string;
 }
