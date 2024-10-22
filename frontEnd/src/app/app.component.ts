@@ -32,7 +32,7 @@ export class AppComponent {
       opacity: 0,
       x: -50, // Increased distance for a more dramatic entrance
       duration: 1, // Slower animation
-      ease: 'back.inOut'
+      ease: 'circ.inOut'
     }, '-=1'); // More overlap for a smoother overall effect
   }
 
