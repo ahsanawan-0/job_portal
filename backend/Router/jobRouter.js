@@ -6,14 +6,16 @@ const {
   updateJobPost,
   deleteJobPost,
   searchJobPosts,
+  getRecentJobPosts,
 } = require("../controller/jobController");
-
 
 // routes/jobRoutes.js
 router.post("/create-job", createJobPost);
 
 // Get all job posts
-router.get("/jobs/alljobs",getAllJobPosts);
+router.get("/jobs/alljobs", getAllJobPosts);
+
+router.get("/jobs/recentJobs", getRecentJobPosts);
 
 // Get a single job post by ID
 router.get("/getSignleJob/:id", getJobPostById);

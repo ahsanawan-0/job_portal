@@ -24,6 +24,8 @@ export class PaginationComponent {
   setActivePage(page: number): void {
     this.activePage = page;
     this.pageChange.emit(this.activePage);
+    console.log(this.totalItems);
+    console.log(this.itemsPerPage);
   }
 
   toggleHover(page: number, hoverState: boolean): void {

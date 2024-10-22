@@ -1,15 +1,26 @@
-const mongoose = require('mongoose');
-const jobSchema = require('./definations/jobSchema'); // Correct path and filename
+const mongoose = require("mongoose");
+const jobSchema = require("./definations/jobSchema"); // Correct path and filename
 
-const Job = mongoose.model('Job', jobSchema);
+const Job = mongoose.model("Job", jobSchema);
 
 const createJob = async (jobData) => {
   const job = new Job(jobData);
   return await job.save();
 };
 
-const getAllJobs = async () => {
-  return await Job.find().sort({ createdAt: -1 });
+const getAllJobs = async (limit, skip) => {
+  const totalJobs = await Job.countDocuments();
+
+  const jobs = await Job.find()
+    .sort({ createdAt: -1 })
+    .limit(parseInt(limit))
+    .skip(parseInt(skip));
+
+  return { jobs, totalJobs };
+};
+
+const getRecentJobs = async () => {
+  return await Job.find().sort({ createdAt: -1 }).limit(5);
 };
 
 const getJobById = async (jobId) => {
@@ -30,9 +41,9 @@ const deleteJob = async (jobId) => {
 const searchJobPosts = async (keyword) => {
   const query = {
     $or: [
-      { jobTitle: { $regex: keyword, $options: 'i' } },
-      { tags: { $regex: keyword, $options: 'i' } }
-    ]
+      { jobTitle: { $regex: keyword, $options: "i" } },
+      { tags: { $regex: keyword, $options: "i" } },
+    ],
   };
 
   return await Job.find(query).sort({ createdAt: -1 });
@@ -45,4 +56,5 @@ module.exports = {
   updateJob,
   deleteJob,
   searchJobPosts,
+  getRecentJobs,
 };
