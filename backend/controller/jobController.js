@@ -80,12 +80,14 @@ module.exports = {
   getAllJobPosts: async (req, res) => {
     try {
       const jobs = await jobModel.getAllJobs();
+
       const simplifiedJobs = jobs.map((job) => ({
         id: job._id,
         jobTitle: job.jobTitle,
         jobType: job.jobType,
         expirationDate: job.expirationDate,
         noOfApplications: job.applicants.length, // Count of applicants
+
         status: job.expirationDate > new Date() ? "Active" : "Inactive", // Set status based on expiration date
         createdDate: job.createdAt, // Created date from timestamps
       }));
