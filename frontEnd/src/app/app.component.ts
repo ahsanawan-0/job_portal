@@ -1,20 +1,47 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import gsap from 'gsap';
 import { LayoutComponent } from './Components/layout/layout.component';
-// import { ExitInterviewModalComponent } from '../modals/exit-interview-modal/exit-interview-modal.component';
-// import { JobDetailComponent } from '../app/pages/job-detail/job-detail.component';
-// import { FormComponent } from '../app/pages/create_job/form.component';
-// import { ExitInterviewFormComponent } from '../app/Components/exit-interview-form/exit-interview-form.component'
-import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
-// import { ApplyJobModalComponent } from '../Components/apply-job-modal/apply-job-modal.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,LayoutComponent],
+  imports: [RouterOutlet, LayoutComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'job-portal';
+  constructor(private router: Router) {
+    // Listen to router events for route transitions
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.animateTransition();
+      }
+    });
+  }
+
+  // Function to animate transitions on route change
+  animateTransition() {
+    const tl = gsap.timeline();
+    tl.from('.content', {
+      opacity: 0,
+      duration: 1.5, // Slower animation
+      ease: 'circ.inOut' // Smooth ease for a more natural motion
+    })
+    .from('.main-content', {
+      opacity: 0,
+      x: -50, // Increased distance for a more dramatic entrance
+      duration: 1, // Slower animation
+      ease: 'circ.inOut'
+    }, '-=1'); // More overlap for a smoother overall effect
+  }
+
+  // Additional method to customize or trigger animations after component load
+  onRouteChange(event: any) {
+    gsap.from(event.constructor.name, {
+      opacity: 0,
+      duration: 1, // Slower entry for individual components
+      ease: 'power2.out'
+    });
+  }
 }

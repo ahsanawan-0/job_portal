@@ -13,6 +13,7 @@ import { ExitInterviewFormComponent } from './Components/exit-interview-form/exi
 import { FormComponent } from './pages/create_job/form.component';
 import { JobDetailComponent } from './pages/job-detail/job-detail.component';
 import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
+import { JobViewPageComponent } from './pages/job-view-page/job-view-page.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,10 @@ export const routes: Routes = [
   {
     path: 'exitInterviewViewForm/:id',
     component: ExitInterviewFormViewerComponent,
+  },
+  {
+    path: 'jobdetail/user/:id',
+    component: JobViewPageComponent,
   },
   {
     path: '',
@@ -72,14 +77,14 @@ export const routes: Routes = [
       },
     ],
   },
-
+  
+  {
+    path: 'jobdetail/admin/:id',
+    component: JobDetailComponent,
+  },
   {
     path: 'loader',
     component: LoaderComponent,
   },
-  {
-    path: 'jobdetail',
-    component: JobDetailComponent,
-  },
-  
+
 ];

@@ -10,3 +10,13 @@
   .nav-item{
     color: #767F8C;
   }
+  #search-bar {
+    border-radius: 8px; /* Default rounded corners */
+    transition: border-radius 0.3s ease; /* Smooth transition */
+  }
+  
+  .no-bottom-radius {
+    border-bottom-left-radius: 0; /* Remove bottom left corner rounding */
+    border-bottom-right-radius: 0; /* Remove bottom right corner rounding */
+  }
+  
