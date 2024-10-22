@@ -1,8 +1,7 @@
-const mongoose = require("mongoose"); // Add this line
+const mongoose = require("mongoose");
 const jobModel = require("../models/jobModel");
 
 module.exports = {
-  // Create a new job post
   createJobPost: async (req, res) => {
     try {
       const {
@@ -20,7 +19,6 @@ module.exports = {
         responsibilities,
       } = req.body;
 
-      // Basic validation
       if (
         !jobTitle ||
         maxSalary === undefined ||
@@ -39,7 +37,6 @@ module.exports = {
           .json({ message: "Please fill all required fields." });
       }
 
-      // Additional validation
       if (minSalary > maxSalary) {
         return res
           .status(400)
@@ -64,52 +61,48 @@ module.exports = {
       const newJob = await jobModel.createJob(jobData);
 
       res.status(201).json({
-        message: "✅ Job post created successfully!",
+        message: "Job post created successfully.",
         job: newJob,
       });
     } catch (error) {
-      console.error("❌ Error creating job post:", error.message);
+      console.error("Error creating job post:", error.message);
       res.status(500).json({
-        message: "❌ Failed to create job post",
+        message: "Failed to create job post.",
         error: error.message,
       });
     }
   },
 
-  // Get all job posts
   getAllJobPosts: async (req, res) => {
     try {
       const jobs = await jobModel.getAllJobs();
-
       const simplifiedJobs = jobs.map((job) => ({
         id: job._id,
         jobTitle: job.jobTitle,
+        noOfApplications: job.applicants.length,
         jobType: job.jobType,
+        status:
+          new Date(job.expirationDate).getTime() > new Date().getTime()
+            ? "Active"
+            : "Expired",
+        createdDate: job.createdAt,
         expirationDate: job.expirationDate,
-        noOfApplications: job.applicants.length, // Count of applicants
-
-        status: job.expirationDate > new Date() ? "Active" : "Inactive", // Set status based on expiration date
-        createdDate: job.createdAt, // Created date from timestamps
       }));
-      res.status(200).json({
-        count: jobs.length,
-        simplifiedJobs,
-      });
+
+      res.status(200).json({ simplifiedJobs });
     } catch (error) {
-      console.error("❌ Error fetching job posts:", error.message);
+      console.error("Error fetching job posts:", error.message);
       res.status(500).json({
-        message: "❌ Failed to fetch job posts",
+        message: "Failed to fetch job posts.",
         error: error.message,
       });
     }
   },
 
-  // Get a single job post by ID
   getJobPostById: async (req, res) => {
     try {
       const jobId = req.params.id;
 
-      // Validate ObjectId
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
         return res.status(400).json({ message: "Invalid Job ID." });
       }
@@ -117,31 +110,28 @@ module.exports = {
       const job = await jobModel.getJobById(jobId);
 
       if (!job) {
-        return res.status(404).json({ message: "❌ Job post not found" });
+        return res.status(404).json({ message: "Job post not found." });
       }
 
       res.status(200).json({ job });
     } catch (error) {
-      console.error("❌ Error fetching job post:", error.message);
+      console.error("Error fetching job post:", error.message);
       res.status(500).json({
-        message: "❌ Failed to fetch job post",
+        message: "Failed to fetch job post.",
         error: error.message,
       });
     }
   },
 
-  // Update a job post by ID
   updateJobPost: async (req, res) => {
     try {
       const jobId = req.params.id;
       const updateData = req.body;
 
-      // Validate ObjectId
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
         return res.status(400).json({ message: "Invalid Job ID." });
       }
 
-      // Optional: Validate that minSalary <= maxSalary if both are being updated
       if (
         updateData.minSalary !== undefined &&
         updateData.maxSalary !== undefined &&
@@ -155,28 +145,26 @@ module.exports = {
       const updatedJob = await jobModel.updateJob(jobId, updateData);
 
       if (!updatedJob) {
-        return res.status(404).json({ message: "❌ Job post not found" });
+        return res.status(404).json({ message: "Job post not found." });
       }
 
       res.status(200).json({
-        message: "✅ Job post updated successfully!",
+        message: "Job post updated successfully.",
         job: updatedJob,
       });
     } catch (error) {
-      console.error("❌ Error updating job post:", error.message);
+      console.error("Error updating job post:", error.message);
       res.status(500).json({
-        message: "❌ Failed to update job post",
+        message: "Failed to update job post.",
         error: error.message,
       });
     }
   },
 
-  // Delete a job post by ID
   deleteJobPost: async (req, res) => {
     try {
       const jobId = req.params.id;
 
-      // Validate ObjectId
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
         return res.status(400).json({ message: "Invalid Job ID." });
       }
@@ -184,17 +172,17 @@ module.exports = {
       const deletedJob = await jobModel.deleteJob(jobId);
 
       if (!deletedJob) {
-        return res.status(404).json({ message: "❌ Job post not found" });
+        return res.status(404).json({ message: "Job post not found." });
       }
 
       res.status(200).json({
-        message: "✅ Job post deleted successfully!",
+        message: "Job post deleted successfully.",
         job: deletedJob,
       });
     } catch (error) {
-      console.error("❌ Error deleting job post:", error.message);
+      console.error("Error deleting job post:", error.message);
       res.status(500).json({
-        message: "❌ Failed to delete job post",
+        message: "Failed to delete job post.",
         error: error.message,
       });
     }
@@ -202,7 +190,7 @@ module.exports = {
 
   searchJobPosts: async (req, res) => {
     try {
-      const { keyword } = req.query; // Expecting a single keyword
+      const { keyword } = req.query;
 
       if (!keyword) {
         return res
@@ -210,15 +198,13 @@ module.exports = {
           .json({ message: "Keyword is required for search." });
       }
 
-      const jobs = await jobModel.searchJobPosts(keyword); // Pass the keyword for the search
+      const jobs = await jobModel.searchJobPosts(keyword);
 
-      // Map the jobs to include only the required fields
       const simplifiedJobs = jobs.map((job) => ({
         id: job._id,
         jobTitle: job.jobTitle,
-        noOfApplications: job.applicants.length, // Count of applicants
-        status: job.expirationDate > new Date() ? "Active" : "Inactive", // Set status based on expiration date
-        createdDate: job.createdAt, // Created date from timestamps
+        noOfApplications: job.applicants.length,
+        createdDate: job.createdAt,
       }));
 
       res.status(200).json({
@@ -226,9 +212,9 @@ module.exports = {
         jobs: simplifiedJobs,
       });
     } catch (error) {
-      console.error("❌ Error searching job posts:", error.message);
+      console.error("Error searching job posts:", error.message);
       res.status(500).json({
-        message: "❌ Failed to search job posts",
+        message: "Failed to search job posts.",
         error: error.message,
       });
     }
