@@ -40,7 +40,10 @@
     />
     <p
       class="font-sans font-medium text-[14px] leading-[20px] text-custom-green"
-      [ngClass]="{ 'text-[#E05141]': job.status === 'Expired' }"
+      [ngClass]="{
+        'text-[#E05141]': job.status === 'Expired',
+        'text-custom-green': job.status !== 'Expired'
+      }"
     >
       {{ job.status === "Expired" ? "Expired" : job.status }}
     </p>
