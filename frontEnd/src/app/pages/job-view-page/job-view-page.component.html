@@ -1,116 +1,4 @@
 <div
-  class="flex justify-between items-center shadow-[inset_0_-1px_0_0_#E4E5E8] py-5 px-10 w-full"
->
-  <!-- Left section: Logo -->
-  <div class="flex items-center space-x-2">
-    <img src="assets/logo/Logo.png" />
-  </div>
-  <!-- center section: search and country -->
-
-<div
-  id="search"
-  class="relative flex w-[630px] px-5 py-3 gap-3 border border-borderColor bg-white rounded-lg"
-  [ngClass]="{'no-bottom-radius': searchQuery.length > 0}"
-
->
-  <div id="country" class="flex gap-2 items-center flex-shrink-0">
-    <img src="./assets/icons/Pakistan_flag.svg" />
-    <p>Pakistan</p>
-    <!-- Vertical line -->
-    <div class="border-l h-6 border-gray-400 mx-2"></div>
-  </div>
-
-  <!-- Search Input -->
-  <div id="search-input" class="flex gap-3 items-center flex-grow" >
-    <div>
-      <img src="./assets/icons/fi_search.svg" alt="" />
-    </div>
-    <input
-      type="search" 
-      id="search-bar"
-      [(ngModel)]="searchQuery"
-      (input)="onSearch()"
-      placeholder="Job title, keyword"
-      class="border-none outline-none w-full bg-white"
-    />
-  </div>
-
-  <!-- Predictive Search Results Dropdown -->
-  <div
-    id="predictive-search-results"
-    *ngIf="showDropdown"
-    class="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-lg"
-  >
-    <h2 class=" font-medium text-gray-600 flex justify-center" >
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        role="presentation"
-        class="spinner"
-        viewBox="0 0 66 66"
-        xmlns="http://www.w3.org/2000/svg"
-        *ngIf="loading"
-      >
-        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-      </svg>
-    </h2>
-
-    <!-- Loop through search results -->
-    <div
-      *ngFor="let result of searchResults"
-      class="grid grid-cols-4 py-3 px-5 border-t hover:bg-gray-100 cursor-pointer"
-      (click)="viewResult(result.id)"
-
-    >
-      <div class="col-span-2">
-        <p class="font-normal text-base">{{result.jobTitle }}</p>
-      </div>
-      <div class="flex gap-2 items-center">
-        <img src="assets/icons/Users.svg" />
-        <p class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]">
-          {{result.noOfApplications }} Applications
-        </p>
-      </div>
-
-      <div class="flex justify-center items-center">
-        <ng-container *ngIf="result.status === 'Active'; else expired">
-          <img src="assets/icons/CheckCircle.svg" alt="Active Icon" />
-          <p class="font-sans font-medium text-[14px] leading-[20px] text-custom-green">
-            {{ result.status }}
-          </p>
-        </ng-container>
-        <ng-template #expired>
-          <img src="assets/icons/fi_x-circle.svg" alt="Expired Icon" />
-          <p class="font-sans font-medium text-[14px] leading-[20px] text-red-500">
-            {{ result.status }}
-          </p>
-        </ng-template>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  <!-- Right section: Notifications and Profile -->
-  <div class="flex items-center space-x-6">
-    <div>
-      <img src="assets/icons/BellRinging.svg" alt="notifications" class="" />
-    </div>
-    <div>
-      <img src="assets/images/Ellipse18.png" alt="profile" />
-    </div>
-  </div>
-</div>
-<div class="w-full flex justify-center  px-10 py-5 bg-[#F1F2F4]">
-  <p class="text-lg font-medium">Preview</p>
-
-</div>
-
-<!-- jobcompacy -->
-<div
   class="flex justify-between items-center w- px-10 py-10 w-full bg-[#FCFCFC]"
 >
   <div id="left" class="w-1/2 flex justify-center items-center">
@@ -163,7 +51,7 @@
           class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white"
           (click)="openApplyModal()"
         >
-          Update Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
+          Apply Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
         </button>
       </div>
     </div>

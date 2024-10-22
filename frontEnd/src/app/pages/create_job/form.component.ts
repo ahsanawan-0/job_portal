@@ -31,8 +31,12 @@ export class FormComponent {
   // Feedback messages
   successMessage: string = '';
   errorMessage: string = '';
-
-  constructor(private createJobService: CreateJobService) {}
+  today: string;
+  constructor(private createJobService: CreateJobService) {
+    const now = new Date();
+    // Format today's date to yyyy-MM-ddTHH:mm for the datetime-local input
+    this.today = now.toISOString().slice(0, 16);
+  }
 
   // Submit handler
   submitForm(form: NgForm) {

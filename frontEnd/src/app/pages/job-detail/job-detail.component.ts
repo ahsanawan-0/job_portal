@@ -7,6 +7,7 @@ import { SharedModule } from '../../sharedModules/shared.module';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { Job } from '../../models/jobModel'; // Adjust the import path as necessary
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-detail',
@@ -18,9 +19,11 @@ import { CommonModule } from '@angular/common';
 export class JobDetailComponent implements OnInit {
   private modalService = inject(NgbModal);
   private createJobService = inject(CreateJobService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   job: any; // To store job details
-  jobId: string = '67163ee7315023eb076dcf73'; // Replace with actual job ID
+  jobId: string = ''; // Initialize without hardcoding
   searchQuery: string = ''; // For search input binding
   showDropdown: boolean = false; // To toggle the predictive search results
   searchResults: Job[] = []; // Store search results using the Job interface
@@ -28,11 +31,17 @@ export class JobDetailComponent implements OnInit {
   searchSubject = new Subject<string>(); // To handle debounced search
 
   ngOnInit() {
-    this.getJobDetails();
+    // Get job ID from route parameters
+    this.route.paramMap.subscribe(params => {
+      this.jobId = params.get('id') || '';
+      if (this.jobId) {
+        this.getJobDetails();
+      }
+    });
 
     // Handle debounced search input
     this.searchSubject.pipe(
-      debounceTime(800), // Wait for 300ms pause in events
+      debounceTime(300), // Wait for 300ms pause in events
       distinctUntilChanged() // Only emit if value has changed
     ).subscribe(query => {
       if (query) {
@@ -66,7 +75,6 @@ export class JobDetailComponent implements OnInit {
     // Emit value to trigger debounced search
     this.searchSubject.next(this.searchQuery);
     console.log("Search query:", this.searchQuery); // Debugging line
-
   }
 
   // Function to perform the search and fetch results
@@ -75,7 +83,7 @@ export class JobDetailComponent implements OnInit {
     this.createJobService.searchJobs(query).subscribe(
       (response) => {
         this.searchResults = response.jobs;
-console.log("search results",this.searchResults)
+        console.log("search results", this.searchResults);
         this.loading = false; // Hide loading spinner
         this.showDropdown = true; // Show dropdown with results
       },
@@ -88,6 +96,9 @@ console.log("search results",this.searchResults)
 
   // Handle viewing the search result
   viewResult(id: string) {
-    // Add navigation or modal opening logic here
+    // Navigate dynamically to the job details page using the provided ID
+    this.router.navigate([`jobdetail/admin/${id}`]);
+    this.showDropdown = false; // Show dropdown with results
+
   }
 }

@@ -255,10 +255,12 @@
                   id="expiration_date"
                   [(ngModel)]="expirationDate"
                   name="expirationDate"
-                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  min="{{ today }}"
+                  class="date-time-input border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   required
                 />
               </div>
+              
             </div>
           </div>
 
