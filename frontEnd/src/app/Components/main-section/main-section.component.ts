@@ -15,7 +15,6 @@ import { jobCard } from '../../models/jobModel';
   styleUrl: './main-section.component.css',
 })
 export class MainSectionComponent implements OnInit {
-  jobs: jobCard[] = [];
   dropdown: boolean = false;
   onClickThreeDots() {
     this.dropdown = !this.dropdown;
@@ -26,24 +25,22 @@ export class MainSectionComponent implements OnInit {
     this.route.navigateByUrl('myjobs');
   }
 
-  applications: any[] = [];
+  applications: jobCard[] = [];
   service = inject(CreateJobService);
 
   ngOnInit(): void {
-    this.getApplications();
-    console.log(this.applications);
+    this.getAllRecentJobs();
   }
 
-  getApplications() {
-    this.service.getAllJobs().subscribe((res: any) => {
-      this.jobs = res.simplifiedJobs.map((job: any) => ({
+  getAllRecentJobs() {
+    this.service.getAllRecentJobs().subscribe((res: any) => {
+      this.applications = res.simplifiedJobs.map((job: any) => ({
         title: job.jobTitle,
         type: job.jobType,
         remaining: this.calculateRemainingDays(job.expirationDate),
         status: job.status,
         applications: job.noOfApplications,
       }));
-      console.log(this.jobs);
     });
   }
 

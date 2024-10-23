@@ -74,8 +74,11 @@ module.exports = {
   },
 
   getAllJobPosts: async (req, res) => {
+    const { page = 1, limit = 4 } = req.query;
+    const skip = (page - 1) * limit;
+
     try {
-      const jobs = await jobModel.getAllJobs();
+      const { jobs, totalJobs } = await jobModel.getAllJobs(limit, skip);
       const simplifiedJobs = jobs.map((job) => ({
         id: job._id,
         jobTitle: job.jobTitle,
@@ -89,11 +92,70 @@ module.exports = {
         expirationDate: job.expirationDate,
       }));
 
-      res.status(200).json({ simplifiedJobs });
+      res.status(200).json({ simplifiedJobs, totalJobs });
     } catch (error) {
       console.error("Error fetching job posts:", error.message);
       res.status(500).json({
         message: "Failed to fetch job posts.",
+        error: error.message,
+      });
+    }
+  },
+
+  getRecentJobPosts: async (req, res) => {
+    try {
+      const jobs = await jobModel.getRecentJobs();
+      const simplifiedJobs = jobs.map((job) => ({
+        id: job._id,
+        jobTitle: job.jobTitle,
+        noOfApplications: job.applicants.length,
+        jobType: job.jobType,
+        status:
+          new Date(job.expirationDate).getTime() > new Date().getTime()
+            ? "Active"
+            : "Expired",
+        createdDate: job.createdAt,
+        expirationDate: job.expirationDate,
+      }));
+      res.status(200).json({ simplifiedJobs });
+    } catch (error) {
+      console.error("Error fetching recent job posts:", error.message);
+      res.status(500).json({
+        message: "Failed to fetch recent job posts.",
+        error: error.message,
+      });
+    }
+  },
+
+  getAllJobsForCount: async (req, res) => {
+    try {
+      const jobs = await jobModel.getAllJobsForCount();
+
+      const totalJobs = jobs.length;
+      const activeJobs = jobs.filter(
+        (job) => new Date(job.expirationDate).getTime() > new Date().getTime()
+      ).length;
+      const expiredJobs = jobs.filter(
+        (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
+      ).length;
+
+      // const simplifiedJobs = jobs.map((job) => ({
+      //   id: job._id,
+      //   jobTitle: job.jobTitle,
+      //   noOfApplications: job.applicants.length,
+      //   jobType: job.jobType,
+      //   status:
+      //     new Date(job.expirationDate).getTime() > new Date().getTime()
+      //       ? "Active"
+      //       : "Expired",
+      //   createdDate: job.createdAt,
+      //   expirationDate: job.expirationDate,
+      // }));
+      res.status(200).json({ totalJobs, expiredJobs, activeJobs });
+    } catch (error) {
+      console.error("Error fetching recent job posts:", error.message);
+      res.status(500).json({
+        message: "Failed to fetch recent job posts.",
         error: error.message,
       });
     }

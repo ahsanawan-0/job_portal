@@ -1,6 +1,6 @@
-<div class="font-sans flex justify-between items-center py-5 px-10">
+<div class="font-sans flex justify-between items-center mb-9 mt-5 mx-5">
   <p class="font-medium text-xl text-custom-black">
-    My Jobs <span class="font-normal text-[#9199a3]">(599)</span>
+    My Jobs <span class="font-normal text-[#9199a3]">({{ totalItems }})</span>
   </p>
   <div
     (click)="onClickPostJob()"
@@ -11,9 +11,9 @@
   </div>
 </div>
 
-<div table class="py-5 px-10">
+<div class="mx-5 mb-4">
   <!-- < class="overflow-auto h-[400px]"> -->
-  <table class="min-w-full">
+  <!-- <table class="min-w-full">
     <thead class="bg-[#F1F2F4]">
       <tr>
         <th
@@ -122,11 +122,11 @@
         </td>
       </tr>
     </tbody>
-  </table>
-
+  </table> -->
+  <app-job-card-component [jobs]="paginatedJobs"></app-job-card-component>
   <div>
     <app-pagination
-      [totalItems]="jobs.length"
+      [totalItems]="totalItems"
       [itemsPerPage]="itemsPerPage"
       (pageChange)="onPageChange($event)"
     ></app-pagination>

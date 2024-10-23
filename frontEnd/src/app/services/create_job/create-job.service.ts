@@ -21,9 +21,26 @@ export class CreateJobService {
   }
 
   // Method to get all jobs
-  getAllJobs(): Observable<any[]> {
+  getAllJobsForCount(): Observable<any[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}/jobs/alljobs`)
+      .get<any[]>(`${this.apiUrl}/jobs/alljobsforcount`)
+      .pipe(catchError(this.handleError));
+  }
+
+  getAllJobs(
+    page: number,
+    limit: number = 4
+  ): Observable<{ simplifiedJobs: any[]; totalJobs: number }> {
+    return this.http
+      .get<{ simplifiedJobs: any[]; totalJobs: number }>(
+        `${this.apiUrl}/jobs/alljobs?page=${page}&limit=${limit}`
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  getAllRecentJobs(): Observable<any[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/jobs/recentJobs`)
       .pipe(catchError(this.handleError));
   }
 
