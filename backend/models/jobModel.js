@@ -23,6 +23,10 @@ const getRecentJobs = async () => {
   return await Job.find().sort({ createdAt: -1 }).limit(5);
 };
 
+const getAllJobsForCount = async () => {
+  return await Job.find();
+};
+
 const getJobById = async (jobId) => {
   return await Job.findById(jobId);
 };
@@ -57,4 +61,5 @@ module.exports = {
   deleteJob,
   searchJobPosts,
   getRecentJobs,
+  getAllJobsForCount,
 };

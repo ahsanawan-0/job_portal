@@ -127,6 +127,40 @@ module.exports = {
     }
   },
 
+  getAllJobsForCount: async (req, res) => {
+    try {
+      const jobs = await jobModel.getAllJobsForCount();
+
+      const totalJobs = jobs.length;
+      const activeJobs = jobs.filter(
+        (job) => new Date(job.expirationDate).getTime() > new Date().getTime()
+      ).length;
+      const expiredJobs = jobs.filter(
+        (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
+      ).length;
+
+      // const simplifiedJobs = jobs.map((job) => ({
+      //   id: job._id,
+      //   jobTitle: job.jobTitle,
+      //   noOfApplications: job.applicants.length,
+      //   jobType: job.jobType,
+      //   status:
+      //     new Date(job.expirationDate).getTime() > new Date().getTime()
+      //       ? "Active"
+      //       : "Expired",
+      //   createdDate: job.createdAt,
+      //   expirationDate: job.expirationDate,
+      // }));
+      res.status(200).json({ totalJobs, expiredJobs, activeJobs });
+    } catch (error) {
+      console.error("Error fetching recent job posts:", error.message);
+      res.status(500).json({
+        message: "Failed to fetch recent job posts.",
+        error: error.message,
+      });
+    }
+  },
+
   getJobPostById: async (req, res) => {
     try {
       const jobId = req.params.id;

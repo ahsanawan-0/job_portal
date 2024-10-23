@@ -7,6 +7,7 @@ const {
   deleteJobPost,
   searchJobPosts,
   getRecentJobPosts,
+  getAllJobsForCount,
 } = require("../controller/jobController");
 
 // routes/jobRoutes.js
@@ -16,6 +17,8 @@ router.post("/create-job", createJobPost);
 router.get("/jobs/alljobs", getAllJobPosts);
 
 router.get("/jobs/recentJobs", getRecentJobPosts);
+
+router.get("/jobs/alljobsforcount", getAllJobsForCount);
 
 // Get a single job post by ID
 router.get("/getSignleJob/:id", getJobPostById);
