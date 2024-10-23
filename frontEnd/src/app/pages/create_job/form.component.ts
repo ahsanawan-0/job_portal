@@ -1,90 +1,108 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreateJobService } from '../../services/create_job/create-job.service';
-import { PostJob } from '../../models/jobModel';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { CreateJobService } from '../../services/create_job/create-job.service'; // Adjust the path as necessary
+import { PostJob } from '../../models/jobModel'; // Adjust the path to your job model
 import { TextareaComponent } from '../../Components/textarea/textarea.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-form',
+  standalone: true,
+  imports: [TextareaComponent, FormsModule, CommonModule],
   templateUrl: './form.component.html',
-  imports: [TextareaComponent,ReactiveFormsModule, FormsModule, CommonModule],
-standalone:true,
   styleUrls: ['./form.component.css'],
 })
-export class FormComponent implements OnInit {
-  // Reactive form group
-  jobForm!: FormGroup;
+export class FormComponent {
+  // Form fields bound via ngModel
+  jobTitle: string = '';
+  tags: string = ''; // Keeping as string to handle comma-separated input
+  location: string = '';
+  minSalary!: number;
+  maxSalary!: number;
+  education: string = '';
+  experience: string = '';
+  jobType: string = '';
+  vacancies!: number;
+  expirationDate: string = '';
+  description: string = '';
+  responsibilities: string = '';
 
   // Feedback messages
   successMessage: string = '';
   errorMessage: string = '';
   today: string;
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private createJobService: CreateJobService
-  ) {
+  constructor(private createJobService: CreateJobService) {
     const now = new Date();
-    this.today = now.toISOString().slice(0, 16); // Set today's date for expiration date input
+    // Format today's date to yyyy-MM-ddTHH:mm for the datetime-local input
+    this.today = now.toISOString().slice(0, 16);
   }
 
-  ngOnInit(): void {
-    // Initialize form with FormBuilder
-    this.jobForm = this.formBuilder.group({
-      jobTitle: ['', Validators.required],
-      tags: ['', Validators.required],
-      location: ['', Validators.required],
-      minSalary: [null, [Validators.required, Validators.min(0)]],
-      maxSalary: [null, [Validators.required, Validators.min(0)]],
-      education: ['', Validators.required],
-      experience: ['', Validators.required],
-      jobType: ['', Validators.required],
-      vacancies: [null, [Validators.required, Validators.min(1)]],
-      expirationDate: ['', Validators.required],
-      description: ['', Validators.required],
-      responsibilities: ['', Validators.required],
-    });
-  }
+  // Submit handler
+  submitForm(form: NgForm) {
+    if (form.invalid) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
 
-  // Submit form and handle post job logic
-  submitForm() {
-    // if (this.jobForm.invalid) {
-    //   this.errorMessage = 'Please fill in all required fields correctly.';
-    //   return;
-    // }
+      // Debugging: Log form validity and control statuses
+      console.log('Form Valid:', form.valid);
+      Object.keys(form.controls).forEach((key) => {
+        const control = form.controls[key];
+        console.log(
+          `Control: ${key}, Valid: ${control.valid}, Errors:`,
+          control.errors
+        );
+      });
+
+      return;
+    }
 
     const jobData: PostJob = {
-      jobTitle: this.jobForm.value.jobTitle,
-      tags: this.jobForm.value.tags.split(',').map((tag: string) => tag.trim()),
-      location: this.jobForm.value.location,
-      minSalary: this.jobForm.value.minSalary,
-      maxSalary: this.jobForm.value.maxSalary,
-      education: this.jobForm.value.education,
-      experience: this.jobForm.value.experience,
-      jobType: this.jobForm.value.jobType,
-      vacancies: Number(this.jobForm.value.vacancies),
-      expirationDate: this.jobForm.value.expirationDate,
-      description: this.jobForm.value.description,
-      responsibilities: this.jobForm.value.responsibilities,
+      jobTitle: this.jobTitle,
+      tags: this.tags.split(',').map((tag) => tag.trim()), // Convert comma-separated string to array
+      location: this.location,
+      minSalary: this.minSalary,
+      maxSalary: this.maxSalary,
+      education: this.education,
+      experience: this.experience,
+      jobType: this.jobType,
+      vacancies: Number(this.vacancies), // Convert to number
+      expirationDate: this.expirationDate,
+      description: this.description,
+      responsibilities: this.responsibilities,
     };
-    
-    console.log('Job posted successfully', jobData);
+
+    console.log('Submitting job data:', jobData); // Add this line for debugging
+
     this.createJobService.postJob(jobData).subscribe({
       next: (response) => {
+        console.log('Job posted successfully', response);
         this.successMessage = 'Job posted successfully!';
         this.errorMessage = '';
-
-        // Reset the form after successful submission
-        this.jobForm.reset();
+        this.resetFields(); // Clear the fields after submission
+        form.resetForm(); // Reset the form after successful submission
       },
       error: (error) => {
         console.error('Error posting job', error);
-        this.errorMessage =
-          error.error.message || 'Error posting job.';
+        // Display a user-friendly error message
+        this.errorMessage = error.error.message || 'Error posting job.';
         this.successMessage = '';
       },
     });
   }
-}
 
+  // Method to reset form fields
+  resetFields() {
+    this.jobTitle = '';
+    this.tags = '';
+    this.location = '';
+    this.minSalary = undefined!;
+    this.maxSalary = undefined!;
+    this.education = '';
+    this.experience = '';
+    this.jobType = '';
+    this.vacancies = undefined!;
+    this.expirationDate = '';
+    this.description = '';
+    this.responsibilities = '';
+  }
+}
