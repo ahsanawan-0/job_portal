@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 const mongoose = require("mongoose");
 const jobSchema = require("./definations/jobSchema"); // Correct path and filename
-=======
-const mongoose = require('mongoose');
-const jobSchema = require('./definations/jobSchema'); // Ensure the path is correct
->>>>>>> branch_4
 
 const Job = mongoose.model("Job", jobSchema);
 
@@ -14,7 +9,6 @@ const createJob = async (jobData) => {
   return await job.save();
 };
 
-<<<<<<< HEAD
 const getAllJobs = async (limit, skip) => {
   const totalJobs = await Job.countDocuments();
 
@@ -32,11 +26,6 @@ const getRecentJobs = async () => {
 
 const getAllJobsForCount = async () => {
   return await Job.find();
-=======
-// Get all jobs
-const getAllJobs = async () => {
-  return await Job.find().sort({ createdAt: -1 });
->>>>>>> branch_4
 };
 
 // Get a job by ID
@@ -76,7 +65,7 @@ const applyForJob = async (jobId, applicantId) => {
 
   // Check if the job exists and whether it has expired
   if (!job || job.expirationDate < new Date()) {
-    throw new Error('The job application period has expired.');
+    throw new Error("The job application period has expired.");
   }
 
   // If the job is not expired, proceed to add the applicant ID
@@ -89,7 +78,6 @@ const applyForJob = async (jobId, applicantId) => {
   return updatedJob; // Return the updated job
 };
 
-
 module.exports = {
   createJob,
   getAllJobs,
@@ -97,10 +85,7 @@ module.exports = {
   updateJob,
   deleteJob,
   searchJobPosts,
-<<<<<<< HEAD
   getRecentJobs,
   getAllJobsForCount,
-=======
   applyForJob, // Export the new method
->>>>>>> branch_4
 };
