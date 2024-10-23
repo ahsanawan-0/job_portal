@@ -19,10 +19,9 @@ export class TextareaComponent implements OnInit, OnDestroy {
   editor!: Editor; // Instance of the editor
   toolbar: Toolbar = [
     ['bold', 'italic'],
-    ['ordered_list','bullet_list'],
+    ['ordered_list', 'bullet_list'],
     ['link'],
     ['text_color', 'background_color'],
-    
   ];
   form: FormGroup; // Reactive form for the editor content
 
@@ -37,13 +36,18 @@ export class TextareaComponent implements OnInit, OnDestroy {
     this.editor = new Editor(); // Initialize the editor
 
     // Set the initial value of the form control based on the input content
-    if (this.content) {
-      this.form.get('editorContent')?.setValue(this.content);
-    }
+    this.form.get('editorContent')?.setValue(this.content || ''); // Set it to empty string if undefined
 
     // Listen for changes in the form control
     this.form.get('editorContent')?.valueChanges.subscribe((value) => {
       this.onContentChange(value); // Emit changes
+    });
+
+    // Watch for changes in the input content
+    this.contentChange.subscribe((newContent: string) => {
+      if (newContent !== this.form.get('editorContent')?.value) {
+        this.form.get('editorContent')?.setValue(newContent || ''); // Update form control when content changes
+      }
     });
   }
 

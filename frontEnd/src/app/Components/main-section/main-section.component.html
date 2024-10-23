@@ -1,20 +1,19 @@
-<div class="flex flex-col gap-5 py-8 shadow-[inset_0_-1px_0_0_#E4E5E8] w-full">
-  <div class="flex justify-between">
+<div class="flex flex-col gap-5 mt-8 shadow-[inset_0_-1px_0_0_#E4E5E8] w-full">
+  <div class="flex justify-between mt-3">
     <p class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]">
       Recently Posted Jobs
     </p>
-    <div class="flex space-x-2">
+    <div class="flex gap-2 cursor-pointer" (click)="onClickViewAll()">
       <p
         class="text-custom-gray font-sans font-medium text-[16px] leading-[24px]"
       >
         View all
       </p>
-      <img src="assets/icons/fi_arrow-right.svg" class="" />
+      <img src="assets/icons/fi_arrow-right.svg" />
     </div>
   </div>
 
-  <div table>
-    <table class="min-w-full">
+  <!-- <table class="min-w-full">
       <thead class="bg-[#F1F2F4]">
         <tr>
           <th
@@ -119,6 +118,6 @@
           </td>
         </tr>
       </tbody>
-    </table>
-  </div>
+    </table> -->
+  <app-job-card-component [jobs]="jobs"></app-job-card-component>
 </div>

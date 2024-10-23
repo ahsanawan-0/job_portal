@@ -12,50 +12,63 @@
 </div>
 
 <div
+  *ngFor="let job of jobs; let i = index"
   class="grid grid-cols-5 pr-2 bg-[#fcfcfc] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg shadow-[inset_0_-1px_0_0_#E4E5E8]"
 >
   <div class="flex flex-col gap-[8px] col-span-2 pl-5 py-5">
     <p class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]">
-      UI/UI Designer
+      {{ job.title }}
     </p>
     <div
       class="text-custom-gray font-sans font-normal text-[12px] leading-[20px] flex gap-[10px] items-center"
     >
-      <p>Full Time</p>
+      <p>{{ job.type }}</p>
 
       <p class="mb-3 text-[23px]">.</p>
 
-      <p>27 days remaining</p>
+      <p>{{ job.remaining }}</p>
     </div>
   </div>
   <div class="flex gap-[4px] items-center">
-    <img src="assets/icons/CheckCircle.svg" class="w-5 h-5" />
+    <img
+      [src]="
+        job.status === 'Expired'
+          ? 'assets/icons/XCircleRed2.svg'
+          : 'assets/icons/CheckCircle.svg'
+      "
+      class="w-5 h-5"
+    />
     <p
       class="font-sans font-medium text-[14px] leading-[20px] text-custom-green"
+      [ngClass]="{
+        'text-[#E05141]': job.status === 'Expired',
+        'text-custom-green': job.status !== 'Expired'
+      }"
     >
-      Active
+      {{ job.status === "Expired" ? "Expired" : job.status }}
     </p>
   </div>
   <div class="flex gap-2 items-center">
     <img src="assets/icons/Users.svg" />
     <p class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]">
-      798 Applications
+      {{ job.applications }} Applications
     </p>
   </div>
   <div class="flex justify-center items-center gap-2 relative">
     <button
+      (click)="onClickViewApplication()"
       class="font-sans font-semibold text-base py-3 px-6 whitespace-nowrap text-custom-blue bg-[#F1F2F4] cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
     >
       View Applications
     </button>
     <img
       src="assets/icons/DotsThreeVertical.svg"
-      (click)="onClickThreeDots()"
+      (click)="onClickThreeDots(i)"
       class="cursor-pointer w-6 h-6"
     />
     <div
-      *ngIf="dropdown"
-      class="absolute bg-white shadow-md rounded-md mt-14 ml-10 py-3 border"
+      *ngIf="dropdownIndex === i"
+      class="absolute bg-white shadow-md rounded-md py-3 border z-10 mt-2 left-0"
     >
       <ul class="list-none py-2 pl-2 pr-7">
         <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
@@ -69,7 +82,9 @@
         <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
           <div class="flex gap-2">
             <img src="assets/icons/XCircle.svg" />
-            <p class="font-sans font-normal text-sm text-[#5E6670]">
+            <p
+              class="font-sans font-normal text-sm text-[#5E6670] whitespace-nowrap"
+            >
               Mark as expired
             </p>
           </div>

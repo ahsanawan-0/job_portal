@@ -73,14 +73,14 @@
       </div>
 
       <div class="flex justify-center items-center">
-        <ng-container *ngIf="result.status === 'Active'; else expired">
+        <ng-container *ngIf="result.status === 'Active'; else Expired">
           <img src="assets/icons/CheckCircle.svg" alt="Active Icon" />
           <p class="font-sans font-medium text-[14px] leading-[20px] text-custom-green">
             {{ result.status }}
           </p>
         </ng-container>
-        <ng-template #expired>
-          <img src="assets/icons/fi_x-circle.svg" alt="Expired Icon" />
+        <ng-template #Expired>
+          <img src="assets/icons/XCircleRed2.svg" alt="Expired Icon" class="w-5 h-5"/>
           <p class="font-sans font-medium text-[14px] leading-[20px] text-red-500">
             {{ result.status }}
           </p>

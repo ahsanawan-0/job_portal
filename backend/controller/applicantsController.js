@@ -1,12 +1,18 @@
-const User = require('../models/definations/userSchema');
+const User = require('../models/definations/applicantsSchema');
 const jobModel = require('../models/jobModel'); // Import job model
 const sendEmail = require('../helpers/sendEmail'); // Import sendEmail function
 
 // Create a new user and store resume and cover letter
-const UserApplyForJob = async (req, res) => {
+const ApplicantsApplyForJob = async (req, res) => {
   try {
-    const { name, email, experience, coverLetter, jobId } = req.body; // Add jobId to request body
+    const { name, email, experience, coverLetter } = req.body; // Remove jobId from request body
+    const jobId = req.params.jobId; // Get jobId from URL parameters
     
+    // Check for jobId
+    if (!jobId) {
+      return res.status(400).json({ error: 'Job ID is required' });
+    }
+
     // Check if a file was uploaded
     if (!req.file) {
       console.log("No resume file uploaded.");
@@ -41,9 +47,9 @@ const UserApplyForJob = async (req, res) => {
 
     // Prepare job application details
     const job = {
-      title: updatedJob.title, // Use the actual job title
-      company: updatedJob.company, // Use the actual company name
-      location: updatedJob.location, // Use the actual job location
+      title: updatedJob.jobTitle, // Ensure you access the correct property
+      company: updatedJob.company, // Ensure this exists in your job schema
+      location: updatedJob.location, // Ensure this exists in your job schema
       experienceRequired: experience,
     };
 
@@ -59,6 +65,7 @@ const UserApplyForJob = async (req, res) => {
     res.status(201).json({
       message: 'User created and applied for the job successfully',
       data: newUser,
+      jobDetails: job, // Include job details in response for clarity
     });
   } catch (error) {
     console.error("Error creating user:", error); // Log the error for debugging
@@ -66,6 +73,7 @@ const UserApplyForJob = async (req, res) => {
   }
 };
 
+
 module.exports = {
-  UserApplyForJob,
+  ApplicantsApplyForJob,
 };

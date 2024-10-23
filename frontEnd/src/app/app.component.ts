@@ -25,13 +25,14 @@ export class AppComponent {
     const tl = gsap.timeline();
     tl.from('.content', {
       opacity: 0,
-      duration: 1.5, // Slower animation
-      ease: 'circ.inOut' // Smooth ease for a more natural motion
+      duration: 2,
+      // y:100, // Slower animation
+      ease: 'circ.out' // Smooth ease for a more natural motion
     })
     .from('.main-content', {
       opacity: 0,
       x: -50, // Increased distance for a more dramatic entrance
-      duration: 1, // Slower animation
+      duration: 3, // Slower animation
       ease: 'circ.inOut'
     }, '-=1'); // More overlap for a smoother overall effect
   }

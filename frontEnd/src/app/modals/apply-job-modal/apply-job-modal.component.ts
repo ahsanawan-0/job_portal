@@ -1,36 +1,33 @@
 import { Subscription } from 'rxjs';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { TextareaComponent } from '../../Components/textarea/textarea.component';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobApplicationService } from '../../services/job_application/job-application.service';
 
 @Component({
   selector: 'app-apply-job-modal',
   standalone: true,
-  imports: [FormsModule, CommonModule, TextareaComponent, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, TextareaComponent],
   templateUrl: './apply-job-modal.component.html',
   styleUrls: ['./apply-job-modal.component.scss'],
   providers: [JobApplicationService],
 })
 export class ApplyJobModalComponent implements OnInit, OnDestroy {
+  @Input() jobId: string | null = null; // Input property for jobId
   applicationForm: FormGroup;
   private subscriptions: Subscription = new Subscription();
   selectedResume: File | null = null; // Store selected file
   fileName: string | null = null; // Store the name of the selected file
-  jobId: string | null = null; // Variable to store jobId
 
   // Use inject() to get dependencies
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private jobApplicationService = inject(JobApplicationService);
-  private modalService = inject(NgbModal);
   public activeModal = inject(NgbActiveModal);
-  private route = inject(ActivatedRoute); // Inject ActivatedRoute
 
   constructor() {
     this.applicationForm = this.fb.group({
@@ -43,10 +40,7 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Get jobId from query parameters
-    this.route.queryParams.subscribe(params => {
-      this.jobId = params['jobId']; // Extract jobId from query parameters
-    });
+    console.log('Received jobId:', this.jobId); // Log the received jobId
   }
 
   // Handle file selection
@@ -73,28 +67,46 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   }
 
   // Submit the application
-  submitApplication(): void {
-    if (this.applicationForm.valid && this.selectedResume) {
-      const formData = this.createFormData();
+// Submit the application
+submitApplication(): void {
+  if (this.applicationForm.valid && this.selectedResume) {
+    const formData = this.createFormData();
 
-      // Call the service to submit the application
-      this.jobApplicationService.getApplication(formData).subscribe({
-        next: (response) => {
-          console.log('Application submitted:', response);
-          this.showSuccessAlert();
-          this.resetForm();
-          this.closeModal();
-          this.router.navigate(['/home']); // Redirect to desired route
-        },
-        error: (error) => {
-          console.error('Error submitting application:', error);
-          this.showErrorAlert('There was an error submitting your application. Please try again.');
-        },
-      });
-    } else {
-      this.showErrorAlert('Please fill out all fields correctly.');
+    // Log the jobId before submission
+    console.log('Submitting application with jobId:', this.jobId);
+
+    // Check if jobId is defined
+    if (!this.jobId) {
+      this.showErrorAlert('Job ID is missing. Please try again.');
+      return;
     }
+
+    this.jobApplicationService.getApplication(formData, this.jobId).subscribe({
+      next: (response) => {
+        console.log('Application submitted:', response);
+        this.showSuccessAlert();
+        this.resetForm();
+        this.closeModal();
+      },
+      error: (error) => {
+        console.error('Error submitting application:', error.error);
+        
+        // Check if the error has the specific message for duplicate email
+        const errorMessage = error.error?.error || 'There was an error submitting your application. Please try again.';
+        
+        // If the error message matches your criteria, show the specific message
+        if (errorMessage === 'A user with this email already exists.') {
+          this.showErrorAlert('A user with this email already exists. Please use a different email.');
+        } else {
+          this.showErrorAlert(errorMessage); // Show the specific error message
+        }
+      },
+    });
+  } else {
+    this.showErrorAlert('Please fill out all fields correctly.');
   }
+}
+
 
   // Create FormData object
   private createFormData(): FormData {
@@ -111,10 +123,14 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   // Show success alert using SweetAlert2
   private showSuccessAlert(): void {
     Swal.fire({
-      title: 'Success!',
-      text: 'Your application has been submitted successfully.',
+      title: 'Application Submitted!',
+      text: 'Thank you for applying. Please check your confirmation email.',
       icon: 'success',
-      confirmButtonText: 'OK',
+      showConfirmButton: false,
+      timer: 3000, // Displays the modal for 3 seconds
+      willClose: () => {
+        this.closePage(); // Call method to close the page
+      },
     });
   }
 
@@ -136,7 +152,12 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
 
   // Close the modal
   closeModal(): void {
-    this.modalService.dismissAll(); // Close the modal using the modal service
+    this.activeModal.close(); // Use activeModal to close the modal
+  }
+
+  // Method to close the page
+  private closePage(): void {
+    window.close(); // Closes the current tab
   }
 
   ngOnDestroy(): void {

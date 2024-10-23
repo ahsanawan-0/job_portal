@@ -1,6 +1,7 @@
+// models/definitions/applicantsDefinition.js
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
+const applicantsSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -36,10 +37,11 @@ const userSchema = new mongoose.Schema(
       type: String, // Path to the resume file
       required: [true, "Resume is required"],
     },
+    
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Applicants", applicantsSchema);
