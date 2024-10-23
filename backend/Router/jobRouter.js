@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const {
   createJobPost,
-  getAllJobPosts,
+  getJobsforPagination,
   getJobPostById,
   updateJobPost,
   deleteJobPost,
@@ -14,7 +14,7 @@ const {
 router.post("/create-job", createJobPost);
 
 // Get all job posts
-router.get("/jobs/alljobs", getAllJobPosts);
+router.get("/jobs/alljobs", getJobsforPagination);
 
 router.get("/jobs/recentJobs", getRecentJobPosts);
 

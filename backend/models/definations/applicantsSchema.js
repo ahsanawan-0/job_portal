@@ -37,7 +37,8 @@ const applicantsSchema = new mongoose.Schema(
       type: String, // Path to the resume file
       required: [true, "Resume is required"],
     },
-    
+    jobTitle: { type: String, required: true }, // Ensure this field exists
+
   },
   {
     timestamps: true,

@@ -73,12 +73,12 @@ module.exports = {
     }
   },
 
-  getAllJobPosts: async (req, res) => {
+  getJobsforPagination: async (req, res) => {
     const { page = 1, limit = 4 } = req.query;
     const skip = (page - 1) * limit;
 
     try {
-      const { jobs, totalJobs } = await jobModel.getAllJobs(limit, skip);
+      const { jobs, totalJobs } = await jobModel.getJobsForPagination(limit, skip);
       const simplifiedJobs = jobs.map((job) => ({
         id: job._id,
         jobTitle: job.jobTitle,
@@ -168,8 +168,8 @@ module.exports = {
       if (!mongoose.Types.ObjectId.isValid(jobId)) {
         return res.status(400).json({ message: "Invalid Job ID." });
       }
-
       const job = await jobModel.getJobById(jobId);
+
 
       if (!job) {
         return res.status(404).json({ message: "Job post not found." });
