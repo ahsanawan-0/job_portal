@@ -1,6 +1,7 @@
 const jobModel = require("../models/jobModel"); // Adjust the path as needed
 const User = require("../models/definations/applicantsSchema"); // Adjust the path as needed
 const sendEmail = require("../helpers/sendEmail"); // Adjust the path as needed
+const applicantModel = require("../models/applicantsModel");
 
 const ApplicantsApplyForJob = async (req, res) => {
   try {
@@ -26,13 +27,6 @@ const ApplicantsApplyForJob = async (req, res) => {
     }
 
     const resumePath = req.file.path;
-
-    // Check for existing user with the same email
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      console.log(`User with email ${email} already exists.`);
-      return res.status(400).json({ error: "Email already exists" });
-    }
 
     // Retrieve job details from jobModel
     const job = await jobModel.getJobById(jobId);
@@ -89,4 +83,25 @@ const ApplicantsApplyForJob = async (req, res) => {
   }
 };
 
-module.exports = ApplicantsApplyForJob;
+const getAllApplications = async (req, res) => {
+  try {
+    const applicants = await applicantModel.getAllApplications();
+    const totalApplicants = applicants.response.length;
+    if (applicants.error) {
+      return res.send({
+        error: applicants.error,
+      });
+    }
+    return res.send({
+      message: "All Applicants",
+      response: applicants.response,
+      totalApplicants: totalApplicants,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+module.exports = { ApplicantsApplyForJob, getAllApplications };
