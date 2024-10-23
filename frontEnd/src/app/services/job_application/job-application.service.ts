@@ -13,8 +13,8 @@ export class JobApplicationService {
   constructor(private http: HttpClient) {}
 
   // Submit Job Application using FormData
-  getApplication(formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/submit-application`, formData, {
+  getApplication(formData: FormData,jobId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/submit-application/${jobId}`, formData, {
       withCredentials: true, // Include credentials if needed
     }).pipe(
       catchError((error) => {

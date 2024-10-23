@@ -267,6 +267,10 @@ module.exports = {
         jobTitle: job.jobTitle,
         noOfApplications: job.applicants.length,
         createdDate: job.createdAt,
+        status:
+          new Date(job.expirationDate).getTime() > new Date().getTime()
+            ? "Active"
+            : "Expired",
       }));
 
       res.status(200).json({
