@@ -11,19 +11,16 @@ const ApplicantsApplyForJob = async (req, res) => {
     // Check for jobId
     if (!jobId) {
       return res.status(400).json({ error: "Job ID is required" });
-      return res.status(400).json({ error: "Job ID is required" });
     }
 
     try {
       await jobModel.checkExpiration(jobId);
     } catch (expirationError) {
       return res.status(400).json({ error: "This job has expired" });
-      return res.status(400).json({ error: "This job has expired" });
     }
 
     if (!req.file) {
       console.log("No resume file uploaded.");
-      return res.status(400).json({ error: "Resume file is required" });
       return res.status(400).json({ error: "Resume file is required" });
     }
 
@@ -32,7 +29,6 @@ const ApplicantsApplyForJob = async (req, res) => {
     // Retrieve job details from jobModel
     const job = await jobModel.getJobById(jobId);
     if (!job) {
-      return res.status(404).json({ error: "Job not found" });
       return res.status(404).json({ error: "Job not found" });
     }
 
@@ -46,13 +42,11 @@ const ApplicantsApplyForJob = async (req, res) => {
     });
 
     console.log("sjdbnkjasd", newUser);
-    console.log("sjdbnkjasd", newUser);
     await newUser.save();
     console.log(`User ${name} with email ${email} created successfully.`);
 
     const updatedJob = await jobModel.applyForJob(jobId, newUser._id);
     if (!updatedJob) {
-      return res.status(404).json({ message: "Job not found" });
       return res.status(404).json({ message: "Job not found" });
     }
 
@@ -71,20 +65,15 @@ const ApplicantsApplyForJob = async (req, res) => {
       return res
         .status(500)
         .json({ error: "User created, but email sending failed" });
-      return res
-        .status(500)
-        .json({ error: "User created, but email sending failed" });
-    }
+         }
 
     res.status(201).json({
-      message: "User created and applied for the job successfully",
       message: "User created and applied for the job successfully",
       data: newUser,
       jobDetails: jobDetails,
     });
   } catch (error) {
     console.error("Error creating user:", error);
-    res.status(500).json({ error: "Error creating user" });
     res.status(500).json({ error: "Error creating user" });
   }
 };
