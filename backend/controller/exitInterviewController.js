@@ -43,7 +43,6 @@ module.exports={
             return res.status(404).json({ message: 'Form not found' });
           }
       
-          // Handle submission logic (e.g., save responses to DB or send email)
       
           res.status(200).json({ message: 'Form responses submitted' });
         } catch (error) {

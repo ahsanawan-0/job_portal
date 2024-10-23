@@ -1,6 +1,9 @@
 <div class="min-h-screen bg-[#FCFCFC]">
   <!-- Main Content Area -->
   <div class="">
+    <!-- Main Area -->
+    <!-- src/pages/create_job/form.component.html -->
+
     <main class="flex-1 p-5">
       <div class="max-w-4xl">
         <!-- Header -->
@@ -20,24 +23,39 @@
           {{ errorMessage }}
         </div>
 
-        <!-- Job Details Form (Reactive Form) -->
-        <form [formGroup]="jobForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 gap-6">
-          
+        <!-- Job Details Form -->
+        <form
+          (ngSubmit)="submitForm(form)"
+          #form="ngForm"
+          class="grid grid-cols-1 gap-6"
+        >
+          <!-- Job Title -->
           <!-- Job Title -->
           <div>
-            <label for="job_title" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+            <label
+              for="job_title"
+              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+            >
               Job Title
             </label>
             <input
               type="text"
               id="job_title"
-              formControlName="jobTitle"
+              [(ngModel)]="jobTitle"
+              name="jobTitle"
               class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               placeholder="Add job title, role, vacancies etc"
               required
+              #jobTitleCtrl="ngModel"
             />
-            <div *ngIf="jobForm.get('jobTitle')?.invalid && (jobForm.get('jobTitle')?.dirty || jobForm.get('jobTitle')?.touched)"
-              class="text-red-500 text-sm">
+            <!-- Validation Feedback -->
+            <div
+              *ngIf="
+                jobTitleCtrl.invalid &&
+                (jobTitleCtrl.dirty || jobTitleCtrl.touched)
+              "
+              class="text-red-500 text-sm"
+            >
               Job Title is required.
             </div>
           </div>
@@ -45,13 +63,17 @@
           <div class="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-4">
             <!-- Tags -->
             <div>
-              <label for="tags" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label
+                for="tags"
+                class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
                 Tags
               </label>
               <input
                 type="text"
                 id="tags"
-                formControlName="tags"
+                [(ngModel)]="tags"
+                name="tags"
                 class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                 placeholder="Job keyword, tags etc..."
                 required
@@ -60,12 +82,16 @@
 
             <!-- Location -->
             <div>
-              <label for="location" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label
+                for="location"
+                class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
                 Location
               </label>
               <select
                 id="location"
-                formControlName="location"
+                [(ngModel)]="location"
+                name="location"
                 class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               >
@@ -83,13 +109,17 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- Min Salary -->
               <div>
-                <label for="min_salary" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="min_salary"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   Min Salary
                 </label>
                 <input
                   type="number"
                   id="min_salary"
-                  formControlName="minSalary"
+                  [(ngModel)]="minSalary"
+                  name="minSalary"
                   class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 transition-all duration-300 hover:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Minimum salary..."
                   required
@@ -98,13 +128,17 @@
 
               <!-- Max Salary -->
               <div>
-                <label for="max_salary" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="max_salary"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   Max Salary
                 </label>
                 <input
                   type="number"
                   id="max_salary"
-                  formControlName="maxSalary"
+                  [(ngModel)]="maxSalary"
+                  name="maxSalary"
                   class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 transition-all duration-300 hover:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Maximum salary..."
                   required
@@ -119,12 +153,16 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- Education -->
               <div>
-                <label for="education" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="education"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   Education
                 </label>
                 <select
                   id="education"
-                  formControlName="education"
+                  [(ngModel)]="education"
+                  name="education"
                   class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   required
                 >
@@ -137,12 +175,16 @@
 
               <!-- Experience -->
               <div>
-                <label for="experience" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="experience"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   Experience
                 </label>
                 <select
                   id="experience"
-                  formControlName="experience"
+                  [(ngModel)]="experience"
+                  name="experience"
                   class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   required
                 >
@@ -155,12 +197,16 @@
 
               <!-- Job Type -->
               <div>
-                <label for="job_type" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="job_type"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   Job Type
                 </label>
                 <select
                   id="job_type"
-                  formControlName="jobType"
+                  [(ngModel)]="jobType"
+                  name="jobType"
                   class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   required
                 >
@@ -175,12 +221,16 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
               <!-- No of Vacancies -->
               <div>
-                <label for="vacancies" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="vacancies"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   No of Vacancies
                 </label>
                 <select
                   id="vacancies"
-                  formControlName="vacancies"
+                  [(ngModel)]="vacancies"
+                  name="vacancies"
                   class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   required
                 >
@@ -194,44 +244,56 @@
 
               <!-- Expiration Date -->
               <div>
-                <label for="expiration_date" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label
+                  for="expiration_date"
+                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+                >
                   Expiration Date
                 </label>
                 <input
                   type="date"
                   id="expiration_date"
-                  formControlName="expirationDate"
+                  [(ngModel)]="expirationDate"
+                  name="expirationDate"
+                  min="{{ today }}"
                   class="date-time-input border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   required
                 />
               </div>
+              
             </div>
           </div>
 
           <!-- Description using app-textarea Component -->
           <div>
-            <label for="description" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+            <label
+              for="description"
+              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+            >
               Job Description
             </label>
             <app-textarea
               id="description"
-              formControlName="description"
+              [(content)]="description"
+              name="description"
               placeholder="Describe the job in detail"
-              ngDefaultControl
               required
             ></app-textarea>
           </div>
 
           <!-- Responsibilities using app-textarea Component -->
           <div>
-            <label for="responsibilities" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+            <label
+              for="responsibilities"
+              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+            >
               Responsibilities
             </label>
             <app-textarea
               id="responsibilities"
-              formControlName="responsibilities"
+              [(content)]="responsibilities"
+              name="responsibilities"
               placeholder="List the job responsibilities"
-              ngDefaultControl 
               required
             ></app-textarea>
           </div>
@@ -255,3 +317,11 @@
     </main>
   </div>
 </div>
+
+<!-- <button
+type="submit"
+class=" py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
+>
+Post a Job
+<img src="assets/icons/fi_arrow-right.svg" alt="Arrow Right Icon" class="w-5 h-5" />
+</button> -->
