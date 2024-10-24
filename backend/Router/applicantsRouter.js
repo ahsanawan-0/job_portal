@@ -3,7 +3,11 @@ const router = express.Router();
 const applicantsController = require("../controller/applicantsController");
 const upload = require("../helpers/fileHelper");
 
-const { getAllApplications } = require("../controller/applicantsController");
+const {
+  getAllApplications,
+  getApplicantsForJob,
+  createShortListedApplicantsForJob,
+} = require("../controller/applicantsController");
 
 // POST route to create a user with resume upload
 router.post(
@@ -13,5 +17,7 @@ router.post(
 );
 
 router.get("/getAllApplications", getAllApplications);
+router.get("/getApplicantsForJob/:jobId", getApplicantsForJob);
+router.post("/jobs/:jobId/shortlist", createShortListedApplicantsForJob);
 
 module.exports = router;

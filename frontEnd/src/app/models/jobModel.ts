@@ -48,10 +48,12 @@ export interface Job {
 }
 
 export interface jobCard {
+  id: string;
   title: string;
   type: string;
   remaining: string;
   status: string;
   applications: number;
   expirationDate: string;
+  applicants: string[];
 }

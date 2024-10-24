@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobApplicationService } from '../../services/job_application/job-application.service';
 
 @Component({
@@ -32,19 +32,32 @@ export class JobApplicationsComponent implements OnInit {
     this.dropdown[index] = !this.dropdown[index];
   }
 
+  activatedRoute = inject(ActivatedRoute);
+  jobId: string | null = null;
+  totalApplicants: number = 0;
+  jobTitle: string = '';
+  applicants: any[] = [];
+
   ngOnInit(): void {
-    this.getAllApplications();
+    this.activatedRoute.paramMap.subscribe((params) => {
+      this.jobId = params.get('id');
+      console.log(this.jobId);
+    });
+    this.getApplicantsForJob();
   }
 
-  totalApplicants: number = 0;
-  applications: any[] = [];
   service = inject(JobApplicationService);
 
-  getAllApplications() {
-    this.service.getAllApplications().subscribe((res: any) => {
-      this.applications = res.response;
+  getApplicantsForJob() {
+    this.service.getApplicantsForJob(this.jobId).subscribe((res: any) => {
+      this.applicants = res.response.applicants;
       this.totalApplicants = res.totalApplicants;
-      console.log('total applicants', this.totalApplicants);
+      this.jobTitle = res.response.jobTitle;
     });
+  }
+
+  createShortListedApplicant(applicantId: string) {
+    this.service.createShortlistedApplicant(this.jobId, applicantId);
+    this.getApplicantsForJob();
   }
 }

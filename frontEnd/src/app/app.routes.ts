@@ -43,7 +43,7 @@ export const routes: Routes = [
         component: DashboardComponent,
       },
       {
-        path: 'job-applications',
+        path: 'job-applications/:id',
         component: JobApplicationsComponent,
       },
       {
@@ -77,7 +77,7 @@ export const routes: Routes = [
       },
     ],
   },
-  
+
   {
     path: 'jobdetail/admin/:id',
     component: JobDetailComponent,
@@ -86,5 +86,4 @@ export const routes: Routes = [
     path: 'loader',
     component: LoaderComponent,
   },
-
 ];

@@ -78,7 +78,10 @@ module.exports = {
     const skip = (page - 1) * limit;
 
     try {
-      const { jobs, totalJobs } = await jobModel.getJobsForPagination(limit, skip);
+      const { jobs, totalJobs } = await jobModel.getJobsForPagination(
+        limit,
+        skip
+      );
       const simplifiedJobs = jobs.map((job) => ({
         id: job._id,
         jobTitle: job.jobTitle,
@@ -90,6 +93,7 @@ module.exports = {
             : "Expired",
         createdDate: job.createdAt,
         expirationDate: job.expirationDate,
+        applicants: job.applicants,
       }));
 
       res.status(200).json({ simplifiedJobs, totalJobs });
@@ -116,6 +120,7 @@ module.exports = {
             : "Expired",
         createdDate: job.createdAt,
         expirationDate: job.expirationDate,
+        applicants: job.applicants,
       }));
       res.status(200).json({ simplifiedJobs });
     } catch (error) {
@@ -169,7 +174,6 @@ module.exports = {
         return res.status(400).json({ message: "Invalid Job ID." });
       }
       const job = await jobModel.getJobById(jobId);
-
 
       if (!job) {
         return res.status(404).json({ message: "Job post not found." });

@@ -41,6 +41,7 @@ export class MyJobsComponent implements OnInit {
     this.service.getAllJobs(this.currentPage).subscribe(
       (res: any) => {
         this.job = res.simplifiedJobs.map((job: any) => ({
+          id: job.id,
           title: job.jobTitle,
           type: job.jobType,
           remaining: this.calculateRemainingDays(job.expirationDate),
@@ -80,12 +81,6 @@ export class MyJobsComponent implements OnInit {
     }
   }
 
-  // jobs = Array.from({ length: 30 }, (_, i) => i + 1);
-
-  // constructor() {
-  //   this.updatePaginatedJobs();
-  // }
-
   onClickThreeDots(index: number) {
     if (this.dropdownIndex === index) {
       this.dropdownIndex = null;
@@ -94,8 +89,8 @@ export class MyJobsComponent implements OnInit {
     }
   }
 
-  onClickViewApplication() {
-    this.route.navigateByUrl('job-applications');
+  onClickViewApplication(jobId: string) {
+    this.route.navigateByUrl(`job-applications/${jobId}`);
   }
 
   onPageChange(page: number): void {

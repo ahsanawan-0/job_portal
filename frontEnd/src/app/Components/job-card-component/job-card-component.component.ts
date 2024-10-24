@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { jobCard } from '../../models/jobModel';
 import { Router } from '@angular/router';
+import { CreateJobService } from '../../services/create_job/create-job.service';
 
 @Component({
   selector: 'app-job-card-component',
@@ -28,8 +29,10 @@ export class JobCardComponentComponent {
     }
   }
 
+  service = inject(CreateJobService);
+
   route = inject(Router);
-  onClickViewApplication() {
-    this.route.navigateByUrl('job-applications');
+  onClickViewApplication(jobId: string) {
+    this.route.navigateByUrl(`job-applications/${jobId}`);
   }
 }

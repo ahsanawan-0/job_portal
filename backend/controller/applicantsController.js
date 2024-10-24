@@ -104,4 +104,67 @@ const getAllApplications = async (req, res) => {
   }
 };
 
-module.exports = { ApplicantsApplyForJob, getAllApplications };
+const getApplicantsForJob = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    if (!jobId) {
+      return res.send({
+        message: "Job Id is required",
+      });
+    }
+
+    const applicantsData = await applicantModel.getApplicantsForJob(jobId);
+    const totalApplicants = applicantsData.response.applicants.length;
+    // console.log("in controller", applicantsData);
+    if (applicantsData.error) {
+      return res.send({
+        error: applicantsData.error,
+      });
+    }
+    return res.send({
+      message: "All Applicants for the Job",
+      response: applicantsData.response,
+      totalApplicants: totalApplicants,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+const createShortListedApplicantsForJob = async (req, res) => {
+  try {
+    const { applicantId } = req.body;
+    const jobId = req.params.jobId;
+    if (!jobId || !applicantId) {
+      return res.send({
+        message: "job id and applicant id is required",
+      });
+    }
+    const result = await applicantModel.createShortListedApplicantsForJob(
+      jobId,
+      applicantId
+    );
+    if (result.error) {
+      return res.send({
+        message: result.error,
+      });
+    }
+    return res.send({
+      message: "Short Listed Candidates",
+      response: result.response,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+module.exports = {
+  ApplicantsApplyForJob,
+  getAllApplications,
+  getApplicantsForJob,
+  createShortListedApplicantsForJob,
+};
