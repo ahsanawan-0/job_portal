@@ -35,14 +35,14 @@ export class JobApplicationService {
     return this.http.get(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
   }
 
-  createShortlistedApplicant(
-    jobId: string | null,
-    applicantId: string
-  ): Observable<any> {
-    const body = { applicantId };
-    return this.http.post(`${this.apiUrl}/jobs/:jobId/shortlist`, body, {
-      withCredentials: true,
+  createShortlistedApplicant(jobId: string | null, applicantId: string) {
+    return this.http.post(`${this.apiUrl}/jobs/${jobId}/shortlist`, {
+      applicantId,
     });
+  }
+
+  getAllShortListedApplicants(jobId: string | null) {
+    return this.http.get(`${this.apiUrl}/getAllShortListedApplicants/${jobId}`);
   }
 
   deleteApplication(applicationId: string): Observable<any> {

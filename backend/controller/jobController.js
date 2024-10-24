@@ -121,6 +121,7 @@ module.exports = {
         createdDate: job.createdAt,
         expirationDate: job.expirationDate,
         applicants: job.applicants,
+        shortListed: job.shortListedApplicants,
       }));
       res.status(200).json({ simplifiedJobs });
     } catch (error) {

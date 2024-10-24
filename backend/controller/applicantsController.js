@@ -41,7 +41,7 @@ const ApplicantsApplyForJob = async (req, res) => {
       jobTitle: job.jobTitle,
     });
 
-    console.log("sjdbnkjasd", newUser);
+    // console.log("sjdbnkjasd", newUser);
     await newUser.save();
     console.log(`User ${name} with email ${email} created successfully.`);
 
@@ -65,7 +65,7 @@ const ApplicantsApplyForJob = async (req, res) => {
       return res
         .status(500)
         .json({ error: "User created, but email sending failed" });
-         }
+    }
 
     res.status(201).json({
       message: "User created and applied for the job successfully",
@@ -131,7 +131,9 @@ const getApplicantsForJob = async (req, res) => {
 const createShortListedApplicantsForJob = async (req, res) => {
   try {
     const { applicantId } = req.body;
+    console.log("in controller applicantId", applicantId);
     const jobId = req.params.jobId;
+    console.log("in controller jobid", jobId);
     if (!jobId || !applicantId) {
       return res.send({
         message: "job id and applicant id is required",
@@ -148,7 +150,37 @@ const createShortListedApplicantsForJob = async (req, res) => {
     }
     return res.send({
       message: "Short Listed Candidates",
-      response: result.response,
+      response: result.response.shortListedApplicants,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+const getAllShortListedApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    if (!jobId) {
+      return res.send({
+        message: "Job Id is required",
+      });
+    }
+    const shortListedData = await applicantModel.getAllShortListedApplicants(
+      jobId
+    );
+    const totalShortListedApplicants =
+      shortListedData.response.shortListedApplicants.length;
+    if (shortListedData.error) {
+      return res.send({
+        error: shortListedData.error,
+      });
+    }
+    return res.send({
+      message: "All Short Listed Applicants for the Job",
+      response: shortListedData.response,
+      totalApplicants: totalShortListedApplicants,
     });
   } catch (error) {
     return res.send({
@@ -162,4 +194,5 @@ module.exports = {
   getAllApplications,
   getApplicantsForJob,
   createShortListedApplicantsForJob,
+  getAllShortListedApplicants,
 };

@@ -139,12 +139,13 @@
 
           <p class="font-medium text-sm text-custom-blue">Download CV</p>
         </div>
-        <div
-          class="flex justify-center p-2 gap-2 cursor-pointer"
-          (click)="createShortListedApplicant(item.id)"
-        >
-          <img src="assets/icons/tick.svg" />
-          <!-- <img src="assets/icons/Cross.svg" /> -->
+        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+          <button
+            (click)="createShortListedApplicant(item._id)"
+            [disabled]="isShortListed(item._id)"
+          >
+            {{ isShortListed(item._id) ? "Already ShortListed" : "ShortList" }}
+          </button>
         </div>
       </div>
     </div>
@@ -155,7 +156,7 @@
     >
       <div class="flex justify-between items-center relative">
         <p class="font-medium font-sans text-sm text-custom-black">
-          Shortlisted (3)
+          Shortlisted ({{ shortListedCount }})
         </p>
 
         <img
@@ -190,7 +191,7 @@
       </div>
 
       <div
-        *ngFor="let item of [1, 2, 3]"
+        *ngFor="let item of shortListedArray"
         class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
       >
         <div name class="flex items-center gap-3 p-4">
@@ -198,10 +199,10 @@
 
           <div class="flex flex-col gap-1">
             <p class="font-semibold text-sm text-custom-black">
-              Ronald Richards
+              {{ item.name }}
             </p>
 
-            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+            <p class="font-normal text-sm text-custom-gray">{{ jobTitle }}</p>
           </div>
         </div>
 
@@ -210,10 +211,10 @@
         <div info class="pl-5 pr-4 py-3">
           <ul class="list-disc list-inside">
             <li class="font-normal text-sm text-[#5E6670]">
-              7 Years Experience
+              Experience {{ item.experience }}
             </li>
             <li class="font-normal text-sm text-[#5E6670]">
-              Applied: Oct 10, 2024
+              Applied: {{ item.createdAt | date }}
             </li>
           </ul>
         </div>

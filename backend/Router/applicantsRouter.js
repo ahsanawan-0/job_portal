@@ -7,6 +7,7 @@ const {
   getAllApplications,
   getApplicantsForJob,
   createShortListedApplicantsForJob,
+  getAllShortListedApplicants,
 } = require("../controller/applicantsController");
 
 // POST route to create a user with resume upload
@@ -19,5 +20,6 @@ router.post(
 router.get("/getAllApplications", getAllApplications);
 router.get("/getApplicantsForJob/:jobId", getApplicantsForJob);
 router.post("/jobs/:jobId/shortlist", createShortListedApplicantsForJob);
+router.get("/getAllShortListedApplicants/:jobId", getAllShortListedApplicants);
 
 module.exports = router;

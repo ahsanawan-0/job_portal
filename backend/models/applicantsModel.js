@@ -23,7 +23,12 @@ module.exports = {
   },
   getApplicantsForJob: async (jobId) => {
     try {
-      const jobData = await Job.findById(jobId).populate("applicants").exec();
+      const jobData = await Job.findById(jobId)
+        .populate({
+          path: "applicants",
+          options: { sort: { createdAt: -1 } },
+        })
+        .exec();
 
       //   console.log("in model", applicants);
       if (jobData.error) {
@@ -46,6 +51,7 @@ module.exports = {
 
   createShortListedApplicantsForJob: async (jobId, applicantId) => {
     try {
+      console.log("in model applicantId", applicantId);
       const addToShortListed = await Job.findByIdAndUpdate(
         jobId,
         {
@@ -62,6 +68,33 @@ module.exports = {
       }
       return {
         response: addToShortListed,
+      };
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  },
+  getAllShortListedApplicants: async (jobId) => {
+    try {
+      const jobData = await Job.findById(jobId)
+        .populate({
+          path: "shortListedApplicants",
+          options: { sort: { createdAt: -1 } },
+        })
+        .exec();
+
+      //   console.log("in model", applicants);
+      if (!jobData) {
+        return {
+          error: jobData.error,
+        };
+      }
+      return {
+        response: {
+          shortListedApplicants: jobData.shortListedApplicants,
+          jobTitle: jobData.jobTitle,
+        },
       };
     } catch (error) {
       return {

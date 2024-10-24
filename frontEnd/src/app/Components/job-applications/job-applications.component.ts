@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-
+import { alert, notice } from '@pnotify/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobApplicationService } from '../../services/job_application/job-application.service';
 
@@ -44,6 +44,7 @@ export class JobApplicationsComponent implements OnInit {
       console.log(this.jobId);
     });
     this.getApplicantsForJob();
+    this.getAllShortListedApplicants();
   }
 
   service = inject(JobApplicationService);
@@ -55,9 +56,28 @@ export class JobApplicationsComponent implements OnInit {
       this.jobTitle = res.response.jobTitle;
     });
   }
-
+  shortListed: any[] = [];
   createShortListedApplicant(applicantId: string) {
-    this.service.createShortlistedApplicant(this.jobId, applicantId);
+    this.service
+      .createShortlistedApplicant(this.jobId, applicantId)
+      .subscribe((res: any) => {
+        this.shortListed = res.response;
+      });
     this.getApplicantsForJob();
+    this.getAllShortListedApplicants();
+  }
+  shortListedArray: any[] = [];
+  shortListedCount: number = 0;
+
+  getAllShortListedApplicants() {
+    this.service
+      .getAllShortListedApplicants(this.jobId)
+      .subscribe((res: any) => {
+        this.shortListedArray = res.response.shortListedApplicants;
+        this.shortListedCount = res.totalApplicants;
+      });
+  }
+  isShortListed(applicantId: string): boolean {
+    return this.shortListedArray.includes(applicantId);
   }
 }
