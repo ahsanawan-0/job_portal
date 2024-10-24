@@ -1,43 +1,35 @@
-const multer = require('multer');
-const path = require('path');
+// helpers/fileUpload.js
+const { google } = require('googleapis');
 const fs = require('fs');
+const path = require('path');
 
-// Set the destination for file uploads
-const uploadDir = path.join(__dirname, 'uploads', 'resumes');
+// Load service account credentials
+const SERVICE_ACCOUNT_FILE = path.join(__dirname, '..', 'helpers', 'angular-436922-3b1a603e8eb2.json');
+const auth = new google.auth.GoogleAuth({
+  keyFile: SERVICE_ACCOUNT_FILE,
+  scopes: ['https://www.googleapis.com/auth/drive.file'],
+});
 
-// Check and create the directory if it doesn't exist
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+// Function to upload file to a specific Google Drive folder
+async function uploadFile(filePath, mimeType, folderId) {
+  const drive = google.drive({ version: 'v3', auth });
+  const fileMetadata = {
+    name: path.basename(filePath),
+    parents: [folderId], // Specify the folder ID to upload the file into
+  };
+
+  const media = {
+    mimeType: mimeType,
+    body: fs.createReadStream(filePath),
+  };
+
+  const response = await drive.files.create({
+    resource: fileMetadata,
+    media: media,
+    fields: 'id',
+  });
+
+  return response.data.id; // Returns the file ID
 }
 
-// Set file storage engine
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    },
-});
-
-// File filter to allow only PDF files and limit file size to 5MB
-const fileFilter = (req, file, cb) => {
-    const fileTypes = /pdf/;
-    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimeType = fileTypes.test(file.mimetype);
-
-    if (mimeType && extname) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Error: Only PDFs are allowed')); // Return an Error object
-    }
-};
-
-// Configure multer middleware
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: fileFilter,
-});
-
-module.exports = upload;
+module.exports = { uploadFile };

@@ -34,10 +34,12 @@ const applicantsSchema = new mongoose.Schema(
       required: [true, "Cover letter is required"],
     },
     resume: {
-      type: String, // Path to the resume file
+      type: String, 
       required: [true, "Resume is required"],
     },
-    jobTitle: { type: String, required: true }, // Ensure this field exists
+    jobTitle: { type: String, required: true }, 
+    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }], 
+
 
   },
   {
