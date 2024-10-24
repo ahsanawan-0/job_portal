@@ -23,7 +23,7 @@ const ApplicantsApplyForJob = async (req, res) => {
       return res.status(400).json({ error: "Resume file is required" });
     }
 
-    const folderId = '1aRPTiKq40lw-MOR5QJ7hDNtnSh8jNxXc';
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
     // Upload the resume to Google Drive
     const resumeId = await uploadFile(req.file.path, req.file.mimetype, folderId);
