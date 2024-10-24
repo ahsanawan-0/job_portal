@@ -31,6 +31,20 @@ export class JobApplicationService {
     return this.http.get(`${this.apiUrl}/getAllApplications`);
   }
 
+  getApplicantsForJob(jobId: string | null) {
+    return this.http.get(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
+  }
+
+  createShortlistedApplicant(
+    jobId: string | null,
+    applicantId: string
+  ): Observable<any> {
+    const body = { applicantId };
+    return this.http.post(`${this.apiUrl}/jobs/:jobId/shortlist`, body, {
+      withCredentials: true,
+    });
+  }
+
   deleteApplication(applicationId: string): Observable<any> {
     return this.http
       .delete(`${this.apiUrl}/applications/${applicationId}`, {

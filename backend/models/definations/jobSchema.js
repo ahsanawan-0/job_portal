@@ -1,5 +1,5 @@
 // models/definitions/jobDefinition.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema(
   {
@@ -13,9 +13,9 @@ const jobSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (arr) {
-          return arr.length > 0;  // At least one tag is required
+          return arr.length > 0; // At least one tag is required
         },
-        message: 'At least one tag is required.',
+        message: "At least one tag is required.",
       },
     },
     location: {
@@ -25,45 +25,47 @@ const jobSchema = new mongoose.Schema(
     minSalary: {
       type: Number,
       required: true,
-      min: 0,  // Salary must be a positive number
+      min: 0, // Salary must be a positive number
     },
     maxSalary: {
       type: Number,
       required: true,
-      min: 0,  // Salary must be a positive number
+      min: 0, // Salary must be a positive number
     },
     education: {
       type: String,
       enum: [
         "Bachelor's Degree",
         "Master's Degree",
-        'Bachelors',
-        'Masters',
-        'PhD',
-        'Ph.D.',
-        'Diploma',
-        'High School'
-      ],  // Added "Bachelor's Degree" and "Master's Degree"
+        "Bachelors",
+        "Masters",
+        "PhD",
+        "Ph.D.",
+        "Diploma",
+        "High School",
+      ], // Added "Bachelor's Degree" and "Master's Degree"
       required: true,
     },
     experience: {
-      type: String,  // Ensure this is a string to match frontend values like "5+ Years"
+      type: String, // Ensure this is a string to match frontend values like "5+ Years"
       required: true,
-      enum: ['1-2 Years', '3-5 Years', '5+ Years'],  // Allowed experience levels
+      enum: ["1-2 Years", "3-5 Years", "5+ Years"], // Allowed experience levels
     },
     jobType: {
       type: String,
-      enum: ['Internship', 'Full-Time', 'Part-Time', 'Contract'],
+      enum: ["Internship", "Full-Time", "Part-Time", "Contract"],
       required: false,
     },
-    vacancies: {  // Ensure the field name matches between frontend and backend
+    vacancies: {
+      // Ensure the field name matches between frontend and backend
       type: Number,
       required: true,
-      min: 1,  // At least one vacancy is required
+      min: 1, // At least one vacancy is required
     },
-    jobRole: { // Added 'jobRole'
+    jobRole: {
+      // Added 'jobRole'
       type: String,
-      enum: ['Junior', 'Mid', 'Senior', 'Lead'], // Define allowed job roles
+      enum: ["Junior", "Mid", "Senior", "Lead"], // Define allowed job roles
       required: false,
     },
     expirationDate: {
@@ -80,10 +82,12 @@ const jobSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Applicants' }], // Array of applicant IDs
-
+    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }], // Array of applicant IDs
+    shortListedApplicants: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Applicants" },
+    ], // Array of applicant IDs
   },
-  { timestamps: true }  // Automatically manage createdAt and updatedAt fields
+  { timestamps: true } // Automatically manage createdAt and updatedAt fields
 );
 
-module.exports = jobSchema;  // Export only the schema
+module.exports = jobSchema; // Export only the schema

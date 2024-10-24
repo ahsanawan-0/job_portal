@@ -35,6 +35,7 @@ export class MainSectionComponent implements OnInit {
   getAllRecentJobs() {
     this.service.getAllRecentJobs().subscribe((res: any) => {
       this.applications = res.simplifiedJobs.map((job: any) => ({
+        id: job.id,
         title: job.jobTitle,
         type: job.jobType,
         remaining: this.calculateRemainingDays(job.expirationDate),
