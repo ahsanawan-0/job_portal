@@ -4,14 +4,15 @@ const mongoose = require('mongoose');
 const evaluationSchema = new mongoose.Schema({
     correctnessPercentage: { type: Number, default: null },
     remark: { type: String, default: null }
-}, { _id: false }); // Disable _id for subdocuments
+}, { _id: false });
 
 // Define the question schema
 const questionSchema = new mongoose.Schema({
-    question: { type: String, required: true }, // The question text
-    answer: { type: String, default: null },    // The user's answer
-    evaluation: { type: evaluationSchema, default: {} } // Evaluation results
-}, { _id: false }); // Disable _id for subdocuments
+    question: { type: String, required: true },
+    options: { type: [String], required: true }, // Array of options for the MCQ
+    answer: { type: String, default: null },
+    evaluation: { type: evaluationSchema, default: {} }
+}, { _id: false });
 
 // Define the test schema
 const testSchema = new mongoose.Schema({
@@ -20,13 +21,10 @@ const testSchema = new mongoose.Schema({
     experience_level: { type: String, required: true },
     field: { type: String, required: true },
     interview_time: { type: String, required: true },
-    questions: { 
-        type: [questionSchema],  // Store questions as an array of objects
-        required: true 
-    },
-    createdAt: { type: Date, default: Date.now },  // Automatically set the creation date
+    questions: { type: [questionSchema], required: true },
+    createdAt: { type: Date, default: Date.now }
 }, {
-    versionKey: false // Optional: Disable the __v field
+    versionKey: false
 });
 
 // Export the model
