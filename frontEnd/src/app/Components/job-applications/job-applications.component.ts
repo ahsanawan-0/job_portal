@@ -37,6 +37,7 @@ export class JobApplicationsComponent implements OnInit {
   totalApplicants: number = 0;
   jobTitle: string = '';
   applicants: any[] = [];
+  jobExpirationDate: string | null = null;
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
@@ -45,6 +46,8 @@ export class JobApplicationsComponent implements OnInit {
     });
     this.getApplicantsForJob();
     this.getAllShortListedApplicants();
+    this.getAllTestInvitedApplicants();
+    this.getAllHiredApplicants();
   }
 
   service = inject(JobApplicationService);
@@ -54,6 +57,9 @@ export class JobApplicationsComponent implements OnInit {
       this.applicants = res.response.applicants;
       this.totalApplicants = res.totalApplicants;
       this.jobTitle = res.response.jobTitle;
+      this.jobExpirationDate = res.response.expirationDate;
+
+      this.extractApplicantId();
     });
   }
   shortListed: any[] = [];
@@ -74,10 +80,102 @@ export class JobApplicationsComponent implements OnInit {
       .getAllShortListedApplicants(this.jobId)
       .subscribe((res: any) => {
         this.shortListedArray = res.response.shortListedApplicants;
+        console.log('shortListed', this.shortListedArray);
         this.shortListedCount = res.totalApplicants;
+        this.extractShortListedId();
       });
   }
+
+  shortListedId: any[] = [];
+  extractShortListedId() {
+    this.shortListedId = this.shortListedArray.map((id) => id._id);
+    console.log(this.shortListedId);
+  }
+
+  applicantId: any[] = [];
+  extractApplicantId() {
+    this.applicantId = this.applicants.map((id) => id._id);
+    console.log(this.applicantId);
+    console.log('expired boolean', this.isJobExpired());
+  }
+
+  isJobExpired(): boolean {
+    if (this.jobExpirationDate === null) {
+      return false;
+    }
+    const expirationDate = new Date(this.jobExpirationDate);
+    return new Date() > expirationDate;
+  }
+
   isShortListed(applicantId: string): boolean {
-    return this.shortListedArray.includes(applicantId);
+    return this.shortListedId.includes(applicantId);
+  }
+
+  testInvited: any[] = [];
+  createShortListedApplicantsForJob(applicantId: string) {
+    this.service
+      .createTestInvitedApplicantsForJob(this.jobId, applicantId)
+      .subscribe((res: any) => {
+        this.testInvited = res.response;
+      });
+    this.getApplicantsForJob();
+    this.getAllTestInvitedApplicants();
+  }
+
+  testInvitedArray: any[] = [];
+  testInvitedCount: number = 0;
+
+  getAllTestInvitedApplicants() {
+    this.service
+      .getAllTestInvitedApplicants(this.jobId)
+      .subscribe((res: any) => {
+        this.testInvitedArray = res.response.testInvitedApplicants;
+        console.log('testInvited', this.shortListedArray);
+        this.testInvitedCount = res.totalApplicants;
+        this.extractTestInvitedId();
+      });
+  }
+
+  testInvitedId: any[] = [];
+  extractTestInvitedId() {
+    this.testInvitedId = this.testInvitedArray.map((id) => id._id);
+    console.log(this.testInvitedId);
+  }
+
+  isTestInvited(applicantId: string): boolean {
+    return this.testInvitedId.includes(applicantId);
+  }
+
+  hiredApplicant: any[] = [];
+  createHiredApplicantsForJob(applicantId: string) {
+    this.service
+      .createHiredApplicantsForJob(this.jobId, applicantId)
+      .subscribe((res: any) => {
+        this.hiredApplicant = res.response;
+      });
+    this.getApplicantsForJob();
+    this.getAllHiredApplicants();
+  }
+
+  hiredApplicantArray: any[] = [];
+  hiredApplicantCount: number = 0;
+
+  getAllHiredApplicants() {
+    this.service.getAllHiredApplicants(this.jobId).subscribe((res: any) => {
+      this.hiredApplicantArray = res.response.hiredApplicants;
+      console.log('hired', this.hiredApplicantArray);
+      this.hiredApplicantCount = res.totalApplicants;
+      this.extractHiredId();
+    });
+  }
+
+  hiredId: any[] = [];
+  extractHiredId() {
+    this.hiredId = this.hiredApplicantArray.map((id) => id._id);
+    console.log(this.hiredId);
+  }
+
+  isHired(applicantId: string): boolean {
+    return this.hiredId.includes(applicantId);
   }
 }

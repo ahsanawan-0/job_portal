@@ -94,6 +94,9 @@ module.exports = {
         createdDate: job.createdAt,
         expirationDate: job.expirationDate,
         applicants: job.applicants,
+        shortListed: job.shortListedApplicants,
+        testInvitedApplicants: job.testInvitedApplicants,
+        hiredApplicants: job.hiredApplicants,
       }));
 
       res.status(200).json({ simplifiedJobs, totalJobs });
@@ -122,6 +125,8 @@ module.exports = {
         expirationDate: job.expirationDate,
         applicants: job.applicants,
         shortListed: job.shortListedApplicants,
+        testInvitedApplicants: job.testInvitedApplicants,
+        hiredApplicants: job.hiredApplicants,
       }));
       res.status(200).json({ simplifiedJobs });
     } catch (error) {
@@ -145,6 +150,16 @@ module.exports = {
         (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
       ).length;
 
+      const totalShortlistedApplicants = jobs.reduce((count, job) => {
+        return (
+          count +
+          (job.shortListedApplicants ? job.shortListedApplicants.length : 0)
+        );
+      }, 0);
+      const totalHiredApplicants = jobs.reduce((count, job) => {
+        return count + (job.hiredApplicants ? job.hiredApplicants.length : 0);
+      }, 0);
+
       // const simplifiedJobs = jobs.map((job) => ({
       //   id: job._id,
       //   jobTitle: job.jobTitle,
@@ -157,7 +172,13 @@ module.exports = {
       //   createdDate: job.createdAt,
       //   expirationDate: job.expirationDate,
       // }));
-      res.status(200).json({ totalJobs, expiredJobs, activeJobs });
+      res.status(200).json({
+        totalJobs,
+        expiredJobs,
+        activeJobs,
+        totalShortlistedApplicants,
+        totalHiredApplicants,
+      });
     } catch (error) {
       console.error("Error fetching recent job posts:", error.message);
       res.status(500).json({

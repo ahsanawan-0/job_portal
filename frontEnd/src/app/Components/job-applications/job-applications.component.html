@@ -65,7 +65,7 @@
     <!-- <div class="overflow-y-auto max-h-[500px] w-full "> -->
     <div
       cards
-      class="border border-[#E4E5E8] w-1/4 py-4 px-5 rounded-md bg-[#F1F2F4] h-[300px] overflow-auto"
+      class="border border-[#E4E5E8] w-1/4 py-4 px-4 rounded-md bg-[#F1F2F4] h-[300px] overflow-auto"
     >
       <div class="flex justify-between items-center relative">
         <p class="font-medium font-sans text-sm text-custom-black">
@@ -139,12 +139,28 @@
 
           <p class="font-medium text-sm text-custom-blue">Download CV</p>
         </div>
-        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+        <div class="flex flex-col items-center justify-center p-2 gap-2">
+          <p class="text-sm text-gray-500" *ngIf="!isShortListed(item._id)">
+            Click to Short List
+          </p>
           <button
             (click)="createShortListedApplicant(item._id)"
-            [disabled]="isShortListed(item._id)"
+            [disabled]="isJobExpired() || isShortListed(item._id)"
+            [ngClass]="{
+              'bg-gray-400 text-white': isJobExpired(),
+              'bg-green-500 ': !isJobExpired() && isShortListed(item._id),
+              'bg-blue-500 text-white cursor-pointer':
+                !isJobExpired() && !isShortListed(item._id)
+            }"
+            class="px-4 py-2 rounded-md cursor-pointer"
           >
-            {{ isShortListed(item._id) ? "Already ShortListed" : "ShortList" }}
+            {{
+              isJobExpired()
+                ? "Job Expired"
+                : isShortListed(item._id)
+                ? "Already ShortListed"
+                : "Short List"
+            }}
           </button>
         </div>
       </div>
@@ -152,7 +168,7 @@
 
     <div
       cards
-      class="border border-[#E4E5E8] w-1/4 py-4 px-5 rounded-md bg-[#F1F2F4]"
+      class="border border-[#E4E5E8] w-1/4 py-4 px-4 rounded-md bg-[#F1F2F4]"
     >
       <div class="flex justify-between items-center relative">
         <p class="font-medium font-sans text-sm text-custom-black">
@@ -208,7 +224,7 @@
 
         <hr class="border border-[#E4E5E8] mx-4" />
 
-        <div info class="pl-5 pr-4 py-3">
+        <div info class="my-4">
           <ul class="list-disc list-inside">
             <li class="font-normal text-sm text-[#5E6670]">
               Experience {{ item.experience }}
@@ -224,9 +240,31 @@
 
           <p class="font-medium text-sm text-custom-blue">Download CV</p>
         </div>
-        <div class="flex justify-center p-2 gap-2 cursor-pointer">
-          <img src="assets/icons/tick.svg" />
-          <img src="assets/icons/Cross.svg" />
+        <div
+          class="flex flex-col justify-center items-center p-2 gap-2 cursor-pointer"
+        >
+          <p class="text-sm text-gray-500" *ngIf="!isTestInvited(item._id)">
+            Click to invite for a test
+          </p>
+          <button
+            (click)="createShortListedApplicantsForJob(item._id)"
+            [disabled]="isJobExpired() || isTestInvited(item._id)"
+            [ngClass]="{
+              'bg-gray-400 text-white': isJobExpired(),
+              'bg-green-500 ': !isJobExpired() && isTestInvited(item._id),
+              'bg-blue-500 text-white cursor-pointer':
+                !isJobExpired() && !isTestInvited(item._id)
+            }"
+            class="px-4 py-2 rounded-md cursor-pointer"
+          >
+            {{
+              isJobExpired()
+                ? "Job Expired"
+                : isTestInvited(item._id)
+                ? "Already Invited"
+                : "Invite For Test"
+            }}
+          </button>
         </div>
       </div>
     </div>
@@ -237,7 +275,7 @@
     >
       <div class="flex justify-between items-center relative">
         <p class="font-medium font-sans text-sm text-custom-black">
-          Test Invite (2)
+          Test Invite ({{ testInvitedCount }})
         </p>
 
         <img
@@ -272,7 +310,7 @@
       </div>
 
       <div
-        *ngFor="let item of [1, 2]"
+        *ngFor="let item of testInvitedArray"
         class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
       >
         <div name class="flex items-center gap-3 p-4">
@@ -280,22 +318,22 @@
 
           <div class="flex flex-col gap-1">
             <p class="font-semibold text-sm text-custom-black">
-              Ronald Richards
+              {{ item.name }}
             </p>
 
-            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+            <p class="font-normal text-sm text-custom-gray">{{ jobTitle }}</p>
           </div>
         </div>
 
         <hr class="border border-[#E4E5E8] mx-4" />
 
-        <div info class="pl-5 pr-4 py-3">
+        <div info class="my-4">
           <ul class="list-disc list-inside">
             <li class="font-normal text-sm text-[#5E6670]">
-              7 Years Experience
+              Experience {{ item.experience }}
             </li>
             <li class="font-normal text-sm text-[#5E6670]">
-              Applied: Oct 10, 2024
+              Applied: {{ item.createdAt | date }}
             </li>
           </ul>
         </div>
@@ -305,9 +343,31 @@
 
           <p class="font-medium text-sm text-custom-blue">Download CV</p>
         </div>
-        <div class="flex justify-center p-2 gap-2 cursor-pointer">
-          <img src="assets/icons/tick.svg" />
-          <img src="assets/icons/Cross.svg" />
+        <div
+          class="flex flex-col items-center justify-center p-2 gap-2 cursor-pointer"
+        >
+          <p class="text-sm text-gray-500" *ngIf="!isHired(item._id)">
+            Click to Hire
+          </p>
+          <button
+            (click)="createHiredApplicantsForJob(item._id)"
+            [disabled]="isJobExpired() || isHired(item._id)"
+            [ngClass]="{
+              'bg-gray-400 text-white': isJobExpired(),
+              'bg-green-500 ': !isJobExpired() && isHired(item._id),
+              'bg-blue-500 text-white cursor-pointer':
+                !isJobExpired() && !isHired(item._id)
+            }"
+            class="px-4 py-2 rounded-md cursor-pointer"
+          >
+            {{
+              isJobExpired()
+                ? "Job Expired"
+                : isHired(item._id)
+                ? "Already Hired"
+                : "Hire"
+            }}
+          </button>
         </div>
       </div>
     </div>
@@ -318,7 +378,7 @@
     >
       <div class="flex justify-between items-center relative">
         <p class="font-medium font-sans text-sm text-custom-black">
-          Hired Candidates (2)
+          Hired Candidates ({{ hiredApplicantCount }})
         </p>
 
         <img
@@ -353,7 +413,7 @@
       </div>
 
       <div
-        *ngFor="let item of [1, 2]"
+        *ngFor="let item of hiredApplicantArray"
         class="border border-[#E4E5E8] my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
       >
         <div name class="flex items-center gap-3 p-4">
@@ -361,22 +421,22 @@
 
           <div class="flex flex-col gap-1">
             <p class="font-semibold text-sm text-custom-black">
-              Ronald Richards
+              {{ item.name }}
             </p>
 
-            <p class="font-normal text-sm text-custom-gray">UI/UX Designer</p>
+            <p class="font-normal text-sm text-custom-gray">{{ jobTitle }}</p>
           </div>
         </div>
 
         <hr class="border border-[#E4E5E8] mx-4" />
 
-        <div info class="pl-5 pr-4 py-3">
+        <div info class="my-4">
           <ul class="list-disc list-inside">
             <li class="font-normal text-sm text-[#5E6670]">
-              7 Years Experience
+              Experience {{ item.experience }}
             </li>
             <li class="font-normal text-sm text-[#5E6670]">
-              Applied: Oct 10, 2024
+              Applied: {{ item.createdAt | date }}
             </li>
           </ul>
         </div>
@@ -386,10 +446,10 @@
 
           <p class="font-medium text-sm text-custom-blue">Download CV</p>
         </div>
-        <div class="flex justify-center p-2 gap-2 cursor-pointer">
+        <!-- <div class="flex justify-center p-2 gap-2 cursor-pointer">
           <img src="assets/icons/tick.svg" />
           <img src="assets/icons/Cross.svg" />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

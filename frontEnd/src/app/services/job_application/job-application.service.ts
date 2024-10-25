@@ -45,6 +45,26 @@ export class JobApplicationService {
     return this.http.get(`${this.apiUrl}/getAllShortListedApplicants/${jobId}`);
   }
 
+  createTestInvitedApplicantsForJob(jobId: string | null, applicantId: string) {
+    return this.http.post(`${this.apiUrl}/jobs/${jobId}/testInvite`, {
+      applicantId,
+    });
+  }
+
+  getAllTestInvitedApplicants(jobId: string | null) {
+    return this.http.get(`${this.apiUrl}/getAllTestInvitedApplicants/${jobId}`);
+  }
+
+  createHiredApplicantsForJob(jobId: string | null, applicantId: string) {
+    return this.http.post(`${this.apiUrl}/jobs/${jobId}/hiredApplicant`, {
+      applicantId,
+    });
+  }
+
+  getAllHiredApplicants(jobId: string | null) {
+    return this.http.get(`${this.apiUrl}/getAllHiredApplicants/${jobId}`);
+  }
+
   deleteApplication(applicationId: string): Observable<any> {
     return this.http
       .delete(`${this.apiUrl}/applications/${applicationId}`, {

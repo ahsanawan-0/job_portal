@@ -131,9 +131,9 @@ const getApplicantsForJob = async (req, res) => {
 const createShortListedApplicantsForJob = async (req, res) => {
   try {
     const { applicantId } = req.body;
-    console.log("in controller applicantId", applicantId);
+    // console.log("in controller applicantId", applicantId);
     const jobId = req.params.jobId;
-    console.log("in controller jobid", jobId);
+    // console.log("in controller jobid", jobId);
     if (!jobId || !applicantId) {
       return res.send({
         message: "job id and applicant id is required",
@@ -189,10 +189,135 @@ const getAllShortListedApplicants = async (req, res) => {
   }
 };
 
+const createTestInvitedApplicantsForJob = async (req, res) => {
+  try {
+    const { applicantId } = req.body;
+    console.log("in controller applicantId", applicantId);
+    const jobId = req.params.jobId;
+    console.log("in controller jobid", jobId);
+    if (!jobId || !applicantId) {
+      return res.send({
+        message: "job id and applicant id is required",
+      });
+    }
+    const result = await applicantModel.createTestInvitedApplicantsForJob(
+      jobId,
+      applicantId
+    );
+    if (result.error) {
+      return res.send({
+        message: result.error,
+      });
+    }
+    return res.send({
+      message: "Test Invited Candidate",
+      response: result.response.addToTestInvited,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+const getAllTestInvitedApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    if (!jobId) {
+      return res.send({
+        message: "Job Id is required",
+      });
+    }
+    const testInvitedData = await applicantModel.getAllTestInvitedApplicants(
+      jobId
+    );
+
+    const totalTestInvitedApplicants =
+      testInvitedData.response.testInvitedApplicants.length;
+    if (testInvitedData.error) {
+      return res.send({
+        error: testInvitedData.error,
+      });
+    }
+    return res.send({
+      message: "All Test Invited Applicants for the Job",
+      response: testInvitedData.response,
+      totalApplicants: totalTestInvitedApplicants,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+const createHiredApplicantsForJob = async (req, res) => {
+  try {
+    const { applicantId } = req.body;
+    console.log("in controller applicantId", applicantId);
+    const jobId = req.params.jobId;
+    console.log("in controller jobid", jobId);
+    if (!jobId || !applicantId) {
+      return res.send({
+        message: "job id and applicant id is required",
+      });
+    }
+    const result = await applicantModel.createHiredApplicantsForJob(
+      jobId,
+      applicantId
+    );
+    if (result.error) {
+      return res.send({
+        message: result.error,
+      });
+    }
+    return res.send({
+      message: "Hired Candidate",
+      response: result.response.addToHired,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
+const getAllHiredApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    if (!jobId) {
+      return res.send({
+        message: "Job Id is required",
+      });
+    }
+    const HiredData = await applicantModel.getAllHiredApplicants(jobId);
+
+    const totalHiredApplicants = HiredData.response.hiredApplicants.length;
+    if (HiredData.error) {
+      return res.send({
+        error: HiredData.error,
+      });
+    }
+    return res.send({
+      message: "All Hired Applicants for the Job",
+      response: HiredData.response,
+      totalApplicants: totalHiredApplicants,
+    });
+  } catch (error) {
+    return res.send({
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   ApplicantsApplyForJob,
   getAllApplications,
   getApplicantsForJob,
   createShortListedApplicantsForJob,
   getAllShortListedApplicants,
+  createTestInvitedApplicantsForJob,
+  getAllTestInvitedApplicants,
+  createHiredApplicantsForJob,
+  getAllHiredApplicants,
 };
