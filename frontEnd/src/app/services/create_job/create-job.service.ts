@@ -44,6 +44,12 @@ export class CreateJobService {
       .pipe(catchError(this.handleError));
   }
 
+  updateJobStatus(jobId: string, status: string): Observable<any> {
+    return this.http
+      .put<any>(`${this.apiUrl}/jobs/${jobId}/status`, { status })
+      .pipe(catchError(this.handleError));
+  }
+
   // Method to get a job by ID
   getJobById(jobId: string): Observable<ApiPostModel> {
     return this.http

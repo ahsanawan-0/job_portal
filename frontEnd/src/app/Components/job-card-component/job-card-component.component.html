@@ -68,22 +68,32 @@
     />
     <div
       *ngIf="dropdownIndex === i"
-      class="absolute bg-white shadow-md rounded-md py-3 border z-10 mt-2 left-0"
+      class="absolute bg-white shadow-md rounded-md py-3 border z-10 top-20"
     >
       <ul class="list-none py-2 pl-2 pr-7">
         <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
           <div class="flex gap-2">
             <img src="assets/icons/Eye.svg" />
-            <p class="font-sans font-medium text-sm text-[#5E6670]">
+            <p
+              class="font-sans font-medium text-sm text-[#5E6670]"
+              (click)="onClickViewDetail(job.id)"
+            >
               View Detail
             </p>
           </div>
         </li>
-        <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+        <li
+          class="py-2 px-4 hover:bg-gray-100"
+          [ngClass]="{
+            'cursor-pointer': job.status !== 'Expired',
+            ' opacity-50': job.status === 'Expired'
+          }"
+        >
           <div class="flex gap-2">
             <img src="assets/icons/XCircle.svg" />
             <p
               class="font-sans font-normal text-sm text-[#5E6670] whitespace-nowrap"
+              (click)="job.status !== 'Expired' && markAsExpired(job.id)"
             >
               Mark as expired
             </p>

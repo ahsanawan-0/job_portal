@@ -38,6 +38,7 @@ export class JobApplicationsComponent implements OnInit {
   jobTitle: string = '';
   applicants: any[] = [];
   jobExpirationDate: string | null = null;
+  jobStatus: string = '';
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
@@ -58,6 +59,7 @@ export class JobApplicationsComponent implements OnInit {
       this.totalApplicants = res.totalApplicants;
       this.jobTitle = res.response.jobTitle;
       this.jobExpirationDate = res.response.expirationDate;
+      this.jobStatus = res.response.status;
 
       this.extractApplicantId();
     });
@@ -100,11 +102,12 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   isJobExpired(): boolean {
-    if (this.jobExpirationDate === null) {
-      return false;
+    if (this.jobStatus === 'Expired') {
+      return true;
     }
-    const expirationDate = new Date(this.jobExpirationDate);
-    return new Date() > expirationDate;
+    return false;
+    // const expirationDate = new Date(this.jobExpirationDate);
+    // return new Date() > expirationDate;
   }
 
   isShortListed(applicantId: string): boolean {

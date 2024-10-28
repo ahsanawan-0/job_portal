@@ -77,6 +77,11 @@ const jobSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    status: {
+      type: String,
+      enum: ["Active", "Expired"],
+      // default: "Active",
+    },
     responsibilities: {
       type: String,
       required: true,

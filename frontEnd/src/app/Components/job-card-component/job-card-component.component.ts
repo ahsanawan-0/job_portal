@@ -3,6 +3,9 @@ import { Component, inject, Input } from '@angular/core';
 import { jobCard } from '../../models/jobModel';
 import { Router } from '@angular/router';
 import { CreateJobService } from '../../services/create_job/create-job.service';
+import { success, error } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
 
 @Component({
   selector: 'app-job-card-component',
@@ -31,8 +34,24 @@ export class JobCardComponentComponent {
 
   service = inject(CreateJobService);
 
+  markAsExpired(jobId: string) {
+    this.service.updateJobStatus(jobId, 'Expired').subscribe((res: any) => {
+      if (res.message) {
+        success({
+          text: 'Job is Expired!',
+          delay: 3000,
+          width: '300px',
+        });
+      }
+    });
+  }
+
   route = inject(Router);
   onClickViewApplication(jobId: string) {
     this.route.navigateByUrl(`job-applications/${jobId}`);
+  }
+
+  onClickViewDetail(jobId: string) {
+    this.route.navigateByUrl(`jobdetail/admin/${jobId}`);
   }
 }

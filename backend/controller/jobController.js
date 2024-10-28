@@ -42,6 +42,10 @@ module.exports = {
           .status(400)
           .json({ message: "Min Salary cannot be greater than Max Salary." });
       }
+      const status =
+        new Date(expirationDate).getTime() > new Date().getTime()
+          ? "Active"
+          : "Expired";
 
       const jobData = {
         jobTitle,
@@ -56,6 +60,7 @@ module.exports = {
         expirationDate,
         description,
         responsibilities,
+        status,
       };
 
       const newJob = await jobModel.createJob(jobData);
@@ -87,10 +92,10 @@ module.exports = {
         jobTitle: job.jobTitle,
         noOfApplications: job.applicants.length,
         jobType: job.jobType,
-        status:
-          new Date(job.expirationDate).getTime() > new Date().getTime()
-            ? "Active"
-            : "Expired",
+        status: job.status,
+        // new Date(job.expirationDate).getTime() > new Date().getTime()
+        //   ? "Active"
+        //   : "Expired",
         createdDate: job.createdAt,
         expirationDate: job.expirationDate,
         applicants: job.applicants,
@@ -117,10 +122,7 @@ module.exports = {
         jobTitle: job.jobTitle,
         noOfApplications: job.applicants.length,
         jobType: job.jobType,
-        status:
-          new Date(job.expirationDate).getTime() > new Date().getTime()
-            ? "Active"
-            : "Expired",
+        status: job.status,
         createdDate: job.createdAt,
         expirationDate: job.expirationDate,
         applicants: job.applicants,
@@ -143,12 +145,14 @@ module.exports = {
       const jobs = await jobModel.getAllJobsForCount();
 
       const totalJobs = jobs.length;
-      const activeJobs = jobs.filter(
-        (job) => new Date(job.expirationDate).getTime() > new Date().getTime()
-      ).length;
-      const expiredJobs = jobs.filter(
-        (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
-      ).length;
+      // const activeJobs = jobs.filter(
+      //   (job) => new Date(job.expirationDate).getTime() > new Date().getTime()
+      // ).length;
+      // const expiredJobs = jobs.filter(
+      //   (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
+      // ).length;
+      const activeJobs = jobs.filter((job) => job.status === "Active").length;
+      const expiredJobs = jobs.filter((job) => job.status === "Expired").length;
 
       const totalShortlistedApplicants = jobs.reduce((count, job) => {
         return (
@@ -211,40 +215,61 @@ module.exports = {
     }
   },
 
-  updateJobPost: async (req, res) => {
+  // updateJobPost: async (req, res) => {
+  //   try {
+  //     const jobId = req.params.id;
+  //     const updateData = req.body;
+
+  //     if (!mongoose.Types.ObjectId.isValid(jobId)) {
+  //       return res.status(400).json({ message: "Invalid Job ID." });
+  //     }
+
+  //     if (
+  //       updateData.minSalary !== undefined &&
+  //       updateData.maxSalary !== undefined &&
+  //       updateData.minSalary > updateData.maxSalary
+  //     ) {
+  //       return res
+  //         .status(400)
+  //         .json({ message: "Min Salary cannot be greater than Max Salary." });
+  //     }
+
+  //     const updatedJob = await jobModel.updateJob(jobId, updateData);
+
+  //     if (!updatedJob) {
+  //       return res.status(404).json({ message: "Job post not found." });
+  //     }
+
+  //     res.status(200).json({
+  //       message: "Job post updated successfully.",
+  //       job: updatedJob,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating job post:", error.message);
+  //     res.status(500).json({
+  //       message: "Failed to update job post.",
+  //       error: error.message,
+  //     });
+  //   }
+  // },
+
+  updateJobStatus: async (req, res) => {
     try {
       const jobId = req.params.id;
-      const updateData = req.body;
-
-      if (!mongoose.Types.ObjectId.isValid(jobId)) {
-        return res.status(400).json({ message: "Invalid Job ID." });
+      const updatedJob = jobModel.updateJobStatus(jobId);
+      if (updatedJob && updatedJob.status === "Expired") {
+        return res.send({
+          message: "Job status updated to Expired.",
+          job: updatedJob,
+        });
+      } else if (updatedJob) {
+        return res.send({ message: "Job was already expired." });
+      } else {
+        return res.status(404).send({ message: "Job not found." });
       }
-
-      if (
-        updateData.minSalary !== undefined &&
-        updateData.maxSalary !== undefined &&
-        updateData.minSalary > updateData.maxSalary
-      ) {
-        return res
-          .status(400)
-          .json({ message: "Min Salary cannot be greater than Max Salary." });
-      }
-
-      const updatedJob = await jobModel.updateJob(jobId, updateData);
-
-      if (!updatedJob) {
-        return res.status(404).json({ message: "Job post not found." });
-      }
-
-      res.status(200).json({
-        message: "Job post updated successfully.",
-        job: updatedJob,
-      });
     } catch (error) {
-      console.error("Error updating job post:", error.message);
-      res.status(500).json({
-        message: "Failed to update job post.",
-        error: error.message,
+      return res.send({
+        error: error,
       });
     }
   },

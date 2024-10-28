@@ -70,18 +70,33 @@ const getJobById = async (jobId) => {
   }
 };
 
-// Update a job
-const updateJob = async (jobId, updateData) => {
+const updateJobStatus = async (jobId) => {
   try {
-    return await Job.findByIdAndUpdate(jobId, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    const job = await Job.findById(jobId);
+    const updatedJob = await Job.findByIdAndUpdate(
+      jobId,
+      { status: "Expired" },
+      { new: true } // Ensure it returns the updated document
+    );
+
+    return updatedJob;
   } catch (error) {
-    console.error(`Error updating job: ${error.message}`);
+    console.error(`Error fetching recent jobs: ${error.message}`);
     throw error;
   }
 };
+
+// const updateJob = async (jobId, updateData) => {
+//   try {
+//     return await Job.findByIdAndUpdate(jobId, updateData, {
+//       new: true,
+//       runValidators: true,
+//     });
+//   } catch (error) {
+//     console.error(`Error updating job: ${error.message}`);
+//     throw error;
+//   }
+// };
 
 // Delete a job
 const deleteJob = async (jobId) => {
@@ -114,7 +129,7 @@ const checkExpiration = async (jobId) => {
   try {
     const job = await Job.findById(jobId);
     if (!job || job.expirationDate < new Date()) {
-      throw new Error('The job application period has expired.');
+      throw new Error("The job application period has expired.");
     }
     return job;
   } catch (error) {
@@ -130,7 +145,7 @@ const applyForJob = async (jobId, applicantId) => {
 
     // Check if the job exists and whether it has expired
     if (!job || job.expirationDate < new Date()) {
-      throw new Error('The job application period has expired.');
+      throw new Error("The job application period has expired.");
     }
 
     // If the job is not expired, proceed to add the applicant ID
@@ -151,9 +166,9 @@ const applyForJob = async (jobId, applicantId) => {
 const getJobTitleById = async (jobId) => {
   try {
     // Fetch job title using jobId
-    const job = await Job.findById(jobId).select('jobTitle');
+    const job = await Job.findById(jobId).select("jobTitle");
     if (!job) {
-      throw new Error('Job not found');
+      throw new Error("Job not found");
     }
     // Return the job title
     return job.jobTitle;
@@ -167,7 +182,7 @@ module.exports = {
   createJob,
   getAllJobs,
   getJobById,
-  updateJob,
+
   deleteJob,
   getJobTitleById,
   searchJobPosts,
@@ -175,5 +190,6 @@ module.exports = {
   getJobsForPagination,
   checkExpiration,
   getAllJobsForCount,
-  applyForJob, // Export the new method
+  applyForJob,
+  updateJobStatus,
 };

@@ -34,14 +34,22 @@ export class MainSectionComponent implements OnInit {
 
   getAllRecentJobs() {
     this.service.getAllRecentJobs().subscribe((res: any) => {
-      this.applications = res.simplifiedJobs.map((job: any) => ({
-        id: job.id,
-        title: job.jobTitle,
-        type: job.jobType,
-        remaining: this.calculateRemainingDays(job.expirationDate),
-        status: job.status,
-        applications: job.noOfApplications,
-      }));
+      this.applications = res.simplifiedJobs.map((job: any) => {
+        const remainingDays = this.calculateRemainingDays(job.expirationDate);
+
+        return {
+          id: job.id,
+          title: job.jobTitle,
+          type: job.jobType,
+
+          remaining:
+            job.status === 'Expired'
+              ? this.formatExpirationDate(job.expirationDate)
+              : remainingDays,
+          status: job.status,
+          applications: job.noOfApplications,
+        };
+      });
     });
   }
 
@@ -49,21 +57,26 @@ export class MainSectionComponent implements OnInit {
     const now = new Date();
     const expiration = new Date(expirationDate);
 
-    console.log(expiration);
     const remainingTime = expiration.getTime() - now.getTime();
     const daysRemaining = Math.ceil(remainingTime / (1000 * 3600 * 24));
+
     if (daysRemaining > 1) {
       return `${daysRemaining} days remaining`;
     } else if (daysRemaining === 1) {
       return '1 day remaining';
     } else {
-      const options = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'UTC',
-      } as const;
-      return expiration.toLocaleDateString('en-US', options);
+      return this.formatExpirationDate(expirationDate);
     }
+  }
+
+  formatExpirationDate(expirationDate: string): string {
+    const expiration = new Date(expirationDate);
+    const options = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC',
+    } as const;
+    return expiration.toLocaleDateString('en-US', options);
   }
 }

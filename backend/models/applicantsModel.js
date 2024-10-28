@@ -41,6 +41,7 @@ module.exports = {
           applicants: jobData.applicants,
           jobTitle: jobData.jobTitle,
           expirationDate: jobData.expirationDate,
+          status: jobData.status,
         },
       };
     } catch (error) {
