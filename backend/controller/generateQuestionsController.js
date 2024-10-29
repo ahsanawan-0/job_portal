@@ -1,75 +1,112 @@
 const Test = require('../models/definations/questionModel');
 const { generateQuestions,generateOptions } = require('../helpers/generateQuestions');
 const { evaluateAnswersSequentially } = require('../helpers/evaluateAnswers');
-
 const createTest = async (req, res) => {
-    const { num_questions, interview_type, experience_level, field, interview_time, input_type } = req.body;
-
-    console.log("Request to create test:", req.body); // Debugging line
+    const { num_questions, interview_type, experience_level, field, interview_time } = req.body;
 
     try {
-        let questions;
+        const questions = await generateQuestions({ num_questions, interview_type, experience_level, field, interview_time });
 
-        if (input_type === 'MCQs') {
-            questions = await generateQuestions({ num_questions, interview_type, experience_level, field, interview_time });
-            console.log("Generated questions:", questions); // Debugging line
+        const questionsFormatted = [];
+        let currentQuestion = null;
+        let currentOptions = [];
+        let correctAnswer = null;
 
-            const questionsFormatted = [];
+        questions.forEach((line) => {
+            const trimmedLine = line.trim();
 
-            for (const questionObj of questions) {
-                const { options, correctAnswer } = await generateOptions(questionObj.question); // Get options and correct answer
-                console.log("Generated options for question:", questionObj.question, "Options:", options); // Debugging line
+            // Identify a new question based on numbered format (e.g., "1. Question text")
+            const questionMatch = trimmedLine.match(/^\d+\.\s(.*)/);
+            const optionMatch = trimmedLine.match(/^[a-d]\)\s(.*)/);
+            const correctAnswerMatch = trimmedLine.match(/Correct Answer:\s*([a-d])\)\s(.*)/);
 
-                questionsFormatted.push({
-                    question: questionObj.question, // Ensure this is a string
-                    options: options, // Store options in the formatted question
-                    answer: correctAnswer, // Store the correct answer
-                    evaluation: {}
-                });
+            if (questionMatch) {
+                // Save the previous question if it exists
+                if (currentQuestion) {
+                    questionsFormatted.push({
+                        question: currentQuestion,
+                        options: currentOptions,
+                        answer: correctAnswer || currentOptions[0],
+                        evaluation: {}
+                    });
+                }
+
+                // Start a new question
+                currentQuestion = questionMatch[1];
+                currentOptions = [];
+                correctAnswer = null;
+            } else if (optionMatch && currentQuestion) {
+                // Add options to the current question
+                currentOptions.push(optionMatch[1]);
+            } else if (correctAnswerMatch && currentQuestion) {
+                // Capture the correct answer from the AI-generated content
+                const answerIndex = correctAnswerMatch[1].charCodeAt(0) - 'a'.charCodeAt(0);
+                correctAnswer = currentOptions[answerIndex];
             }
+        });
 
-            const test = new Test({
-                num_questions,
-                interview_type,
-                experience_level,
-                field,
-                interview_time,
-                questions: questionsFormatted,
-            });
-
-            await test.save();
-            console.log("Test created successfully:", test); // Debugging line
-            res.status(201).json(test);
-        } else {
-            // Handle non-MCQ input types
-            questions = await generateQuestions({ num_questions, interview_type, experience_level, field, interview_time });
-            console.log("Generated questions for non-MCQ:", questions); // Debugging line
-
-            const questionsFormatted = questions.map(q => ({
-                question: q.question, // Ensure this is a string
-                options: q.options || [], // Include options if they exist
-                answer: null,
+        // Save the last question if there is one
+        if (currentQuestion) {
+            questionsFormatted.push({
+                question: currentQuestion,
+                options: currentOptions,
+                answer: correctAnswer || currentOptions[0],
                 evaluation: {}
-            }));
-
-            const test = new Test({
-                num_questions,
-                interview_type,
-                experience_level,
-                field,
-                interview_time,
-                questions: questionsFormatted,
             });
-
-            await test.save();
-            console.log("Test created successfully:", test); // Debugging line
-            res.status(201).json(test);
         }
+
+        // Create and save the test
+        const test = new Test({
+            num_questions,
+            interview_type,
+            experience_level,
+            field,
+            interview_time,
+            questions: questionsFormatted,
+        });
+
+        await test.save();
+        res.status(201).json(test);
     } catch (error) {
-        console.error('Error creating test:', error);
         res.status(500).json({ error: 'Failed to create test' });
     }
 };
+
+
+
+
+// Function to separate question and options
+function separateQuestionAndOptions(input) {
+    // Check if input is an array
+    if (!Array.isArray(input)) {
+        throw new TypeError('Input must be an array');
+    }
+
+    // The first element is the question
+    const question = input[0].trim();
+
+    // The rest are the options
+    const options = input.slice(1).map(option => option.trim());
+
+    return {
+        question,
+        options
+    };
+}
+
+// Function to separate question and options
+function separateQuestionAndOptions(input) {
+    // The first element is the question
+    const question = input[0].trim();
+
+    // The rest are the options
+    const options = input.slice(1).map(option => option.trim());
+
+    return {
+        question,
+        options
+    };
+}
 
 module.exports = createTest;
 
@@ -232,4 +269,10 @@ const submitAnswers = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
+
+
+
+
+
 module.exports = { createTest, getAllQuestions, deleteQuestion,submitAnswers };

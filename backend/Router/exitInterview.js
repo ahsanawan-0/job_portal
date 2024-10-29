@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createExitInterviewForm,
   getFormById,
+  getAllInterviews,
   submitFormResponses,
 } = require('../controller/exitInterviewController');
 const checkId = require('../middleweres/checkId');
@@ -11,7 +12,8 @@ const checkId = require('../middleweres/checkId');
 router.post('/create' , createExitInterviewForm);
 
 // Route to get a form by its unique link ID
-router.get('/:id', getFormById);
+router.get('/:uniqueLinkId', getFormById);
+router.get('/getAllInterviews/forms', getAllInterviews);
 
 // Route to submit responses
 router.post('/submit', submitFormResponses);

@@ -22,8 +22,8 @@ module.exports={
       },
       getFormById : async (req, res) => {
         try {
-          const { id } = req.params;
-          const form = await ExitInterview.findOne({ uniqueLinkId: id });
+          const { uniqueLinkId } = req.params;
+          const form = await ExitInterview.findOne({ uniqueLinkId});
       
           if (!form) {
             return res.status(404).json({ message: 'Form not found' });
@@ -48,6 +48,16 @@ module.exports={
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
-      }
+      },
+
+      getAllInterviews: async (req, res) => {
+        try {
+            const forms = await ExitInterview.find({}); // Fetch all exit interview forms
+
+            res.status(200).json(forms); // Return the list of forms
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
