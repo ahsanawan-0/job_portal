@@ -29,7 +29,10 @@ export class ExitInterviewFormComponent implements OnInit {
   private modalService = inject(NgbModal);
   dynamicLink: string = ''; // Define the dynamicLink property
 
-  constructor(private fb: FormBuilder, private exitInterviewService: ExitInterviewService) {
+  constructor(
+    private fb: FormBuilder,
+    private exitInterviewService: ExitInterviewService
+  ) {
     // Initialize the main form with 'title', 'questions', 'newQuestionType', and 'newRadioOptionsCount'
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -148,30 +151,29 @@ export class ExitInterviewFormComponent implements OnInit {
       );
       return;
     }
-  
+
     const formData = this.form.value;
     console.log('Form Data:', formData);
-  
+
     this.exitInterviewService.createForm(formData).subscribe({
       next: (response: any) => {
         alert('Form created successfully!');
         console.log('Form created:', response);
-        
+
         // Generate a dynamic link using the form ID
-        const formId = response.form.uniqueLinkId; // Ensure the response contains the ID of the created form
-        const dynamicLink = `http://localhost:4200/exitInterviewViewForm/${formId}`;
-        
+        const uniqueLinkId = response.form.uniqueLinkId; // Ensure the response contains the ID of the created form
+        const dynamicLink = `http://localhost:4200/exitInterviewViewForm/${uniqueLinkId}`;
+
         // Open the modal with the dynamic link
-        this.openApplyModal(dynamicLink); 
+        this.openApplyModal(dynamicLink);
         this.form.reset();
       },
       error: (error: any) => {
         console.error('Error creating form:', error);
         alert('There was an error creating the form.');
-      }
+      },
     });
   }
-
 
   openApplyModal(dynamicLink: string): void {
     this.dynamicLink = dynamicLink; // Assign the dynamicLink to the property

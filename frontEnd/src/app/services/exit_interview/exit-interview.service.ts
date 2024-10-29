@@ -16,12 +16,33 @@ export class ExitInterviewService {
   }
 
   // Get form by ID
-  getForm(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+  getForm(uniqueLinkId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/exit-interview/${uniqueLinkId}`);
   }
 
   // Submit form responses
   submitForm(responses: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/submit`, responses);
+  }
+
+  getAllExitInterviewForms() {
+    return this.http.get(`${this.apiUrl}/getAllExitInterviewForms/forms`);
+  }
+
+  submitApplicantResponses(
+    formId: string,
+    applicantData: any
+  ): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/exit-interview/${formId}/applicant`,
+      applicantData
+    );
+  }
+
+  submitExitInterview(uniqueLinkId: string, formData: any): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/exit-interview-submit/${uniqueLinkId}`,
+      formData
+    );
   }
 }

@@ -72,7 +72,7 @@ export const routes: Routes = [
         component: TestComponent,
       },
       {
-        path: 'exitInterviewViewForm/:id',
+        path: 'exitInterviewViewForm/:uniqueLinkId',
         component: ExitInterviewFormViewerComponent,
       },
     ],

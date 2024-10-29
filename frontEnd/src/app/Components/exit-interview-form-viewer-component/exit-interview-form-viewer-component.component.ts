@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  FormControl, 
-  Validators, 
-  ReactiveFormsModule 
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service'; // Adjust the path as needed
@@ -27,7 +27,7 @@ interface Question {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './exit-interview-form-viewer-component.component.html',
-  styleUrls: ['./exit-interview-form-viewer-component.component.css']
+  styleUrls: ['./exit-interview-form-viewer-component.component.css'],
 })
 export class ExitInterviewFormViewerComponent implements OnInit {
   form: FormGroup;
@@ -45,16 +45,18 @@ export class ExitInterviewFormViewerComponent implements OnInit {
 
   ngOnInit(): void {
     // Get the formId from the route parameters
-    this.route.params.subscribe(params => {
-      const formId = params['id']; // Assuming your route has a parameter named 'id'
-      this.fetchForm(formId);
+    this.route.params.subscribe((params) => {
+      console.log('All params:', params);
+      const uniqueLinkId = params['id']; // Assuming your route has a parameter named 'id'
+      this.fetchForm(uniqueLinkId);
+      console.log('uuid', uniqueLinkId);
     });
   }
 
-  fetchForm(id: string): void {
-    this.exitInterviewService.getForm(id).subscribe({
+  fetchForm(uniqueLinkId: string): void {
+    this.exitInterviewService.getForm(uniqueLinkId).subscribe({
       next: (data: any) => {
-        this.exitInterviewForm = data;
+        this.exitInterviewForm = data.response;
         this.buildForm();
         this.isLoading = false;
       },
@@ -62,7 +64,7 @@ export class ExitInterviewFormViewerComponent implements OnInit {
         console.error('Error fetching form:', error);
         this.errorMessage = 'Failed to load the form. Please try again later.';
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -70,7 +72,10 @@ export class ExitInterviewFormViewerComponent implements OnInit {
     if (!this.exitInterviewForm) return;
 
     // Initialize the form controls
-    const formControls: { [key: string]: FormControl } = {};
+    const formControls: { [key: string]: FormControl } = {
+      employeeName: new FormControl('', Validators.required),
+      employeeId: new FormControl('', Validators.required),
+    };
 
     this.exitInterviewForm.questions.forEach((question, index) => {
       const controlName = `question_${index}`;
@@ -93,19 +98,41 @@ export class ExitInterviewFormViewerComponent implements OnInit {
       return;
     }
 
-    const responses = this.form.value;
-    console.log('User Responses:', responses);
+    const uniqueLinkId = this.route.snapshot.params['id'];
+    const applicantData = this.form.value;
+    console.log(uniqueLinkId);
+    console.log(applicantData);
+
+    if (!this.exitInterviewForm) {
+      console.error('Exit interview form is not available.');
+      alert('The form is not available at this time. Please try again later.');
+      return;
+    }
+    const responses = this.exitInterviewForm.questions.map(
+      (_, index) => applicantData[`question_${index}`]
+    );
+
+    const payload = {
+      employeeName: applicantData.employeeName,
+      employeeId: applicantData.employeeId,
+      responses,
+    };
 
     // Submit the responses to the API
-    this.exitInterviewService.submitForm(responses).subscribe({
-      next: (response: any) => {
-        alert('Your responses have been submitted successfully!');
-        this.form.reset();
-      },
-      error: (error: any) => {
-        console.error('Error submitting form:', error);
-        alert('There was an error submitting your responses. Please try again.');
-      }
-    });
+    this.exitInterviewService
+      .submitExitInterview(uniqueLinkId, payload)
+      .subscribe({
+        next: (response: any) => {
+          alert('Your responses have been submitted successfully!');
+          console.log('Form submitted successfully:', response);
+          this.form.reset();
+        },
+        error: (error: any) => {
+          console.error('Error submitting form:', error);
+          alert(
+            'There was an error submitting your responses. Please try again.'
+          );
+        },
+      });
   }
 }

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
   label: { type: String, required: true },
@@ -11,7 +11,7 @@ const exitInterviewSchema = new mongoose.Schema({
   questions: [questionSchema],
   uniqueLinkId: { type: String, unique: true, required: true },
   createdAt: { type: Date, default: Date.now },
+  applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "ExitApplicant" }],
 });
 
-const ExitInterview = mongoose.model('ExitInterview', exitInterviewSchema);
-module.exports = ExitInterview;
+module.exports = exitInterviewSchema;

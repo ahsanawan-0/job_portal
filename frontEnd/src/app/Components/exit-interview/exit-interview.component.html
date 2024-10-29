@@ -32,17 +32,17 @@
 
     <div
       class="grid grid-cols-4 py-6 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg"
-      *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+      *ngFor="let item of applicants"
     >
       <div class="col-span-2">
-        <p class="font-medium text-base">UI/UX Designer</p>
+        <p class="font-medium text-base">{{ item.formTitle }}</p>
       </div>
       <div class="flex gap-2 items-center">
         <img src="assets/icons/Users.svg" />
         <p
           class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
         >
-          798 Applications
+          {{ item.totalApplicants }} Applications
         </p>
       </div>
       <div class="flex gap-2">
