@@ -5,6 +5,8 @@ import {
   FormControl,
   Validators,
   ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service'; // Adjust the path as needed
@@ -17,6 +19,7 @@ interface ExitInterviewForm {
 }
 
 interface Question {
+  _id?: string;
   label: string;
   type: string;
   options?: string[]; // Only for radio type questions
@@ -74,7 +77,10 @@ export class ExitInterviewFormViewerComponent implements OnInit {
     // Initialize the form controls
     const formControls: { [key: string]: FormControl } = {
       employeeName: new FormControl('', Validators.required),
-      employeeId: new FormControl('', Validators.required),
+      employeeId: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^\d{9}$/),
+      ]),
     };
 
     this.exitInterviewForm.questions.forEach((question, index) => {
@@ -109,7 +115,10 @@ export class ExitInterviewFormViewerComponent implements OnInit {
       return;
     }
     const responses = this.exitInterviewForm.questions.map(
-      (_, index) => applicantData[`question_${index}`]
+      (question, index) => ({
+        questionId: question._id, // Use the question's _id as questionId
+        answer: applicantData[`question_${index}`],
+      })
     );
 
     const payload = {

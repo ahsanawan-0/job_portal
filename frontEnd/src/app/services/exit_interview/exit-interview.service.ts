@@ -45,4 +45,24 @@ export class ExitInterviewService {
       formData
     );
   }
+
+  // getApplicantsByFormId(uniqueLinkId: string): Observable<any> {
+  //   return this.http.get(
+  //     `${this.apiUrl}/exit-interview-applicants/${uniqueLinkId}`
+  //   );
+  // }
+  getApplicantsByFormId(
+    uniqueLinkId: string,
+    page: number,
+    limit: number
+  ): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/exit-interview-applicants/${uniqueLinkId}?page=${page}&limit=${limit}`
+    );
+  }
+  getApplicantQuestionsAndAnswers(applicantId: string): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/applicant/${applicantId}/questions-answers`
+    );
+  }
 }

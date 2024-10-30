@@ -12,8 +12,8 @@ import { ExitInterviewService } from '../../services/exit_interview/exit-intervi
 })
 export class ExitInterviewComponent implements OnInit {
   route = inject(Router);
-  onClickViewResults() {
-    this.route.navigateByUrl('exitInterviewResult');
+  onClickViewResults(uniqueLinkId: string) {
+    this.route.navigateByUrl(`exitInterviewResult/${uniqueLinkId}`);
   }
 
   onClickCreateForm() {

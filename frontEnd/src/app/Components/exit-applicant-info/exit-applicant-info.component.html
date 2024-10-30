@@ -1,0 +1,34 @@
+<div class="rounded-lg p-6 shadow-md">
+  <h2 class="text-2xl font-bold text-gray-800">{{ name }}</h2>
+  <p class="text-lg text-gray-600">Employee ID: {{ employeeId }}</p>
+
+  <div class="mt-4">
+    <div
+      *ngFor="let answer of answers"
+      class="mb-4 p-4 border border-gray-300 rounded-md bg-white"
+    >
+      <div class="font-medium text-gray-800">{{ answer.question }}</div>
+      <div class="text-gray-600">{{ answer.answer }}</div>
+
+      <ng-container *ngIf="answer.options && answer.options.length > 0">
+        <div class="mt-2">
+          <strong class="text-gray-700">Options:</strong>
+          <div class="mt-1">
+            <ul>
+              <li
+                *ngFor="let option of answer.options"
+                [ngClass]="{
+                  'bg-green-200': answer.answer === option,
+                  'bg-white': answer.answer !== option
+                }"
+                class="p-2 rounded-md cursor-pointer mt-2 border border-gray-300"
+              >
+                {{ option }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

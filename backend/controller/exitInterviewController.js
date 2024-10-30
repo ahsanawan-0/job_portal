@@ -128,4 +128,75 @@ module.exports = {
       res.status(500).json({ error: "Error submitting exit interview" });
     }
   },
+
+  deleteFormById: async (req, res) => {
+    const { uniqueLinkId } = req.params;
+
+    console.log("Deleting form with uniqueLinkId:", uniqueLinkId);
+    const result = await exitInterviewModel.deleteFormById(uniqueLinkId);
+
+    if (result.error) {
+      return res.status(404).send({
+        error: result.error,
+      });
+    }
+
+    return res.send({
+      message: "Exit Interview Form Deleted Successfully",
+    });
+  },
+
+  getApplicantsByFormId: async (req, res) => {
+    const { uniqueLinkId } = req.params;
+    const { page = 1, limit = 5 } = req.query;
+
+    const applicants = await exitInterviewModel.getApplicantsByFormId(
+      uniqueLinkId,
+      page,
+      limit
+    );
+
+    if (applicants.error) {
+      return res.status(404).send({ error: applicants.error });
+    }
+
+    return res.send({
+      message: "Applicants found",
+      applicants,
+      title: applicants.title,
+      totalApplicants: applicants.totalApplicants,
+    });
+  },
+
+  getApplicantQuestionsAndAnswers: async (req, res) => {
+    const { applicantId } = req.params;
+
+    try {
+      const result = await exitInterviewModel.getApplicantDetailsWithQuestions(
+        applicantId
+      );
+
+      if (result.error) {
+        return res.status(404).json({ error: result.error });
+      }
+
+      // Send the formatted applicant's data
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+
+  deleteExitApplicant: async (req, res) => {
+    const { applicantId } = req.params;
+
+    try {
+      const response = await exitInterviewModel.deleteExitApplicant(
+        applicantId
+      );
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 };

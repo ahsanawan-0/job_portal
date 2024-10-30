@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const questionSchema = new mongoose.Schema({
   label: { type: String, required: true },
   type: { type: String, required: true },
-  options: { type: [String], default: [] }, // Options for radio type questions
+  options: { type: [String], default: [] },
 });
 
 const exitInterviewSchema = new mongoose.Schema({

@@ -14,6 +14,7 @@ import { FormComponent } from './pages/create_job/form.component';
 import { JobDetailComponent } from './pages/job-detail/job-detail.component';
 import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
 import { JobViewPageComponent } from './pages/job-view-page/job-view-page.component';
+import { ExitApplicantInfoComponent } from './Components/exit-applicant-info/exit-applicant-info.component';
 
 export const routes: Routes = [
   {
@@ -55,7 +56,7 @@ export const routes: Routes = [
         component: ExitInterviewComponent,
       },
       {
-        path: 'exitInterviewResult',
+        path: 'exitInterviewResult/:uniqueLinkId',
         component: ExitInterviewResultComponent,
       },
       {
@@ -74,6 +75,10 @@ export const routes: Routes = [
       {
         path: 'exitInterviewViewForm/:uniqueLinkId',
         component: ExitInterviewFormViewerComponent,
+      },
+      {
+        path: 'exitApplicantInfo/:applicantId',
+        component: ExitApplicantInfoComponent,
       },
     ],
   },

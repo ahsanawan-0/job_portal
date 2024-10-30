@@ -34,7 +34,7 @@
       class="grid grid-cols-4 py-6 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg"
       *ngFor="let item of applicants"
     >
-      <div class="col-span-2">
+      <div class="col-span-2 content-center">
         <p class="font-medium text-base">{{ item.formTitle }}</p>
       </div>
       <div class="flex gap-2 items-center">
@@ -47,7 +47,7 @@
       </div>
       <div class="flex gap-2">
         <button
-          (click)="onClickViewResults()"
+          (click)="onClickViewResults(item.uniqueLinkId)"
           class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
         >
           View Results

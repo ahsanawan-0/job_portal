@@ -55,22 +55,172 @@ module.exports = {
     try {
       const form = await Interview.findOne({ uniqueLinkId });
 
-      // Check if the form exists
       if (!form) {
         throw new Error("Form not found");
       }
 
-      // If the form exists, proceed to add the applicant ID
       const updatedForm = await Interview.findOneAndUpdate(
         { uniqueLinkId },
-        { $addToSet: { applicants: applicantId } }, // Use $addToSet to avoid duplicates
+        { $addToSet: { applicants: applicantId } },
         { new: true }
       );
-
-      return updatedForm; // Return the updated form
+      return updatedForm;
     } catch (error) {
       console.error(`Error adding applicant to form: ${error.message}`);
       throw error;
+    }
+  },
+
+  deleteFormById: async (uuid) => {
+    try {
+      const form = await Interview.findOne({ uniqueLinkId: uuid });
+
+      if (!form) {
+        return { error: "Form not found" };
+      }
+
+      await exitApplicant.deleteMany({ _id: { $in: form.applicants } });
+
+      await Interview.findByIdAndDelete(form._id);
+
+      return { message: "Form and associated applicants deleted successfully" };
+    } catch (error) {
+      return { error: error.message };
+    }
+  },
+
+  getApplicantsByFormId: async (uniqueLinkId, page, limit) => {
+    try {
+      const formWithApplicants = await Interview.findOne({ uniqueLinkId })
+        .populate({
+          path: "applicants",
+          options: {
+            sort: { createdAt: -1 },
+            skip: (page - 1) * limit,
+            limit: parseInt(limit),
+          },
+        })
+        .exec();
+
+      const interview = await Interview.findOne({ uniqueLinkId }).populate(
+        "applicants"
+      );
+      const totalApplicants = interview.applicants.length;
+      if (!formWithApplicants) {
+        return { error: "Form not found" };
+      }
+
+      const applicants = formWithApplicants.applicants.map((applicant) => ({
+        id: applicant._id,
+        employeeName: applicant.employeeName,
+        employeeId: applicant.employeeId,
+      }));
+
+      return { title: formWithApplicants.title, applicants, totalApplicants };
+    } catch (error) {
+      return { error: error.message };
+    }
+  },
+
+  // getApplicantDetailsWithQuestions: async (applicantId) => {
+  //   try {
+  //     const applicant = await exitApplicant.findById(applicantId);
+
+  //     if (!applicant) {
+  //       return { error: "Applicant not found" };
+  //     }
+
+  //     const interviewForm = await Interview.findOne({
+  //       applicants: applicantId,
+  //     });
+
+  //     if (!interviewForm) {
+  //       return { error: "Interview form not found" };
+  //     }
+
+  //     const formattedAnswers = applicant.answers.map((answer) => {
+  //       const question = interviewForm.questions.find(
+  //         (q) => q._id.toString() === answer.questionId.toString()
+  //       );
+
+  //       return {
+  //         question: question ? question.label : "Question not found",
+  //         answer: answer.answer,
+  //       };
+  //     });
+
+  //     return {
+  //       applicantId: applicant._id,
+  //       employeeName: applicant.employeeName,
+  //       employeeId: applicant.employeeId,
+  //       answers: formattedAnswers,
+  //     };
+  //   } catch (error) {
+  //     return { error: error.message };
+  //   }
+  // },
+
+  getApplicantDetailsWithQuestions: async (applicantId) => {
+    try {
+      // Find the applicant by ID
+      const applicant = await exitApplicant.findById(applicantId);
+
+      if (!applicant) {
+        return { error: "Applicant not found" };
+      }
+
+      // Find the corresponding exit interview form that contains the questions
+      const interviewForm = await Interview.findOne({
+        applicants: applicantId,
+      });
+
+      if (!interviewForm) {
+        return { error: "Interview form not found" };
+      }
+
+      const formattedAnswers = applicant.answers.map((answer) => {
+        const question = interviewForm.questions.find(
+          (q) => q._id.toString() === answer.questionId.toString()
+        );
+
+        const questionDetails = {
+          question: question ? question.label : "Question not found",
+          answer: answer.answer,
+        };
+
+        if (question && question.type === "radio") {
+          questionDetails.options = question.options;
+        }
+
+        return questionDetails;
+      });
+
+      return {
+        applicantId: applicant._id,
+        employeeName: applicant.employeeName,
+        employeeId: applicant.employeeId,
+        answers: formattedAnswers,
+      };
+    } catch (error) {
+      return { error: error.message };
+    }
+  },
+
+  deleteExitApplicant: async (applicantId) => {
+    try {
+      const applicant = await exitApplicant.findByIdAndDelete(applicantId);
+      if (!applicant) {
+        throw new Error("Applicant not found");
+      }
+
+      await Interview.updateMany(
+        { applicants: applicantId },
+        { $pull: { applicants: applicantId } }
+      );
+
+      return { message: "Applicant deleted successfully" };
+    } catch (error) {
+      throw new Error(error.message);
     }
   },
 };
