@@ -122,44 +122,6 @@ module.exports = {
     }
   },
 
-  // getApplicantDetailsWithQuestions: async (applicantId) => {
-  //   try {
-  //     const applicant = await exitApplicant.findById(applicantId);
-
-  //     if (!applicant) {
-  //       return { error: "Applicant not found" };
-  //     }
-
-  //     const interviewForm = await Interview.findOne({
-  //       applicants: applicantId,
-  //     });
-
-  //     if (!interviewForm) {
-  //       return { error: "Interview form not found" };
-  //     }
-
-  //     const formattedAnswers = applicant.answers.map((answer) => {
-  //       const question = interviewForm.questions.find(
-  //         (q) => q._id.toString() === answer.questionId.toString()
-  //       );
-
-  //       return {
-  //         question: question ? question.label : "Question not found",
-  //         answer: answer.answer,
-  //       };
-  //     });
-
-  //     return {
-  //       applicantId: applicant._id,
-  //       employeeName: applicant.employeeName,
-  //       employeeId: applicant.employeeId,
-  //       answers: formattedAnswers,
-  //     };
-  //   } catch (error) {
-  //     return { error: error.message };
-  //   }
-  // },
-
   getApplicantDetailsWithQuestions: async (applicantId) => {
     try {
       // Find the applicant by ID
@@ -221,6 +183,50 @@ module.exports = {
       return { message: "Applicant deleted successfully" };
     } catch (error) {
       throw new Error(error.message);
+    }
+  },
+
+  updateForm: async (uniqueLinkId, updateData) => {
+    try {
+      const updatedForm = await Interview.findOneAndUpdate(
+        { uniqueLinkId },
+        {
+          title: updateData.title,
+          questions: updateData.questions.map((question) => {
+            return {
+              _id: question._id,
+              label: question.label,
+              type: question.type,
+              options: question.type === "radio" ? question.options : [], // Update options for radio type
+            };
+          }),
+        },
+        { new: true, runValidators: true } // Return the updated document and validate
+      );
+
+      if (!updatedForm) {
+        return { error: "Form not found" };
+      }
+
+      // Update options for each question
+      for (const question of updateData.questions) {
+        if (question.type === "radio") {
+          const existingQuestion = updatedForm.questions.id(question._id);
+          if (existingQuestion) {
+            // Update existing options
+            existingQuestion.options = question.options;
+          }
+        }
+      }
+
+      // Save the updated form
+      await updatedForm.save();
+
+      return updatedForm;
+    } catch (error) {
+      return {
+        error: error.message,
+      };
     }
   },
 };

@@ -36,9 +36,6 @@ export class ExitApplicantInfoComponent implements OnInit {
         this.answers = res.answers;
         this.name = res.employeeName;
         this.employeeId = res.employeeId;
-        console.log('answer', this.answers);
-        console.log('name', this.name);
-        console.log('id', this.employeeId);
       });
   }
 }

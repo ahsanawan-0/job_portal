@@ -1,0 +1,97 @@
+<div class="container mt-5">
+  <h2 class="text-2xl font-bold mb-4">
+    Exit Interview Form: {{ formData.title }}
+  </h2>
+
+  <div *ngFor="let question of formData.questions; let i = index" class="mb-4">
+    <div class="flex flex-col">
+      <div class="flex items-center justify-between">
+        <label class="font-medium">Question {{ i + 1 }}:</label>
+        <button
+          *ngIf="isEditing"
+          (click)="removeQuestion(i)"
+          class="mt-2 text-red-500"
+        >
+          Remove Question
+        </button>
+      </div>
+      <input
+        type="text"
+        [(ngModel)]="question.label"
+        [disabled]="!isEditing"
+        placeholder="Enter question label"
+        class="border border-gray-300 p-2 rounded"
+      />
+
+      <label class="font-medium mt-2">Question Type:</label>
+      <select
+        [(ngModel)]="question.type"
+        [disabled]="!isEditing"
+        class="border border-gray-300 p-2 rounded"
+      >
+        <option value="text">Text</option>
+        <option value="textarea">Textarea</option>
+        <option value="radio">Radio</option>
+      </select>
+
+      <div *ngIf="question.type === 'radio'" class="mt-2">
+        <label class="font-medium">Options:</label>
+        <div
+          *ngFor="
+            let option of question.options;
+            let j = index;
+            trackBy: trackByIndex
+          "
+          class="flex items-center mb-2"
+        >
+          <input
+            type="text"
+            [(ngModel)]="question.options[j]"
+            [disabled]="!isEditing"
+            placeholder="Enter option"
+            class="border border-gray-300 p-2 rounded"
+          />
+
+          <button
+            *ngIf="isEditing"
+            (click)="removeOption(question.options, j)"
+            class="ml-2 text-red-500"
+          >
+            Remove
+          </button>
+        </div>
+        <button
+          *ngIf="isEditing"
+          (click)="addOption(question)"
+          class="text-blue-500"
+        >
+          Add Option
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button
+    *ngIf="isEditing"
+    (click)="addQuestion()"
+    class="bg-green-500 text-white px-4 py-2 rounded mt-4"
+  >
+    Add Question
+  </button>
+
+  <div class="mt-4">
+    <button
+      (click)="toggleEdit()"
+      class="bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      {{ isEditing ? "Stop Editing" : "Edit Form" }}
+    </button>
+    <button
+      *ngIf="isEditing"
+      (click)="onUpdate()"
+      class="bg-blue-600 text-white px-4 py-2 rounded ml-2"
+    >
+      Save Changes
+    </button>
+  </div>
+</div>

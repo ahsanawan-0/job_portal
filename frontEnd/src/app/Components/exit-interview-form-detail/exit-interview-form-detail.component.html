@@ -1,0 +1,140 @@
+<div
+  *ngIf="!isLoading && exitInterviewForm"
+  class="min-h-screen flex items-center justify-center bg-gray-100 py-10 px-4"
+>
+  <div class="w-full max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-4xl font-bold text-center text-gray-800">
+        {{ exitInterviewForm.title }}
+      </h1>
+      <button
+        (click)="toggleEdit()"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+      >
+        {{ isEditing ? "Save Changes" : "Update Form" }}
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+      <div class="space-y-4">
+        <label class="block text-lg font-medium text-gray-700"
+          >Employee Name</label
+        >
+        <input
+          type="text"
+          formControlName="employeeName"
+          [disabled]="!isEditing"
+          class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+          placeholder="Your name"
+        />
+        <div
+          *ngIf="
+            form.get('employeeName')?.invalid &&
+            form.get('employeeName')?.touched
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          Employee Name is required.
+        </div>
+
+        <label class="block text-lg font-medium text-gray-700"
+          >Employee ID</label
+        >
+        <input
+          type="text"
+          formControlName="employeeId"
+          [disabled]="!isEditing"
+          class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+          placeholder="Your ID"
+        />
+        <div
+          *ngIf="
+            form.get('employeeId')?.invalid && form.get('employeeId')?.touched
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          Employee ID is required.
+        </div>
+      </div>
+
+      <div formArrayName="questions">
+        <div
+          *ngFor="let question of questions.controls; let i = index"
+          [formGroupName]="i"
+          class="space-y-4"
+        >
+          <label class="block text-lg font-medium text-gray-700">
+            {{ i + 1 }}.
+            {{ question.get("label")?.value || "Unnamed Question" }}
+          </label>
+
+          <!-- Input for Question Label -->
+          <input
+            type="text"
+            formControlName="label"
+            [disabled]="!isEditing"
+            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+            placeholder="Enter your question"
+          />
+
+          <div [ngSwitch]="question.get('type')?.value">
+            <!-- Text Input -->
+            <div *ngSwitchCase="'text'">
+              <input
+                type="text"
+                [formControlName]="'answer'"
+                [disabled]="!isEditing"
+                class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                placeholder="Your answer"
+              />
+            </div>
+
+            <!-- Textarea Input -->
+            <div *ngSwitchCase="'textarea'">
+              <textarea
+                [formControlName]="'answer'"
+                [disabled]="!isEditing"
+                class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                placeholder="Your answer"
+                rows="5"
+              ></textarea>
+            </div>
+
+            <!-- Radio Input -->
+            <div *ngSwitchCase="'radio'" class="space-y-2">
+              <div
+                *ngFor="let option of getOptions(i).controls; let j = index"
+                class="flex items-center"
+              >
+                <input
+                  type="radio"
+                  [formControlName]="'answer'"
+                  [value]="option.value"
+                  [disabled]="!isEditing"
+                  class="mr-3 focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  [formControlName]="j"
+                  [disabled]="!isEditing"
+                  class="border border-gray-300 p-3 rounded-lg"
+                  [placeholder]="'Option ' + (j + 1)"
+                />
+                <label>{{ option.value }}</label>
+                <!-- Display the actual option value here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid || !isEditing"
+        class="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg hover:bg-blue-700 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>

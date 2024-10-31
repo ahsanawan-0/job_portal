@@ -11,6 +11,7 @@ const {
   getApplicantsByFormId,
   getApplicantQuestionsAndAnswers,
   deleteExitApplicant,
+  updateForm,
 } = require("../controller/exitInterviewController");
 const checkId = require("../middleweres/checkId");
 
@@ -38,5 +39,7 @@ router.delete(
   "/exit-interview-applicants-delete/:applicantId",
   deleteExitApplicant
 );
+
+router.put("/exit-interview-update/:uniqueLinkId", updateForm);
 
 module.exports = router;

@@ -65,4 +65,17 @@ export class ExitInterviewService {
       `${this.apiUrl}/applicant/${applicantId}/questions-answers`
     );
   }
+
+  deleteFormById(uniqueLinkId: string) {
+    return this.http.delete(
+      `${this.apiUrl}/exit-interview-delete/${uniqueLinkId}`
+    );
+  }
+
+  updateForm(uniqueLinkId: string, updateData: any): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/exit-interview-update/${uniqueLinkId}`,
+      updateData
+    );
+  }
 }
