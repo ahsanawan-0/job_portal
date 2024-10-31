@@ -1,7 +1,22 @@
 <div class="container mt-5">
-  <h2 class="text-2xl font-bold mb-4">
-    Exit Interview Form: {{ formData.title }}
-  </h2>
+  <div class="flex items-center justify-between mb-4">
+    <h2 *ngIf="!isEditing" class="text-2xl font-bold mb-4">
+      Exit Interview Form: {{ formData.title }}
+    </h2>
+    <button
+      *ngIf="!isEditing"
+      class="bg-blue-500 text-white px-4 py-2 rounded"
+      (click)="openModal()"
+    >
+      Link
+    </button>
+  </div>
+  <input
+    *ngIf="isEditing"
+    [(ngModel)]="formData.title"
+    placeholder="Enter form title"
+    class="border border-gray-300 p-2 rounded text-2xl font-bold mb-4"
+  />
 
   <div *ngFor="let question of formData.questions; let i = index" class="mb-4">
     <div class="flex flex-col">

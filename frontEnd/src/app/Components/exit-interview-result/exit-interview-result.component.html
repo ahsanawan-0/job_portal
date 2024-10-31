@@ -33,7 +33,7 @@
       </div>
       <div
         class="grid grid-cols-4 py-5 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8]"
-        *ngFor="let item of applicants"
+        *ngFor="let item of applicants; let i = index"
       >
         <div class="col-span-2">
           <p class="font-medium text-base">{{ item.employeeName }}</p>
@@ -45,7 +45,7 @@
             #{{ item.employeeId }}
           </p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 relative">
           <button
             (click)="onClickViewAnswers(item.id)"
             class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
@@ -55,7 +55,36 @@
           <img
             src="assets/icons/DotsThreeVertical.svg"
             class="cursor-pointer"
+            (click)="onClickThreeDots(i)"
           />
+          <div
+            *ngIf="dropdownIndex === i"
+            class="absolute bg-white shadow-md rounded-md py-3 border z-10 top-12"
+          >
+            <ul class="list-none py-2 pl-2 pr-7">
+              <!-- <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+                <div class="flex gap-2">
+                  <img src="assets/icons/Eye.svg" />
+                  <p class="font-sans font-medium text-sm text-[#5E6670]">
+                    View Detail
+                  </p>
+                </div>
+              </li> -->
+              <li class="py-2 px-4 hover:bg-gray-100">
+                <div
+                  class="flex gap-2 cursor-pointer"
+                  (click)="onDelete(item.id)"
+                >
+                  <img src="assets/icons/XCircle.svg" />
+                  <p
+                    class="font-sans font-normal text-sm text-[#5E6670] whitespace-nowrap"
+                  >
+                    Delete
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

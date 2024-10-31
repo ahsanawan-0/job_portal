@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
 interface Question {
   label: string;
   type: string;
@@ -26,6 +28,7 @@ interface FormData {
 export class ExitFormAdminViewComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   uniqueLinkId: string = '';
+  modalService = inject(NgbModal);
 
   extractUniqueLinkIdId(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -81,5 +84,10 @@ export class ExitFormAdminViewComponent implements OnInit {
   }
   trackByIndex(index: number, item: any): number {
     return index;
+  }
+
+  openModal() {
+    const modalRef = this.modalService.open(ExitInterviewModalComponent);
+    modalRef.componentInstance.link = `http://localhost:4200/exitInterviewViewForm/${this.uniqueLinkId}`;
   }
 }

@@ -63,10 +63,13 @@
         >
           <ul class="list-none py-2 pl-2 pr-7">
             <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Eye.svg" />
+              <div
+                class="flex gap-2"
+                (click)="onClickViewDetail(item.uniqueLinkId)"
+              >
+                <img src="assets/icons/Pencil.svg" />
                 <p class="font-sans font-medium text-sm text-[#5E6670]">
-                  View Detail
+                  Edit Form
                 </p>
               </div>
             </li>
@@ -80,6 +83,19 @@
                   class="font-sans font-normal text-sm text-[#5E6670] whitespace-nowrap"
                 >
                   Delete
+                </p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100">
+              <div
+                class="flex gap-2 cursor-pointer"
+                (click)="openModal(item.uniqueLinkId)"
+              >
+                <img src="assets/icons/ShareNetworkGray.svg" />
+                <p
+                  class="font-sans font-normal text-sm text-[#5E6670] whitespace-nowrap"
+                >
+                  Link
                 </p>
               </div>
             </li>

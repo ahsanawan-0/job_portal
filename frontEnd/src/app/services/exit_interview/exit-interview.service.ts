@@ -78,4 +78,10 @@ export class ExitInterviewService {
       updateData
     );
   }
+
+  deleteExitApplicant(applicantId: string) {
+    return this.http.delete(
+      `${this.apiUrl}/exit-interview-applicants-delete/${applicantId}`
+    );
+  }
 }

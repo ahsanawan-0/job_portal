@@ -5,6 +5,8 @@ import { ExitInterviewService } from '../../services/exit_interview/exit-intervi
 import { success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
 
 @Component({
   selector: 'app-exit-interview',
@@ -15,8 +17,13 @@ import '@pnotify/core/dist/BrightTheme.css';
 })
 export class ExitInterviewComponent implements OnInit {
   route = inject(Router);
+  modalService = inject(NgbModal);
   onClickViewResults(uniqueLinkId: string) {
     this.route.navigateByUrl(`exitInterviewResult/${uniqueLinkId}`);
+  }
+
+  onClickViewDetail(uniqueLinkId: string) {
+    this.route.navigateByUrl(`exitFormdetail/adminView/${uniqueLinkId}`);
   }
 
   onClickCreateForm() {
@@ -29,7 +36,7 @@ export class ExitInterviewComponent implements OnInit {
 
   service = inject(ExitInterviewService);
   applicants: any[] = [];
-  count: number = 0;
+
   getAllExitInterviewForms() {
     this.service.getAllExitInterviewForms().subscribe((res: any) => {
       this.applicants = res.response;
@@ -63,5 +70,10 @@ export class ExitInterviewComponent implements OnInit {
         });
       }
     });
+  }
+
+  openModal(uniqueLinkId: string) {
+    const modalRef = this.modalService.open(ExitInterviewModalComponent);
+    modalRef.componentInstance.link = `http://localhost:4200/exitInterviewViewForm/${uniqueLinkId}`;
   }
 }

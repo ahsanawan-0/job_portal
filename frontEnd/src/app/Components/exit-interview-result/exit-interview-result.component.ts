@@ -3,6 +3,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service';
+import { success, error } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
 
 @Component({
   selector: 'app-exit-interview-result',
@@ -73,5 +76,34 @@ export class ExitInterviewResultComponent implements OnInit {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedResults = this.applicants;
+  }
+
+  dropdownIndex: number | null = null;
+  onClickThreeDots(index: number) {
+    if (this.dropdownIndex === index) {
+      this.dropdownIndex = null;
+    } else {
+      this.dropdownIndex = index;
+    }
+  }
+
+  onDelete(applicantId: string) {
+    this.service.deleteExitApplicant(applicantId).subscribe((res: any) => {
+      if (res.message) {
+        success({
+          text: 'Applicant is Deleted!',
+          delay: 3000,
+          width: '300px',
+        });
+        this.dropdownIndex = null;
+        this.getApplicantsByFormId();
+      } else {
+        error({
+          text: 'Error in Deleting Form',
+          delay: 3000,
+          width: '300px',
+        });
+      }
+    });
   }
 }
