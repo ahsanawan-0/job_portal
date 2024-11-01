@@ -123,7 +123,10 @@
       </tr>
     </tbody>
   </table> -->
-  <app-job-card-component [jobs]="paginatedJobs"></app-job-card-component>
+  <app-job-card-component
+    [jobs]="paginatedJobs"
+    (jobAction)="getAllJobs()"
+  ></app-job-card-component>
   <div>
     <app-pagination
       [totalItems]="totalItems"

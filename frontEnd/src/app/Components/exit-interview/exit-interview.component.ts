@@ -7,6 +7,7 @@ import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
+import { DeleteConfirmationModalComponent } from '../../modals/delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-exit-interview',
@@ -36,6 +37,7 @@ export class ExitInterviewComponent implements OnInit {
 
   service = inject(ExitInterviewService);
   applicants: any[] = [];
+  formTitle: string = '';
 
   getAllExitInterviewForms() {
     this.service.getAllExitInterviewForms().subscribe((res: any) => {
@@ -52,21 +54,30 @@ export class ExitInterviewComponent implements OnInit {
     }
   }
 
-  deleteFormById(uniqueLinkId: string) {
-    this.service.deleteFormById(uniqueLinkId).subscribe((res: any) => {
-      if (res.message) {
-        success({
-          text: 'Form is Deleted!',
-          delay: 3000,
-          width: '300px',
-        });
-        this.dropdownIndex = null;
-        this.getAllExitInterviewForms();
-      } else {
-        error({
-          text: 'Error in Deleting Form',
-          delay: 3000,
-          width: '300px',
+  deleteFormById(uniqueLinkId: string, formTitle: string) {
+    const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
+    modalRef.componentInstance.jobName = formTitle;
+    modalRef.componentInstance.modalTitle = 'Confirm Deletion';
+    modalRef.componentInstance.modalMessage =
+      'Are you sure you want to delete this form';
+    modalRef.componentInstance.confirmed.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.service.deleteFormById(uniqueLinkId).subscribe((res: any) => {
+          if (res.message) {
+            success({
+              text: 'Form is Deleted!',
+              delay: 3000,
+              width: '300px',
+            });
+            this.dropdownIndex = null;
+            this.getAllExitInterviewForms();
+          } else {
+            error({
+              text: 'Error in Deleting Form',
+              delay: 3000,
+              width: '300px',
+            });
+          }
         });
       }
     });

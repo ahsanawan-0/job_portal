@@ -6,6 +6,8 @@ import { ExitInterviewService } from '../../services/exit_interview/exit-intervi
 import { success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteConfirmationModalComponent } from '../../modals/delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-exit-interview-result',
@@ -15,6 +17,7 @@ import '@pnotify/core/dist/BrightTheme.css';
   styleUrl: './exit-interview-result.component.css',
 })
 export class ExitInterviewResultComponent implements OnInit {
+  modalService = inject(NgbModal);
   route = inject(Router);
   activatedRoute = inject(ActivatedRoute);
   uniqueLinkId: string = '';
@@ -87,21 +90,30 @@ export class ExitInterviewResultComponent implements OnInit {
     }
   }
 
-  onDelete(applicantId: string) {
-    this.service.deleteExitApplicant(applicantId).subscribe((res: any) => {
-      if (res.message) {
-        success({
-          text: 'Applicant is Deleted!',
-          delay: 3000,
-          width: '300px',
-        });
-        this.dropdownIndex = null;
-        this.getApplicantsByFormId();
-      } else {
-        error({
-          text: 'Error in Deleting Form',
-          delay: 3000,
-          width: '300px',
+  onDelete(applicantId: string, applicantName: string) {
+    const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
+    modalRef.componentInstance.jobName = applicantName;
+    modalRef.componentInstance.modalTitle = 'Confirm Deletion';
+    modalRef.componentInstance.modalMessage =
+      'Are you sure you want to delete this Applicant';
+    modalRef.componentInstance.confirmed.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.service.deleteExitApplicant(applicantId).subscribe((res: any) => {
+          if (res.message) {
+            success({
+              text: 'Applicant is Deleted!',
+              delay: 3000,
+              width: '300px',
+            });
+            this.dropdownIndex = null;
+            this.getApplicantsByFormId();
+          } else {
+            error({
+              text: 'Error in Deleting Form',
+              delay: 3000,
+              width: '300px',
+            });
+          }
         });
       }
     });

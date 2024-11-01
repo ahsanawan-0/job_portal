@@ -17,7 +17,7 @@
 >
   <div class="flex flex-col gap-[8px] col-span-2 pl-5 py-5">
     <p class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]">
-      {{ job.title }}
+      {{ job.title | capitalizeWords }}
     </p>
     <div
       class="text-custom-gray font-sans font-normal text-[12px] leading-[20px] flex gap-[10px] items-center"
@@ -93,7 +93,9 @@
             <img src="assets/icons/XCircle.svg" />
             <p
               class="font-sans font-normal text-sm text-[#5E6670] whitespace-nowrap"
-              (click)="job.status !== 'Expired' && markAsExpired(job.id)"
+              (click)="
+                job.status !== 'Expired' && markAsExpired(job.id, job.title)
+              "
             >
               Mark as expired
             </p>
@@ -106,6 +108,19 @@
               class="font-sans font-normal text-sm text-custom-blue whitespace-nowrap"
             >
               Link
+            </p>
+          </div>
+        </li>
+        <li class="py-2 px-4 hover:bg-gray-100">
+          <div
+            class="flex gap-2 cursor-pointer"
+            (click)="OnClickDelete(job.id, job.title)"
+          >
+            <img src="assets/icons/Trash.svg" />
+            <p
+              class="font-sans font-normal text-sm text-[#E05151] whitespace-nowrap"
+            >
+              Delete
             </p>
           </div>
         </li>

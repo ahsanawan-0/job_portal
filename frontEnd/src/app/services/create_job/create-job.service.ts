@@ -75,7 +75,7 @@ export class CreateJobService {
   // Method to delete a job
   deleteJob(jobId: string): Observable<any> {
     return this.http
-      .delete<any>(`${this.apiUrl}/jobs/${jobId}`)
+      .delete<any>(`${this.apiUrl}/jobs/${jobId}/delete`)
       .pipe(catchError(this.handleError));
   }
 

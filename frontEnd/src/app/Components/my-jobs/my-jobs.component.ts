@@ -1,5 +1,5 @@
 import { CommonModule, UpperCasePipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { Router } from '@angular/router';
 import { CreateJobService } from '../../services/create_job/create-job.service';
@@ -23,8 +23,6 @@ export class MyJobsComponent implements OnInit {
   onClickPostJob() {
     this.route.navigateByUrl('createJobPost');
   }
-
-  dropdownIndex: number | null = null;
 
   job: any[] = [];
   service = inject(CreateJobService);
@@ -92,14 +90,6 @@ export class MyJobsComponent implements OnInit {
       timeZone: 'UTC',
     } as const;
     return expiration.toLocaleDateString('en-US', options);
-  }
-
-  onClickThreeDots(index: number) {
-    if (this.dropdownIndex === index) {
-      this.dropdownIndex = null;
-    } else {
-      this.dropdownIndex = index;
-    }
   }
 
   onClickViewApplication(jobId: string) {

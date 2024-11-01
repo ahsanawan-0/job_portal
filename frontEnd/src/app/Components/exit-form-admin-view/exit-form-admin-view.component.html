@@ -1,11 +1,11 @@
-<div class="container mt-5">
-  <div class="flex items-center justify-between mb-4">
+<div class="container w-full mt-5 p-5 text-custom-black font-sans">
+  <div class="flex items-center justify-between">
     <h2 *ngIf="!isEditing" class="text-2xl font-bold mb-4">
       Exit Interview Form: {{ formData.title }}
     </h2>
     <button
       *ngIf="!isEditing"
-      class="bg-blue-500 text-white px-4 py-2 rounded"
+      class="bg-custom-blue text-white px-4 py-2 rounded"
       (click)="openModal()"
     >
       Link
@@ -20,12 +20,12 @@
 
   <div *ngFor="let question of formData.questions; let i = index" class="mb-4">
     <div class="flex flex-col">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between mb-2">
         <label class="font-medium">Question {{ i + 1 }}:</label>
         <button
           *ngIf="isEditing"
           (click)="removeQuestion(i)"
-          class="mt-2 text-red-500"
+          class="mt-2 bg-[#E05151] text-white rounded p-2"
         >
           Remove Question
         </button>
@@ -35,19 +35,24 @@
         [(ngModel)]="question.label"
         [disabled]="!isEditing"
         placeholder="Enter question label"
-        class="border border-gray-300 p-2 rounded"
+        class="border border-gray-300 p-2 rounded mb-2"
       />
 
-      <label class="font-medium mt-2">Question Type:</label>
+      <label class="font-medium mt-2 mb-2">Question Type:</label>
       <select
         [(ngModel)]="question.type"
         [disabled]="!isEditing"
-        class="border border-gray-300 p-2 rounded"
+        class="border border-gray-300 p-2 rounded w-1/6"
       >
         <option value="text">Text</option>
         <option value="textarea">Textarea</option>
         <option value="radio">Radio</option>
       </select>
+
+      <hr
+        *ngIf="question.type === 'text' || question.type === 'textarea'"
+        class="my-4"
+      />
 
       <div *ngIf="question.type === 'radio'" class="mt-2">
         <label class="font-medium">Options:</label>
@@ -67,21 +72,29 @@
             class="border border-gray-300 p-2 rounded"
           />
 
-          <button
+          <!-- <button
             *ngIf="isEditing"
             (click)="removeOption(question.options, j)"
             class="ml-2 text-red-500"
           >
             Remove
-          </button>
+          </button> -->
+          <img
+            *ngIf="isEditing"
+            (click)="removeOption(question.options, j)"
+            src="assets/icons/fi_x-circle.svg"
+            alt=""
+            class="ml-2"
+          />
         </div>
         <button
           *ngIf="isEditing"
           (click)="addOption(question)"
-          class="text-blue-500"
+          class="text-custom-blue mt-1"
         >
           Add Option
         </button>
+        <hr class="my-4" />
       </div>
     </div>
   </div>
@@ -89,7 +102,7 @@
   <button
     *ngIf="isEditing"
     (click)="addQuestion()"
-    class="bg-green-500 text-white px-4 py-2 rounded mt-4"
+    class="bg-custom-green text-white px-4 py-2 rounded mt-4"
   >
     Add Question
   </button>
@@ -97,14 +110,14 @@
   <div class="mt-4">
     <button
       (click)="toggleEdit()"
-      class="bg-blue-500 text-white px-4 py-2 rounded"
+      class="bg-custom-blue text-white px-4 py-2 rounded"
     >
       {{ isEditing ? "Stop Editing" : "Edit Form" }}
     </button>
     <button
       *ngIf="isEditing"
       (click)="onUpdate()"
-      class="bg-blue-600 text-white px-4 py-2 rounded ml-2"
+      class="bg-custom-blue text-white px-4 py-2 rounded ml-2"
     >
       Save Changes
     </button>

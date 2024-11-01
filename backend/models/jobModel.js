@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const jobSchema = require("./definations/jobSchema"); // Correct path and filename
+const Applicant = require("./definations/applicantsSchema");
 
 const Job = mongoose.model("Job", jobSchema);
 
@@ -101,7 +102,19 @@ const updateJobStatus = async (jobId) => {
 // Delete a job
 const deleteJob = async (jobId) => {
   try {
-    return await Job.findByIdAndDelete(jobId);
+    const job = await Job.findById(jobId).populate("applicants");
+
+    if (!job) {
+      throw new Error("Job not found");
+    }
+
+    if (job.applicants.length > 0) {
+      await Applicant.deleteMany({ _id: { $in: job.applicants } });
+    }
+
+    await Job.findByIdAndDelete(jobId);
+
+    return { message: "Job and associated applicants deleted successfully." };
   } catch (error) {
     console.error(`Error deleting job: ${error.message}`);
     throw error;

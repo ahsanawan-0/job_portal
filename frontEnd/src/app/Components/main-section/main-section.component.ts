@@ -15,11 +15,6 @@ import { jobCard } from '../../models/jobModel';
   styleUrl: './main-section.component.css',
 })
 export class MainSectionComponent implements OnInit {
-  dropdown: boolean = false;
-  onClickThreeDots() {
-    this.dropdown = !this.dropdown;
-  }
-
   route = inject(Router);
   onClickViewAll() {
     this.route.navigateByUrl('myjobs');
