@@ -6,6 +6,8 @@ import { CreateJobService } from '../../services/create_job/create-job.service';
 import { success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
 
 @Component({
   selector: 'app-job-card-component',
@@ -15,6 +17,7 @@ import '@pnotify/core/dist/BrightTheme.css';
   styleUrl: './job-card-component.component.css',
 })
 export class JobCardComponentComponent {
+  modalService = inject(NgbModal);
   // dropdown: boolean = false;
   // onClickThreeDots() {
   //   this.dropdown = !this.dropdown;
@@ -53,5 +56,10 @@ export class JobCardComponentComponent {
 
   onClickViewDetail(jobId: string) {
     this.route.navigateByUrl(`jobdetail/admin/${jobId}`);
+  }
+
+  openModal(jobId: string) {
+    const modalRef = this.modalService.open(ExitInterviewModalComponent);
+    modalRef.componentInstance.link = `http://localhost:4200/jobdetail/user/${jobId}`;
   }
 }

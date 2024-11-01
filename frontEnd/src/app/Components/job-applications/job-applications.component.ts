@@ -3,11 +3,15 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { alert, notice } from '@pnotify/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobApplicationService } from '../../services/job_application/job-application.service';
+import { CapitalizeWordsPipe } from '../../Pipes/capitalize-words.pipe';
+import { success, error } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
 
 @Component({
   selector: 'app-job-applications',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, CapitalizeWordsPipe],
   templateUrl: './job-applications.component.html',
   styleUrl: './job-applications.component.css',
 })
@@ -70,6 +74,11 @@ export class JobApplicationsComponent implements OnInit {
       .createShortlistedApplicant(this.jobId, applicantId)
       .subscribe((res: any) => {
         this.shortListed = res.response;
+        success({
+          text: 'Applicant is ShortListed!',
+          delay: 3000,
+          width: '300px',
+        });
       });
     this.getApplicantsForJob();
     this.getAllShortListedApplicants();
@@ -120,6 +129,11 @@ export class JobApplicationsComponent implements OnInit {
       .createTestInvitedApplicantsForJob(this.jobId, applicantId)
       .subscribe((res: any) => {
         this.testInvited = res.response;
+        success({
+          text: 'Applicant is Invited For Test!',
+          delay: 3000,
+          width: '300px',
+        });
       });
     this.getApplicantsForJob();
     this.getAllTestInvitedApplicants();
@@ -155,6 +169,11 @@ export class JobApplicationsComponent implements OnInit {
       .createHiredApplicantsForJob(this.jobId, applicantId)
       .subscribe((res: any) => {
         this.hiredApplicant = res.response;
+        success({
+          text: 'Applicant is Hired!',
+          delay: 3000,
+          width: '300px',
+        });
       });
     this.getApplicantsForJob();
     this.getAllHiredApplicants();
