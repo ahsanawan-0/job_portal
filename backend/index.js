@@ -9,6 +9,8 @@ const cors = require("cors");
 const cron = require("node-cron");
 const mongoose = require("mongoose");
 const jobSchema = require("./models/definations/jobSchema");
+const User = require("./models/definations/userSchema");
+const bcrypt = require("bcrypt");
 
 connectDB();
 app.use(express.json());
@@ -62,3 +64,33 @@ updateExpiredJobs(); // Run this once at startup
 
 // Schedule the job expiration check daily
 cron.schedule("0 0 * * *", updateExpiredJobs);
+
+const initializeAdminAccount = async () => {
+  try {
+    // Check if the admin account already exists
+    const existingAdmin = await User.findOne({ email: "admin@sdsol.com" });
+
+    if (!existingAdmin) {
+      // Hash the password
+      const hashedPassword = await bcrypt.hash("admin12345", 10);
+
+      // Create a new admin account
+      const newAdmin = new User({
+        name: "Admin",
+        designation: "admin", // Set designation as 'admin'
+        email: "admin@sdsol.com",
+        password: hashedPassword,
+      });
+
+      // Save the admin account to the database
+      await newAdmin.save();
+      console.log("Admin account created successfully.");
+    } else {
+      console.log("Admin account already exists.");
+    }
+  } catch (error) {
+    console.error("Error initializing admin account:", error);
+  }
+};
+
+initializeAdminAccount();

@@ -10,6 +10,7 @@ const {
   getAllJobsForCount,
   updateJobStatus,
 } = require("../controller/jobController");
+const verifyToken = require("../middleweres/verifyToken");
 
 // routes/jobRoutes.js
 router.post("/create-job", createJobPost);

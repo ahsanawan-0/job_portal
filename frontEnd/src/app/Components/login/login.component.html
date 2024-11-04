@@ -23,41 +23,49 @@
             >
           </p>
         </div>
+
         <div class="flex flex-col gap-5">
           <div *ngIf="!isSignIn" class="flex gap-2">
             <input
               type="text"
+              [(ngModel)]="name"
               placeholder="{{ namePlaceholder }}"
               class="border border-[#E4E5E8] bg-white w-full rounded-md py-3 pl-4"
             />
             <select
+              [(ngModel)]="designation"
               class="border border-[#E4E5E8] bg-white w-full rounded-md py-3 pl-4"
             >
               <option value="" disabled selected>Designation</option>
-              <option value="developer">{{ designationOption }}</option>
+              <option value="{{ designationOption }}">
+                {{ designationOption }}
+              </option>
             </select>
           </div>
           <input
+            [(ngModel)]="email"
             type="email"
             placeholder="{{ this.emailPlaceholder }}"
             class="border border-[#E4E5E8] bg-white w-full rounded-md py-3 pl-4"
           />
           <div class="relative">
             <input
+              [(ngModel)]="password"
               [type]="showPassword ? 'text' : 'password'"
               placeholder="{{ this.passwordPlaceholder }}"
               class="border border-[#E4E5E8] bg-white w-full rounded-md py-3 pl-4"
             />
             <img
               *ngIf="!showPassword"
-              src="assets/icons/fi_eye.svg"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              src="assets/icons/hide-password.svg"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 cursor-pointer"
               (click)="onClickShowPassword()"
             />
+
             <img
               *ngIf="showPassword"
-              src="assets/icons/hide-password.svg"
-              class="absolute right-3 top-1/2 transform h-6 w-6 -translate-y-1/2 cursor-pointer"
+              src="assets/icons/fi_eye.svg"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
               (click)="onClickShowPassword()"
             />
           </div>
@@ -69,12 +77,16 @@
             <p class="font-medium text-sm text-custom-blue">Forget password</p>
           </div>
         </div>
-        <div class="bg-custom-blue flex justify-center gap-3 py-4 rounded-md">
+        <button
+          class="bg-custom-blue flex justify-center gap-3 py-4 rounded-md"
+          (click)="isSignIn ? onSignIn() : onSignUp()"
+        >
           <p class="text-white font-semibold text-base">
             {{ isSignIn ? "Sign In" : "Sign Up" }}
           </p>
           <img src="assets/icons/fi_arrow-rightWhite.svg" />
-        </div>
+        </button>
+        <p *ngIf="message" class="text-red-500">{{ message }}</p>
       </div>
     </div>
   </div>

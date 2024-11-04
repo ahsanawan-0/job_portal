@@ -17,6 +17,7 @@ import { JobViewPageComponent } from './pages/job-view-page/job-view-page.compon
 import { ExitApplicantInfoComponent } from './Components/exit-applicant-info/exit-applicant-info.component';
 import { ExitInterviewFormDetailComponent } from './Components/exit-interview-form-detail/exit-interview-form-detail.component';
 import { ExitFormAdminViewComponent } from './Components/exit-form-admin-view/exit-form-admin-view.component';
+import { authGuard } from './services/authGuard/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
@@ -96,6 +98,7 @@ export const routes: Routes = [
   {
     path: 'jobdetail/admin/:id',
     component: JobDetailComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'loader',

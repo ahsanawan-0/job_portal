@@ -145,7 +145,10 @@
     </div>
   </div>
 
-  <div class="flex items-center space-x-4 pl-[20px] py-[10px] mt-24">
+  <div
+    class="flex items-center space-x-4 pl-[20px] py-[10px] mt-24 cursor-pointer"
+    (click)="logout()"
+  >
     <img src="assets/icons/SignOut.svg" />
     <p class="font-[500] font-sans text-[14px] leading-[20px] text-[#767F8C]">
       Log-Out

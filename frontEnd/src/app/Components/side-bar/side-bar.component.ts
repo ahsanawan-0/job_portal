@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -30,5 +32,20 @@ export class SideBarComponent {
     this.isExitInterviewSelected = true;
     this.isMyJobsSelected = false;
     this.isOverviewSelected = false;
+  }
+
+  route = inject(Router);
+  cookieService = inject(CookieService);
+  service = inject(AuthService);
+  logout() {
+    this.service.logout().subscribe(
+      (response: any) => {
+        console.log(response.message);
+        this.route.navigate(['/login']);
+      },
+      (error) => {
+        console.error('Logout failed:', error);
+      }
+    );
   }
 }

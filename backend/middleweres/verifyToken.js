@@ -11,18 +11,14 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (err) {
         return res.status(403).json({
           success: false,
           message: "Forbidden Request",
         });
       }
-      req.user = {
-        id: user.id,
-        author: user.author,
-        accountType: user.accountType,
-      };
+      req.user = { id: user.id }; // Only include user ID
       next();
     });
   } catch (error) {
