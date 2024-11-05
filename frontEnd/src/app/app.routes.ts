@@ -18,6 +18,8 @@ import { ExitApplicantInfoComponent } from './Components/exit-applicant-info/exi
 import { ExitInterviewFormDetailComponent } from './Components/exit-interview-form-detail/exit-interview-form-detail.component';
 import { ExitFormAdminViewComponent } from './Components/exit-form-admin-view/exit-form-admin-view.component';
 import { authGuard } from './services/authGuard/guards/auth.guard';
+import { NotFoundComponentComponent } from './Components/not-found-component/not-found-component.component';
+import { HiredCandidateComponent } from './Components/hired-candidate/hired-candidate.component';
 
 export const routes: Routes = [
   {
@@ -92,6 +94,10 @@ export const routes: Routes = [
         path: 'exitFormdetail/adminView/:uniqueLinkId',
         component: ExitFormAdminViewComponent,
       },
+      {
+        path: 'hiredCandidate',
+        component: HiredCandidateComponent,
+      },
     ],
   },
 
@@ -103,5 +109,9 @@ export const routes: Routes = [
   {
     path: 'loader',
     component: LoaderComponent,
+  },
+  {
+    path: '**', // This wildcard route matches any path that doesn't exist
+    component: NotFoundComponentComponent, // Render the NotFoundComponent
   },
 ];

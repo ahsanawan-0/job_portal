@@ -77,4 +77,8 @@ export class JobApplicationService {
         })
       );
   }
+
+  getHiredCandidatesData() {
+    return this.http.get(`${this.apiUrl}/jobs/hired-candidates`);
+  }
 }

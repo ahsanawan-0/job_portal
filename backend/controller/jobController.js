@@ -145,12 +145,7 @@ module.exports = {
       const jobs = await jobModel.getAllJobsForCount();
 
       const totalJobs = jobs.length;
-      // const activeJobs = jobs.filter(
-      //   (job) => new Date(job.expirationDate).getTime() > new Date().getTime()
-      // ).length;
-      // const expiredJobs = jobs.filter(
-      //   (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
-      // ).length;
+
       const activeJobs = jobs.filter((job) => job.status === "Active").length;
       const expiredJobs = jobs.filter((job) => job.status === "Expired").length;
 
@@ -332,6 +327,23 @@ module.exports = {
       console.error("Error searching job posts:", error.message);
       res.status(500).json({
         message: "Failed to search job posts.",
+        error: error.message,
+      });
+    }
+  },
+  getHiredCandidates: async (req, res) => {
+    try {
+      // Call the model function to get hired candidates
+      const hiredCandidates = await jobModel.getHiredCandidates();
+
+      res.status(200).json({
+        message: "Hired candidates retrieved successfully.",
+        hiredCandidates,
+      });
+    } catch (error) {
+      console.error("Error fetching hired candidates:", error.message);
+      res.status(500).json({
+        message: "Failed to fetch hired candidates.",
         error: error.message,
       });
     }
