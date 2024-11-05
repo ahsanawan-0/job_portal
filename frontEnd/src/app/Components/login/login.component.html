@@ -71,12 +71,18 @@
           </div>
           <div class="flex justify-between" *ngIf="isSignIn">
             <div class="flex gap-3">
-              <input type="radio" class="custom-radio" />
-              <p class="font-normal text-sm text-[#767F8C]">Remember Me</p>
+              <!-- <input type="radio" class="custom-radio" />
+              <p class="font-normal text-sm text-[#767F8C]">Remember Me</p> -->
             </div>
-            <p class="font-medium text-sm text-custom-blue">Forget password</p>
+            <p
+              class="font-medium text-sm text-custom-blue cursor-pointer"
+              (click)="openForgetPasswordModal()"
+            >
+              Forget password
+            </p>
           </div>
         </div>
+
         <button
           class="bg-custom-blue flex justify-center gap-3 py-4 rounded-md"
           (click)="isSignIn ? onSignIn() : onSignUp()"

@@ -3,6 +3,9 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { NotificationService } from '../../services/notification/notification.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ForgetPasswordComponent } from '../../modals/forget-password/forget-password.component';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +36,25 @@ export class LoginComponent {
   message: string = '';
 
   service = inject(AuthService);
+  notification = inject(NotificationService);
   route = inject(Router);
+  modalService = inject(NgbModal);
+
+  openForgetPasswordModal() {
+    const modalRef = this.modalService.open(ForgetPasswordComponent, {
+      centered: true,
+      backdrop: 'static',
+    });
+
+    // Handle when the password reset is confirmed
+    modalRef.componentInstance.resetConfirmed.subscribe(
+      (confirmed: boolean) => {
+        if (confirmed) {
+          this.notification.showSuccess('Password reset successfully!'); // Notify the user
+        }
+      }
+    );
+  }
 
   onSignUp() {
     this.service
@@ -41,10 +62,12 @@ export class LoginComponent {
       .subscribe(
         (response: any) => {
           this.message = response.message;
+          this.notification.showSuccess(response.message);
 
           this.isSignIn = true;
         },
         (error) => {
+          this.notification.showError(error.error.message);
           this.message = error.error.message;
         }
       );
@@ -54,11 +77,12 @@ export class LoginComponent {
     this.service.signIn(this.email, this.password).subscribe(
       (response: any) => {
         this.message = response.message; // Success message
-        // Handle successful sign-in (e.g., navigate to dashboard)
+        this.notification.showSuccess(`${this.email} signed in successfully`);
         this.route.navigate(['/dashboard']); // Adjust path as needed
       },
       (error) => {
-        this.message = error.error.message; // Error message
+        // this.message = error.error.message;
+        this.notification.showError(error.error.message);
       }
     );
   }

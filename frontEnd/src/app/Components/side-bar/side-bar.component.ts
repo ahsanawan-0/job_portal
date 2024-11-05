@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+
 import { AuthService } from '../../services/auth/auth.service';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -35,15 +36,17 @@ export class SideBarComponent {
   }
 
   route = inject(Router);
-  cookieService = inject(CookieService);
+  notifictaion = inject(NotificationService);
   service = inject(AuthService);
   logout() {
     this.service.logout().subscribe(
       (response: any) => {
         console.log(response.message);
+        this.notifictaion.showSuccess(response.message);
         this.route.navigate(['/login']);
       },
       (error) => {
+        this.notifictaion.showError(`Logout failed: ${error}`);
         console.error('Logout failed:', error);
       }
     );

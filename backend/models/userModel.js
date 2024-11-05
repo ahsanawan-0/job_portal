@@ -26,4 +26,14 @@ module.exports = {
       throw error;
     }
   },
+
+  updateUserPassword: async (email, newPassword) => {
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      return await User.updateOne({ email }, { password: hashedPassword });
+    } catch (error) {
+      console.error(`Error updating user password: ${error.message}`);
+      throw error;
+    }
+  },
 };

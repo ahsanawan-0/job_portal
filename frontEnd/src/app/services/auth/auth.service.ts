@@ -47,4 +47,16 @@ export class AuthService {
       withCredentials: true,
     });
   }
+
+  resetPassword(
+    email: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Observable<any> {
+    const body = { email, newPassword, confirmPassword };
+    return this.http.post(`${this.apiUrl}/reset-password`, body, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      withCredentials: true,
+    });
+  }
 }

@@ -1,9 +1,14 @@
 const router = require("express").Router();
-const { signUp, signIn } = require("../controller/userController");
+const {
+  signUp,
+  signIn,
+  resetPassword,
+} = require("../controller/userController");
 const verifyToken = require("../middleweres/verifyToken");
 
 router.post("/signup", signUp);
 router.post("/signin", signIn);
+router.post("/reset-password", resetPassword);
 
 // router.get("/profile", verifyToken, (req, res) => {
 

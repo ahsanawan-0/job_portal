@@ -20,6 +20,14 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      minlength: 10, // Minimum 10 characters
+
+      validate: {
+        validator: function (v) {
+          return v.length >= 10;
+        },
+        message: "Password must be atleast 10 characters long",
+      },
     },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
