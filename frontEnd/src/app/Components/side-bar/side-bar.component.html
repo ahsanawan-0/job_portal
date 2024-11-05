@@ -158,10 +158,34 @@
         </p>
       </div>
 
-      <div class="flex items-center space-x-4 pl-[20px] py-[10px]">
-        <img src="assets/icons/Gear.svg" />
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="settings"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isSettingsSelected,
+          'bg-transparent': !isSettingsSelected
+        }"
+        (click)="selectSettings()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isSettingsSelected"
+        />
+
+        <img
+          [src]="
+            isSettingsSelected
+              ? 'assets/icons/GearBlue.svg'
+              : 'assets/icons/Gear.svg'
+          "
+        />
+
         <p
-          class="font-[500] font-sans text-[14px] leading-[20px] text-[#767F8C]"
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isSettingsSelected,
+            'text-[#767F8C]': !isSettingsSelected
+          }"
         >
           Settings
         </p>

@@ -110,4 +110,63 @@ module.exports = {
         .json({ message: "Failed to reset password.", error: error.message });
     }
   },
+
+  getUserData: async (req, res) => {
+    try {
+      const userId = req.user.id;
+
+      const user = await userModel.findUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      const { password, ...userData } = user.toObject();
+
+      res.status(200).json({ user: userData });
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+      res
+        .status(500)
+        .json({ message: "Failed to fetch user data.", error: error.message });
+    }
+  },
+
+  updateUserData: async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { name, email, password, designation } = req.body;
+
+      const user = await userModel.findUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      let hashedPassword;
+      if (password) {
+        const salt = await bcrypt.genSalt(10);
+        hashedPassword = await bcrypt.hash(password, salt);
+      }
+
+      const updatedUserData = {
+        name: name || user.name,
+        email: email || user.email,
+        ...(hashedPassword && { password: hashedPassword }),
+        designation: designation !== undefined ? designation : user.designation,
+      };
+
+      const updatedUser = await userModel.updateUserById(
+        userId,
+        updatedUserData
+      );
+      res.status(200).json({
+        message: "User data updated successfully.",
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error("Error updating user data:", error.message);
+      res
+        .status(500)
+        .json({ message: "Failed to update user data.", error: error.message });
+    }
+  },
 };

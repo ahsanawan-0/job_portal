@@ -36,4 +36,22 @@ module.exports = {
       throw error;
     }
   },
+
+  findUserById: async (id) => {
+    try {
+      return await User.findById(id);
+    } catch (error) {
+      console.error(`Error finding user by ID: ${error.message}`);
+      throw error;
+    }
+  },
+
+  updateUserById: async (id, userData) => {
+    try {
+      return await User.findByIdAndUpdate(id, userData, { new: true });
+    } catch (error) {
+      console.error(`Error updating user by ID: ${error.message}`);
+      throw error;
+    }
+  },
 };

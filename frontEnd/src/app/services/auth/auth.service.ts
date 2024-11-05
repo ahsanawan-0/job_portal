@@ -59,4 +59,8 @@ export class AuthService {
       withCredentials: true,
     });
   }
+
+  getUserData(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/userData`, { withCredentials: true });
+  }
 }

@@ -20,6 +20,7 @@ import { ExitFormAdminViewComponent } from './Components/exit-form-admin-view/ex
 import { authGuard } from './services/authGuard/guards/auth.guard';
 import { NotFoundComponentComponent } from './Components/not-found-component/not-found-component.component';
 import { HiredCandidateComponent } from './Components/hired-candidate/hired-candidate.component';
+import { SettingsComponent } from './Components/settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -97,6 +98,10 @@ export const routes: Routes = [
       {
         path: 'hiredCandidate',
         component: HiredCandidateComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
       },
     ],
   },

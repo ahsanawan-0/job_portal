@@ -1,1 +1,89 @@
-<p class="mt-5">hired-candidate works!</p>
+<!-- <div class="flex flex-wrap gap-3 m-5">
+  <div
+    *ngFor="let item of applicants"
+    class="border border-[#E4E5E8] w-1/4 mt-5 my-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
+  >
+    <div name class="flex items-center gap-3 p-4">
+      <img src="assets/images/Image.png" />
+
+      <div class="flex flex-col gap-1">
+        <p class="font-semibold text-sm text-custom-black">
+          {{ item.name }}
+        </p>
+
+        <p class="font-normal text-sm text-custom-gray">{{ item.jobTitle }}</p>
+      </div>
+    </div>
+
+    <hr class="border border-[#E4E5E8] mx-4" />
+
+    <div info class="my-4">
+      <ul class="list-disc list-inside">
+        <li class="font-normal text-sm text-[#5E6670]">
+          Experience {{ item.experience }}
+        </li>
+        <li class="font-normal text-sm text-[#5E6670]">
+          Applied: {{ item.createdAt | date }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
+      <img src="assets/icons/DownloadSimple.svg" />
+
+      <p class="font-medium text-sm text-custom-blue">Download CV</p>
+    </div>
+  </div>
+</div> -->
+<div class="m-5">
+  <p class="mt-7 mb-8 font-medium text-2xl text-custom-black">
+    Hired Candidates
+    <span class="font-normal text-[#9199a3]">({{ totalHiredCandidates }})</span>
+  </p>
+  <div
+    grid
+    class="grid grid-cols-5 bg-[#F1F2F4] text-[#474C54] font-normal text-xs pl-5 py-3"
+  >
+    <div class="col-span-2">
+      <p>Name</p>
+    </div>
+    <div>
+      <p>Email</p>
+    </div>
+    <div>
+      <p>Experience</p>
+    </div>
+    <div>
+      <p>Job</p>
+    </div>
+  </div>
+  <div
+    class="grid grid-cols-5 py-5 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8]"
+    *ngFor="let item of applicants; let i = index"
+  >
+    <div class="col-span-2">
+      <p class="font-medium text-base">{{ item.name | capitalizeWords }}</p>
+    </div>
+    <div class="flex gap-2 items-center">
+      <p
+        class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+      >
+        {{ item.email }}
+      </p>
+    </div>
+    <div class="flex gap-2 items-center">
+      <p
+        class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+      >
+        {{ item.experience }}
+      </p>
+    </div>
+    <div class="flex gap-2 items-center">
+      <p
+        class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+      >
+        {{ item.jobTitle }}
+      </p>
+    </div>
+  </div>
+</div>

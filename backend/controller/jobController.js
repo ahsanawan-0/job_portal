@@ -335,10 +335,12 @@ module.exports = {
     try {
       // Call the model function to get hired candidates
       const hiredCandidates = await jobModel.getHiredCandidates();
+      const totalHiredCandidates = hiredCandidates.length;
 
       res.status(200).json({
         message: "Hired candidates retrieved successfully.",
         hiredCandidates,
+        totalHiredCandidates,
       });
     } catch (error) {
       console.error("Error fetching hired candidates:", error.message);
