@@ -10,6 +10,7 @@ const verifyToken = async (req, res, next) => {
     });
   }
 
+
   try {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
       if (err) {

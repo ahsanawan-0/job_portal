@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class SalaryWithSuffixPipe implements PipeTransform {
   transform(salary: number): string {
     if (!salary) {
-      return 'Salary not available'; // Handle missing salary information
+      return 'Salary not available'; 
     }
 
     const formattedSalary = (salary / 1000).toFixed(0);

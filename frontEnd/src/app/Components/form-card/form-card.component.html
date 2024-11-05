@@ -1,0 +1,81 @@
+<div class="font-sans bg-[#FCFCFC] mt-6 mx-5">
+  <div class="mt-8">
+    <div>
+      <p class="font-medium text-base text-custom-black">All Forms List</p>
+    </div>
+    
+    <div grid class="grid grid-cols-4 bg-[#F1F2F4] text-[#474C54] font-normal text-xs pl-5 py-3 mt-5">
+      <div class="col-span-2">
+        <p>FORM TITLE</p>
+      </div>
+      <div>
+        <p>SUBMISSIONS</p>
+      </div>
+      <div>
+        <p>ACTIONS</p>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-4 py-6 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg"
+      *ngFor="let form of forms; let i = index"
+    >
+      <div class="col-span-2 content-center">
+        <p class="font-medium text-base">{{ form.title }}</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <img src="assets/icons/Users.svg" />
+        <p class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]">
+          {{ form.applicants }} Applications
+        </p>
+      </div>
+      <div class="flex items-center gap-2 relative">
+        <button
+          (click)="onClickViewResults(form.id)"
+          class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
+        >
+          View Results
+        </button>
+        <img
+          src="assets/icons/DotsThreeVertical.svg"
+          class="cursor-pointer"
+          (click)="onClickThreeDots(i)"
+        />
+        <div
+          *ngIf="dropdownIndex === i"
+          class="absolute bg-white shadow-md rounded-md py-3 border z-10 top-12"
+        >
+          <ul class="list-none py-2 pl-2 pr-7">
+            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+              <div
+                class="flex gap-2"
+                (click)="onClickViewDetail(form._id)"
+              >
+                <img src="assets/icons/Pencil.svg" />
+                <p class="font-sans font-medium text-sm text-[#5E6670]">Edit Form</p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100">
+              <div
+                class="flex gap-2 cursor-pointer"
+                (click)="deleteFormById(form._id, form.title)"
+              >
+                <img src="assets/icons/Trash.svg" />
+                <p class="font-sans font-normal text-sm text-[#E05151] whitespace-nowrap">Delete</p>
+              </div>
+            </li>
+            <li class="py-2 px-4 hover:bg-gray-100">
+              <div
+                class="flex gap-2 cursor-pointer"
+                (click)="openModal(form.id)"
+              >
+                <img src="assets/icons/ShareNetworkBlue.svg" />
+                <p class="font-sans font-normal text-sm text-custom-blue whitespace-nowrap">Link</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="mt-10 p-8">
+    <div (click)="onClickArrowLeft()" class="cursor-pointer my-4 flex items-center">
+        <img src="assets/icons/fi_arrow-left.svg" />
+        <p class="font-light text-md ml-3">Technical Interview</p>
+      </div>
+    <div class=" ">
+      <h3 class="text-xl font-semibold">Generated Questions</h3>
+   </div>
+
+    <div class="mt-4 space-y-6">
+      <div *ngFor="let question of generatedQuestions; let i = index" class="rounded-lg shadow-md p-4 mt-5 bg-white">
+        <div class="flex items-center">
+          
+          <div class="flex justify-between w-full">
+            <label class="block text-[#18191C] text-sm font-medium mb-2">{{ question.question }}</label>
+            <button
+              type="button"
+             aria-label="Remove Question"
+            >
+              <img src="assets/icons/fi_x-circle.svg" class="max-w-7">
+            </button>
+          </div>
+        </div>
+  
+        <!-- Display Options if they exist -->
+        <div *ngIf="question.options && question.options.length > 0" class="mt-2">
+          <div class="flex flex-col mt-1 space-y-2">
+            <div *ngFor="let option of question.options" class="p-2 border border-gray-300 rounded-md bg-gray-100 flex justify-between w-full" [ngClass]="{'bg-green-200': option === question.correctAnswer}">
+              {{ option }}
+              <div class="flex justify-center gap-3">
+                <span *ngIf="option === question.correctAnswer">Correct</span>
+                <img *ngIf="option === question.correctAnswer" src="assets/icons/tick.svg" alt="Correct Answer" class="ml-2" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

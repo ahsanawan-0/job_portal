@@ -1,19 +1,26 @@
-import { Routes } from '@angular/router';
-import { LayoutComponent } from './Components/layout/layout.component';
-import { MainSectionComponent } from './Components/main-section/main-section.component';
-import { TestComponent } from './Components/test/test.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { JobApplicationsComponent } from './Components/job-applications/job-applications.component';
-import { MyJobsComponent } from './Components/my-jobs/my-jobs.component';
-import { ExitInterviewComponent } from './Components/exit-interview/exit-interview.component';
-import { ExitInterviewResultComponent } from './Components/exit-interview-result/exit-interview-result.component';
-import { LoaderComponent } from './Components/loader/loader.component';
-import { LoginComponent } from './Components/login/login.component';
-import { ExitInterviewFormComponent } from './Components/exit-interview-form/exit-interview-form.component';
-import { FormComponent } from './pages/create_job/form.component';
-import { JobDetailComponent } from './pages/job-detail/job-detail.component';
-import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
-import { JobViewPageComponent } from './pages/job-view-page/job-view-page.component';
+import { Routes } from "@angular/router";
+import { LoginComponent } from "./Components/login/login.component";
+import { ExitInterviewFormViewerComponent } from "./Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component";
+import { JobViewPageComponent } from "./pages/job-view-page/job-view-page.component";
+import { TestViewPageComponent } from "./pages/test-view-page/test-view-page.component";
+import { LayoutComponent } from "./Components/layout/layout.component";
+import { DashboardComponent } from "./pages/dashboard/dashboard.component";
+import { JobApplicationsComponent } from "./Components/job-applications/job-applications.component";
+import { MyJobsComponent } from "./Components/my-jobs/my-jobs.component";
+import { ExitInterviewComponent } from "./Components/exit-interview/exit-interview.component";
+import { TechnicalInterviewComponent } from "./pages/technical-interview/technical-interview.component";
+import { ExitInterviewResultComponent } from "./Components/exit-interview-result/exit-interview-result.component";
+import { ExitInterviewFormComponent } from "./Components/exit-interview-form/exit-interview-form.component";
+import { FormComponent } from "./pages/create_job/form.component";
+import { CreateTestComponent } from "./pages/create-test-questions/create-test.component";
+import { TestComponent } from "./Components/test/test.component";
+import { QuestionCardComponent } from "./Components/question-card/question-card.component";
+import { CreateTestFormComponent } from "./pages/create-test-form/create-test-form.component";
+import { GeneratedQuestionsViewComponent } from "./pages/generated-questions-view/generated-questions-view.component";
+import { TestFormResultsComponent } from "./Components/test-form-results/test-form-results.component";
+import { JobDetailComponent } from "./pages/job-detail/job-detail.component";
+import { LoaderComponent } from "./Components/loader/loader.component";
+import { ApplicantTestSubmissionsComponent } from "./Components/applicant-test-submisions/applicant-test-submissions.component";
 
 export const routes: Routes = [
   {
@@ -33,6 +40,10 @@ export const routes: Routes = [
   {
     path: 'jobdetail/user/:id',
     component: JobViewPageComponent,
+  },
+  {
+    path: 'test/user/:id',
+    component: TestViewPageComponent,
   },
   {
     path: '',
@@ -55,6 +66,10 @@ export const routes: Routes = [
         component: ExitInterviewComponent,
       },
       {
+        path: 'technicalinterview',
+        component: TechnicalInterviewComponent,
+      },
+      {
         path: 'exitInterviewResult',
         component: ExitInterviewResultComponent,
       },
@@ -66,18 +81,42 @@ export const routes: Routes = [
         path: 'createJobPost',
         component: FormComponent,
       },
+      {
+        path: 'createTestQuestions',
+        component: CreateTestComponent,
+      },
 
       {
         path: 'test',
         component: TestComponent,
       },
       {
-        path: 'exitInterviewViewForm/:id',
+        path: 'questionCard',
+        component: QuestionCardComponent,
+      },
+      {
+        path: 'exitInterviewViewForm/:uniqueLinkId',
         component: ExitInterviewFormViewerComponent,
+      },
+      {
+        path: 'questionform/:question_id',
+        component: CreateTestFormComponent,
+      },
+      {
+        path: 'viewQuestions/:question_id',
+        component: GeneratedQuestionsViewComponent,
+      },
+      {
+        path: 'test-applicants-list/:formId',
+        component: TestFormResultsComponent,
+      },
+      {
+        path: 'applicant-test-submission/:submissionId',
+        component: ApplicantTestSubmissionsComponent,
       },
     ],
   },
-  
+
   {
     path: 'jobdetail/admin/:id',
     component: JobDetailComponent,
@@ -86,5 +125,4 @@ export const routes: Routes = [
     path: 'loader',
     component: LoaderComponent,
   },
-
 ];

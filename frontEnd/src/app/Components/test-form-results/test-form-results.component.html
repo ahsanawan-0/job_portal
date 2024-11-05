@@ -1,0 +1,91 @@
+<div main class="font-sans mt-5 ml-5">
+  <div class="flex flex-col gap-2">
+    <div class="flex gap-2 items-center">
+      <img
+        src="assets/icons/fi_arrow-left.svg"
+        (click)="onClickArrowLeft()"
+        class="cursor-pointer"
+      />
+      <p class="font-normal text-sm text-custom-gray">{{ formTitle }}</p>
+    </div>
+    <p class="font-medium text-2xl text-custom-black">
+      Technical Interviews Results
+    </p>
+  </div>
+  <div results class="py-7">
+    <div>
+      <p class="font-medium text-base text-custom-black">All Results List</p>
+    </div>
+    <div>
+      <div
+        grid
+        class="grid grid-cols-4 bg-[#F1F2F4] text-[#474C54] font-normal text-xs pl-5 py-3 mt-5"
+      >
+        <div class="col-span-2">
+          <p>Name</p>
+        </div>
+        <div>
+          <p>Email</p> <!-- Changed from EMPLOYEE ID to Email -->
+        </div>
+        <div>
+          <p>ACTIONS</p>
+        </div>
+      </div>
+      <div
+        class="grid grid-cols-4 py-5 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8]"
+        *ngFor="let item of submissions; let i = index" 
+      >
+        <div class="col-span-2">
+          <p class="font-medium text-base">{{ item.applicant.name }}</p> <!-- Accessing applicant name -->
+        </div>
+        <div class="flex gap-2 items-center">
+          <p
+            class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+          >
+            {{ item.applicant.email }} <!-- Accessing applicant email -->
+          </p>
+        </div>
+        <div class="flex gap-2 relative">
+          <button
+            (click)="onClickViewAnswers(item.submissionId)"
+            class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
+          >
+            View Answers
+          </button>
+          <img
+            src="assets/icons/DotsThreeVertical.svg"
+            class="cursor-pointer"
+            (click)="onClickThreeDots(i)"
+          />
+          <div
+            *ngIf="dropdownIndex === i"
+            class="absolute bg-white shadow-md rounded-md py-3 border z-10 top-12"
+          >
+            <ul class="list-none py-2 pl-2 pr-7">
+              <li class="py-2 px-4 hover:bg-gray-100">
+                <div
+                  class="flex gap-2 cursor-pointer"
+                  (click)="onDelete(item.submissionId, item.applicant.name)" 
+                >
+                  <img src="assets/icons/Trash.svg" />
+                  <p
+                    class="font-sans font-normal text-sm text-[#E05151] whitespace-nowrap"
+                  >
+                    Delete
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <app-pagination
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<form [formGroup]="form">
+  <main class="flex-1 p-5 bg-[#FCFCFC]">
+    <div class="w-full">
+      <!-- Header Section -->
+      <div (click)="onClickArrowLeft()" class="cursor-pointer my-4 flex items-center">
+        <img src="assets/icons/fi_arrow-left.svg" />
+        <p class="font-light text-md ml-3">Technical Interview</p>
+      </div>
+      <div class="flex justify-between my-6">
+        <div class="text-2xl text-[#18191C]">GENERATE QUESTIONS</div>
+
+      </div>
+
+      <!-- AI Generated Questions Input -->
+      <div class="space-y-6 w-2/3 mb-6">
+        <div>
+          <label for="numQuestions" class="block text-[#18191C] text-sm font-medium mb-2">Number of Questions</label>
+          <input
+            type="number"
+            formControlName="num_questions"
+            placeholder="Enter number of questions"
+            id="numQuestions"
+            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+          />
+        </div>
+        
+        <div>
+          <label for="interviewType" class="block text-[#18191C] text-sm font-medium mb-2">Interview Type</label>
+          <input
+            type="text"
+            formControlName="interview_type"
+            placeholder="Enter interview type"
+            id="interviewType"
+            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+          />
+          <div class="flex gap-2 mt-2">
+            <span (click)="selectTag('interview_type', 'MCQs')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">MCQs</span>
+            <span (click)="selectTag('interview_type', 'Coding')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Coding</span>
+            <span (click)="selectTag('interview_type', 'Technical')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Technical</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="experienceLevel" class="block text-[#18191C] text-sm font-medium mb-2">Experience Level</label>
+          <input
+            type="text"
+            formControlName="experience_level"
+            placeholder="Enter experience level"
+            id="experienceLevel"
+            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+          />
+          <div class="flex gap-2 mt-2">
+            <span (click)="selectTag('experience_level', 'Beginner')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Beginner</span>
+            <span (click)="selectTag('experience_level', 'Intermediate')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Intermediate</span>
+            <span (click)="selectTag('experience_level', 'Expert')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Expert</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="field" class="block text-[#18191C] text-sm font-medium mb-2">Field</label>
+          <input
+            type="text"
+            formControlName="field"
+            placeholder="Enter field"
+            id="field"
+            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+          />
+          <div class="flex gap-2 mt-2">
+            <span (click)="selectTag('field', 'Software Development')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Software Development</span>
+            <span (click)="selectTag('field', 'Data Science')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Data Science</span>
+            <span (click)="selectTag('field', 'UI/UX Design')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">UI/UX Design</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="interviewTime" class="block text-[#18191C] text-sm font-medium mb-2">Interview Time</label>
+          <input
+            type="text"
+            formControlName="interview_time"
+            placeholder="Enter interview time"
+            id="interviewTime"
+            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Generate AI Questions Button -->
+      <div class="flex justify-start mt-8">
+        <button 
+          type="button"
+          (click)="generateAIQuestions()"
+          class="bg-[#0A65CC] text-white px-6 py-3 rounded-md flex justify-center items-center gap-3"
+        >
+          Generate Questions
+          <span><img src="assets/icons/fi_arrow-right-white.svg" alt="Generate" /></span>
+        </button>
+      </div>
+    </div>
+  </main>
+</form>

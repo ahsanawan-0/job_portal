@@ -40,11 +40,12 @@ const applicantsSchema = new mongoose.Schema(
     jobTitle: { type: String, required: true }, 
     appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }], 
 
-
   },
+  
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Applicants", applicantsSchema);
+Applicants = mongoose.model("Applicants", applicantsSchema);
+module.exports = Applicants;

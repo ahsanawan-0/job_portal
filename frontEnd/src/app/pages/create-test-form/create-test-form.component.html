@@ -1,0 +1,102 @@
+<div (click)="onClickArrowLeft()" class="cursor-pointer mt-8 flex items-center mr-3">
+  <img src="assets/icons/fi_arrow-left.svg" />
+  <p class="font-light text-md ml-2">Technical Interview</p>
+</div>
+<div *ngIf="!isLoading" class="flex items-center justify-center bg-[#FCFCFC]">
+  
+  <div class="w-full p-4 bg-[#FCFCFC] rounded-lg ">
+    <div class=" justify-between flex items-center">
+      <h1 class="text-3xl font-semibold text-gray-800 mb-8 mt-2">Create Test</h1>
+      <div class="relative mt-2">
+        <div class="flex items-center">
+          <img src="assets/icons/clock.svg" alt="Time Icon" class="w-7 h-7 absolute left-3 top-1" />
+          <select (change)="setDuration($event)" class="w-48 p-2 pl-10 border rounded-lg bg-white">
+            <option value="" disabled selected>{{ selectedDuration || 'Select Duration' }}</option>
+            <option *ngFor="let duration of durations" [value]="duration">{{ duration }} minutes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="createTest()" class="space-y-8">
+      <div>
+        <label class="block text-lg font-medium text-gray-700">Test Title</label>
+        <input
+          type="text"
+          formControlName="title"
+          class="w-2/3 border border-gray-300 p-3 rounded-lg focus:outline-none  transition duration-200"
+          placeholder="Enter test title"
+        />
+        <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="text-red-500 text-sm mt-1">
+          Title is required.
+        </div>
+      </div>
+      
+
+
+      <div class="relative">
+        <div class="justify-between flex items-center ">
+          <h3 class="text-xl font-semibold">Generated Questions</h3>
+          <img src="assets/icons/DotsThreeVertical.svg" alt="Menu" (click)="toggleDropdown()" />
+        </div>
+        
+        <!-- Dropdown Menu -->
+        <div *ngIf="isDropdownOpen" class="bg-white border border-gray-300 mt-2 rounded-md shadow-lg z-10 p-2 absolute right-5 top-0">
+          <div class="flex gap-2 items-center">
+            <input type="checkbox" [checked]="areAllSelected()" (change)="toggleSelectAll()" />
+            <label>{{ areAllSelected() ? 'Unselect All' : 'Select All' }}</label>
+          </div>
+        </div>
+      
+        <div class="mt-4 space-y-6">
+          <div *ngFor="let question of generatedQuestions; let i = index" class="rounded-lg shadow-md p-4 mt-5 bg-white">
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                [checked]="selectedQuestions.includes(question)"
+                (change)="toggleQuestionSelection(question)"
+                class="mr-3 p-2"
+              />
+              <div class="flex justify-between w-full">
+                <label class="block text-[#18191C] text-sm font-medium mb-2">{{ question.question }}</label>
+                <button
+                  type="button"
+                  (click)="unselectQuestion(i)"
+                  aria-label="Remove Question"
+                >
+                  <img src="assets/icons/fi_x-circle.svg" class="max-w-7">
+                </button>
+              </div>
+            </div>
+      
+            <!-- Display Options if they exist -->
+            <div *ngIf="question.options && question.options.length > 0" class="mt-2">
+              <div class="flex flex-col mt-1 space-y-2">
+                <div *ngFor="let option of question.options" class="p-2 border border-gray-300 rounded-md bg-gray-100 flex justify-between w-full" [ngClass]="{'bg-green-200': option === question.correctAnswer}">
+                  {{ option }}
+                  <div class="flex justify-center gap-3">
+                    <span *ngIf="option === question.correctAnswer">Correct</span>
+                    <img *ngIf="option === question.correctAnswer" src="assets/icons/tick.svg" alt="Correct Answer" class="ml-2" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-dynamic-question></app-dynamic-question>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="bg-blue-600 text-white font-semibold py-3 px-7 rounded-lg hover:bg-blue-700 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        Create Test
+      </button>
+    </form>
+
+    <div *ngIf="errorMessage" class="text-red-500 text-center mt-6">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

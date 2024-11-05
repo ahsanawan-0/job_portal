@@ -34,11 +34,11 @@ const generateQuestions = async (request) => {
     }
 
     try {
-        // Call the AI model to generate content
+        
         const result = await model.generateContent(prompt);
-        console.log("AI Response for questions:", result); // Log the complete response from the model
+        console.log("AI Response for questions:", result);
 
-        // Extract and parse questions from the response
+        
         const questionsArray = result.response.text().split('\n').filter(q => q.trim() !== "");
         console.log("Parsed questions array:", questionsArray);
 
