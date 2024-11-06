@@ -43,7 +43,11 @@ export class TestServiceService {
   getTestForm(formId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/forms/${formId}`);
   }
-  
+updateTest(testId: string, testData: { title: string; questions: any[]; duration: number }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update_test_form/${testId}`, testData, {
+      withCredentials: true,
+    });
+  }
     deleteQuestion(testId: string, questionIndex: number): Observable<any> {
     return this.http.delete(
       `${this.apiUrl}/tests/${testId}/questions/${questionIndex}`

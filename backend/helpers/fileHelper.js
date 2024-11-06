@@ -1,4 +1,4 @@
-// helpers/fileUpload.js
+
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
@@ -15,7 +15,7 @@ async function uploadFile(filePath, mimeType, folderId) {
   const drive = google.drive({ version: 'v3', auth });
   const fileMetadata = {
     name: path.basename(filePath),
-    parents: [folderId], // Specify the folder ID to upload the file into
+    parents: [folderId], 
   };
 
   const media = {

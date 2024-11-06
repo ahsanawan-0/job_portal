@@ -1,18 +1,14 @@
-// middleware/upload.js
 
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Set the destination for file uploads
 const uploadDir = path.join(__dirname, 'uploads', 'resumes');
 
-// Check and create the directory if it doesn't exist
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Set file storage engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
@@ -31,7 +27,7 @@ const fileFilter = (req, file, cb) => {
   if (mimeType && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Error: Only PDFs and images are allowed')); // Return an Error object
+    cb(new Error('Error: Only PDFs and images are allowed')); 
   }
 };
 

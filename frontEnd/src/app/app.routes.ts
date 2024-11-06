@@ -27,6 +27,7 @@ import { authGuard } from './services/authGuard/guards/auth.guard';
 import { NotFoundComponentComponent } from './Components/not-found-component/not-found-component.component';
 import { HiredCandidateComponent } from './Components/hired-candidate/hired-candidate.component';
 import { SettingsComponent } from './Components/settings/settings.component';
+import { TestEditPageComponent } from "./Components/test-edit-page/test-edit-page.component";
 
 export const routes: Routes = [
   {
@@ -109,6 +110,9 @@ export const routes: Routes = [
         path: 'questionform/:question_id',
         component: CreateTestFormComponent,
       },
+
+      { path: 'edit-test/:formId', component: TestEditPageComponent }, // Route for editing a test
+
       {
         path: 'viewQuestions/:question_id',
         component: GeneratedQuestionsViewComponent,
