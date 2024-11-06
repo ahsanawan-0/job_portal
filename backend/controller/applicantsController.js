@@ -1,8 +1,8 @@
-const jobModel = require("../models/jobModel"); // Adjust the path as needed
-const sendEmail = require("../helpers/sendEmail"); // Adjust the path as needed
+const jobModel = require("../models/jobModel"); 
+const sendEmail = require("../helpers/sendEmail"); 
 const applicantModel = require("../models/applicantsModel");
 const applicantsSchema = require("../models/definations/applicantsSchema");
-const { uploadFile } = require('../helpers/fileHelper'); // Import the helper function
+const { uploadFile } = require('../helpers/fileHelper'); 
 
 const ApplicantsApplyForJob = async (req, res) => {
   try {
@@ -25,10 +25,7 @@ const ApplicantsApplyForJob = async (req, res) => {
 
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-    // Upload the resume to Google Drive
     const resumeId = await uploadFile(req.file.path, req.file.mimetype, folderId);
-
-    // Optionally upload a profile photo if provided
     let profilePhotoId = null;
     if (req.body.profilePhoto) {
       profilePhotoId = await uploadFile(req.body.profilePhoto.path, req.body.profilePhoto.mimetype, folderId);

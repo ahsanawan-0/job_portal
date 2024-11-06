@@ -12,7 +12,7 @@
       <div class="flex justify-center">
           <div *ngIf="!isLoading" class="flex items-center justify-center ">
               <div class="max-w-4xl">
-                  <h1 class="text-3xl font-semibold text-gray-800 my-10">{{ title }}</h1> <!-- Use title here -->
+                  <h1 class="text-3xl font-semibold text-gray-800 my-10">{{ title }}</h1> 
 
                   <div class="test-description p-4 bg-backgroundcolor border border-borderColor rounded-md mb-8">
                       <h2 class="text-2xl font-semibold text-gray-800">Test Overview</h2>
@@ -62,7 +62,6 @@
                         <h2 class="text-base font-semibold text-gray-800">{{ question.question }}</h2>
                     
                         <div class="mt-4">
-                          <!-- Check if options are available for radio buttons -->
                           <div *ngIf="question.options && question.options.length > 0; else openEnded">
                             <div *ngFor="let option of question.options; let j = index" class="flex items-center mt-3">
                               <input
@@ -72,7 +71,6 @@
                                 (change)="onOptionSelected(i, option)"
                                 class="mr-2 text-green-500"
                               />
-                              <!-- Conditionally apply hover and selected styles -->
                               <div 
                                 class="p-3 rounded-lg border border-borderColor transition-colors duration-200 flex-1"
                                 [ngClass]="{'bg-borderColor': selectedOptions[i] === option, 'hover:bg-borderColor': true}"
@@ -82,7 +80,6 @@
                             </div>
                           </div>
                         
-                          <!-- Fallback for text input if no options are present -->
                           <ng-template #openEnded>
                             <input
                               type="text"

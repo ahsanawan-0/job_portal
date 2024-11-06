@@ -17,8 +17,8 @@ export class TechnicalInterviewComponent implements OnInit {
   tests: any[] = []; 
   forms: FormCard[] = []; 
   displayForms: boolean = false;
-  displayQuestions: boolean = true; // Default to showing questions
-  selectedTab: 'questions' | 'forms' = 'questions'; // Track the selected tab
+  displayQuestions: boolean = true; 
+  selectedTab: 'questions' | 'forms' = 'questions';
 
   constructor(private testService: TestServiceService) {}
 
@@ -29,14 +29,14 @@ export class TechnicalInterviewComponent implements OnInit {
 
   showForms() {
     this.displayForms = true;
-    this.displayQuestions = false; // Hide questions when showing forms
+    this.displayQuestions = false; 
     this.selectedTab = 'forms'; // Set the selected tab
   }
 
   showQuestions() {
-    this.displayForms = false; // Hide forms when showing questions
+    this.displayForms = false; 
     this.displayQuestions = true;
-    this.selectedTab = 'questions'; // Set the selected tab
+    this.selectedTab = 'questions'; 
   }
 
   loadAllTests(): void {

@@ -2,7 +2,6 @@
 <form [formGroup]="form">
   <main class="flex-1 p-5 bg-[#FCFCFC]">
     <div class="w-full">
-      <!-- Header Section -->
       <div class="flex justify-between mb-6">
         <div class="text-2xl text-[#18191C]">Create Exit Interview Form</div>
         <div>
@@ -16,9 +15,7 @@
         </div>
       </div>
 
-      <!-- Form Content -->
       <div class="space-y-6 w-2/3">
-        <!-- Form Title -->
         <div>
           <label for="formTitle" class="block text-[#18191C] text-sm font-medium mb-2">Form Title</label>
           <input
@@ -33,11 +30,9 @@
           </div>
         </div>
 
-        <!-- Dynamic Questions -->
         <div formArrayName="questions">
           <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="space-y-6">
             <div class="p-4 border border-borderColor rounded-md relative">
-              <!-- Remove Question Button -->
               <button 
                 type="button" 
                 class="absolute top-2 right-2 text-red-500 text-xl"
@@ -47,7 +42,6 @@
               <img src="assets/icons/fi_x-circle.svg" alt="">
             </button>
 
-              <!-- Question Label -->
               <label class="block text-[#18191C] text-sm font-medium mb-2">Question {{i + 1}}</label>
               <input
                 type="text"
@@ -59,9 +53,7 @@
                 Question label is required.
               </div>
 
-              <!-- Question Type Specific Inputs -->
               <div [ngSwitch]="question.get('type')?.value">
-                <!-- Text Input -->
                 <div *ngSwitchCase="'text'">
                   <input
                     type="text"
@@ -71,7 +63,7 @@
                   />
                 </div>
 
-                <!-- Textarea Input -->
+            
                 <div *ngSwitchCase="'textarea'">
                   <textarea
                     placeholder="Enter your answer"
@@ -80,7 +72,7 @@
                   ></textarea>
                 </div>
 
-                <!-- Radio Input -->
+            
                 <div *ngSwitchCase="'radio'">
                   <label class="block text-[#18191C] text-sm font-medium mb-2">Options:</label>
                   <div formArrayName="options">
@@ -120,11 +112,11 @@
                       <img src="/assets/icons/fi_plus-circle-blue.svg" alt="">Add Option
                     </div>
                     </button>
-                    <!-- Option Limit Message -->
+                
                     <div *ngIf="getOptions(i).length >= maxOptions" class="text-gray-500 text-sm mt-1">
                       Maximum of {{maxOptions}} options reached.
                     </div>
-                    <!-- Duplicate Options Error -->
+                    
                     <div *ngIf="getOptions(i).hasError('duplicateOptions') && getOptions(i).touched" class="text-red-500 text-sm">
                       Options must be unique.
                     </div>
@@ -166,7 +158,6 @@
             </div>
           </div>
 
-          <!-- Add Question Button -->
         </div>
         <div class="flex items-end">
           <button 

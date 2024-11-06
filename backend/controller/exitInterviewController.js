@@ -1,7 +1,6 @@
 const ExitInterview = require('../models/definations/ExitInterviewSchema');
 const { v4: uuidv4 } = require('uuid');
 
-// Create a new exit interview form
 module.exports={
 
     createExitInterviewForm : async (req, res) => {
@@ -52,9 +51,9 @@ module.exports={
 
       getAllInterviews: async (req, res) => {
         try {
-            const forms = await ExitInterview.find({}); // Fetch all exit interview forms
+            const forms = await ExitInterview.find({}); 
 
-            res.status(200).json(forms); // Return the list of forms
+            res.status(200).json(forms); 
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

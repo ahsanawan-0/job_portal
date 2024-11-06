@@ -139,17 +139,7 @@ module.exports = {
         (job) => new Date(job.expirationDate).getTime() <= new Date().getTime()
       ).length;
 
-      // const simplifiedJobs = jobs.map((job) => ({
-      //   id: job._id,
-      //   jobTitle: job.jobTitle,
-      //   noOfApplications: job.applicants.length,
-      //   jobType: job.jobType,
-      //   status:
-      //     new Date(job.expirationDate).getTime() > new Date().getTime()
-      //       ? "Active"
-      //       : "Expired",
-      //   createdDate: job.createdAt,
-      //   expirationDate: job.expirationDate,
+pirationDate: job.expirationDate,
       // }));
       res.status(200).json({ totalJobs, expiredJobs, activeJobs });
     } catch (error) {

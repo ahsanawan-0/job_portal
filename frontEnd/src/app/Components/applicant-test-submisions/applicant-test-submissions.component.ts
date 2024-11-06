@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./applicant-test-submissions.component.css']
 })
 export class ApplicantTestSubmissionsComponent implements OnInit {
-  submissionData: any; // Define the type based on your API response
+  submissionData: any; 
   isLoading: boolean = true;
   submissionId:string=''
 
@@ -42,6 +42,5 @@ export class ApplicantTestSubmissionsComponent implements OnInit {
   }
 
   onClickArrowLeft() {
-    // Implement navigation logic if needed
   }
 }
