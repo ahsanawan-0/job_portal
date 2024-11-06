@@ -15,7 +15,6 @@ import { JobDetailComponent } from './pages/job-detail/job-detail.component';
 import { ExitInterviewFormViewerComponent } from './Components/exit-interview-form-viewer-component/exit-interview-form-viewer-component.component';
 import { JobViewPageComponent } from './pages/job-view-page/job-view-page.component';
 import { ExitApplicantInfoComponent } from './Components/exit-applicant-info/exit-applicant-info.component';
-import { ExitInterviewFormDetailComponent } from './Components/exit-interview-form-detail/exit-interview-form-detail.component';
 import { ExitFormAdminViewComponent } from './Components/exit-form-admin-view/exit-form-admin-view.component';
 import { authGuard } from './services/authGuard/guards/auth.guard';
 import { NotFoundComponentComponent } from './Components/not-found-component/not-found-component.component';
@@ -87,10 +86,7 @@ export const routes: Routes = [
         path: 'exitApplicantInfo/:applicantId',
         component: ExitApplicantInfoComponent,
       },
-      {
-        path: 'exitFormdetail/admin/:uniqueLinkId',
-        component: ExitInterviewFormDetailComponent,
-      },
+
       {
         path: 'exitFormdetail/adminView/:uniqueLinkId',
         component: ExitFormAdminViewComponent,

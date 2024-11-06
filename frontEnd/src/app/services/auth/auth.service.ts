@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api';
+  private isAuthenticatedCache: boolean | null = null;
   constructor(private http: HttpClient) {}
 
   signUp(
