@@ -7,6 +7,7 @@ const {
   updateUserData,
   getAllUsers,
   deleteUser,
+  getAllUsersNotAdmin,
 } = require("../controller/userController");
 const verifyToken = require("../middleweres/verifyToken");
 const verifyAdmin = require("../middleweres/verifyAdmin");
@@ -18,6 +19,7 @@ router.get("/userData", verifyToken, getUserData);
 router.post("/updateUserData", verifyToken, updateUserData);
 router.get("/admin/users", verifyToken, verifyAdmin, getAllUsers);
 router.delete("/delete-user", verifyToken, verifyAdmin, deleteUser);
+router.get("/notadmin/users", verifyToken, verifyAdmin, getAllUsersNotAdmin);
 
 // router.get("/profile", verifyToken, (req, res) => {
 

@@ -187,6 +187,23 @@ module.exports = {
     }
   },
 
+  getAllUsersNotAdmin: async (req, res) => {
+    try {
+      const users = await userModel.getAllUsersExcludingAdmin(req.user.id);
+      res.status(200).json({
+        success: true,
+        message: "Users retrieved successfully",
+        data: users,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve users",
+        error: error.message,
+      });
+    }
+  },
+
   deleteUser: async (req, res) => {
     const { email } = req.body;
     try {

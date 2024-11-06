@@ -46,7 +46,8 @@ export class SettingsComponent implements OnInit {
       if (this.designation == 'admin') {
         this.check = true;
         console.log('if admin ', this.check);
-        this.getAllusers();
+        // this.getAllusers();
+        this.getAllUsersNotAdmin();
       } else {
         console.log(this.designation);
       }
@@ -79,9 +80,16 @@ export class SettingsComponent implements OnInit {
     this.editingField = null;
   }
 
+  // users: any[] = [];
+  // getAllusers() {
+  //   this.service.getAllUsers().subscribe((res: any) => {
+  //     this.users = res.data;
+  //   });
+  // }
+
   users: any[] = [];
-  getAllusers() {
-    this.service.getAllUsers().subscribe((res: any) => {
+  getAllUsersNotAdmin() {
+    this.service.getAllUsersNotAdmin().subscribe((res: any) => {
       this.users = res.data;
     });
   }
@@ -108,7 +116,8 @@ export class SettingsComponent implements OnInit {
         this.service.deleteUserByEmail(email).subscribe((res: any) => {
           if (res) {
             this.notification.showSuccess(res.message);
-            this.getAllusers();
+            // this.getAllusers();
+            this.getAllUsersNotAdmin();
           } else {
             this.notification.showError(res.message);
           }

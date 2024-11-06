@@ -77,6 +77,12 @@ export class AuthService {
     });
   }
 
+  getAllUsersNotAdmin(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/notadmin/users`, {
+      withCredentials: true,
+    });
+  }
+
   deleteUserByEmail(email: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/delete-user`, {
       body: { email },
