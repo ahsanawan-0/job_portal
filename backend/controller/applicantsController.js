@@ -1,14 +1,14 @@
-const jobModel = require("../models/jobModel"); // Adjust the path as needed
-const User = require("../models/definations/applicantsSchema"); // Adjust the path as needed
-const sendEmail = require("../helpers/sendEmail"); // Adjust the path as needed
+const jobModel = require("../models/jobModel"); 
+const sendEmail = require("../helpers/sendEmail"); 
 const applicantModel = require("../models/applicantsModel");
+const applicantsSchema = require("../models/definations/applicantsSchema");
+const { uploadFile } = require('../helpers/fileHelper'); 
 
 const ApplicantsApplyForJob = async (req, res) => {
   try {
     const { name, email, experience, coverLetter } = req.body;
-    const jobId = req.params.jobId; // Get jobId from URL parameters
+    const jobId = req.params.jobId;
 
-    // Check for jobId
     if (!jobId) {
       return res.status(400).json({ error: "Job ID is required" });
     }
@@ -20,25 +20,40 @@ const ApplicantsApplyForJob = async (req, res) => {
     }
 
     if (!req.file) {
-      console.log("No resume file uploaded.");
       return res.status(400).json({ error: "Resume file is required" });
     }
 
-    const resumePath = req.file.path;
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-    // Retrieve job details from jobModel
+    const resumeId = await uploadFile(req.file.path, req.file.mimetype, folderId);
+    let profilePhotoId = null;
+    if (req.body.profilePhoto) {
+      profilePhotoId = await uploadFile(req.body.profilePhoto.path, req.body.profilePhoto.mimetype, folderId);
+    }
+
     const job = await jobModel.getJobById(jobId);
     if (!job) {
       return res.status(404).json({ error: "Job not found" });
     }
 
-    const newUser = new User({
+    const existingApplication = await applicantsSchema.findOne({
+      email,
+      appliedJobs: jobId,
+    });
+
+    if (existingApplication) {
+      return res.status(400).json({ error: "You have already applied for this job." });
+    }
+
+    const newApplicant = new applicantsSchema({
       name,
       email,
       experience,
       coverLetter,
-      resume: resumePath,
+      resume: resumeId, // Store Google Drive ID
+      profilePhoto: profilePhotoId, // Store profile photo ID if provided
       jobTitle: job.jobTitle,
+      appliedJobs: [jobId],
     });
 
     // console.log("sjdbnkjasd", newUser);
@@ -51,9 +66,9 @@ const ApplicantsApplyForJob = async (req, res) => {
     }
 
     const jobDetails = {
-      title: updatedJob.jobTitle,
-      company: updatedJob.company,
-      location: updatedJob.location,
+      title: job.jobTitle,
+      company: "SDSOL TECHNOLOGIES",
+      location: job.location,
       experienceRequired: experience,
     };
 
@@ -69,7 +84,7 @@ const ApplicantsApplyForJob = async (req, res) => {
 
     res.status(201).json({
       message: "User created and applied for the job successfully",
-      data: newUser,
+      data: newApplicant,
       jobDetails: jobDetails,
     });
   } catch (error) {

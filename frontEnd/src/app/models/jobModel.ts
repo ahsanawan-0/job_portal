@@ -46,6 +46,25 @@ export interface Job {
   status: 'Active' | 'Inactive'; // Status of the job (Active or Inactive)
   createdDate: Date; // Date the job was created
 }
+export interface Question {
+  label: string;
+  type: string;
+  options?: string[]; // Adjust the type based on your actual options structure
+}
+export interface QuestionCard {
+  _id: string;
+  num_questions: number;
+  interview_type: string;
+  experience_level: string;
+  field: string;
+  createdAt: Date; // Include createdAt if you want to show it
+}
+export interface FormCard {
+  id: string;
+  title: string;
+  applicants:string[];
+}
+
 
 export interface jobCard {
   id: string;

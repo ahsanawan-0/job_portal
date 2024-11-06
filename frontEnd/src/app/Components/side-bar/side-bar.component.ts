@@ -16,28 +16,47 @@ export class SideBarComponent {
   isOverviewSelected: boolean = false;
   isMyJobsSelected: boolean = false;
   isExitInterviewSelected: boolean = false;
+<<<<<<< HEAD
   isHiredCandidateSelected: boolean = false;
   isSettingsSelected: boolean = false;
+=======
+  isTechnicalInterviewSelected: boolean = false;
+>>>>>>> branch_4
 
   selectOverview() {
     this.isOverviewSelected = true;
     this.isMyJobsSelected = false;
     this.isExitInterviewSelected = false;
+<<<<<<< HEAD
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;
+=======
+    this.isTechnicalInterviewSelected = false;
+>>>>>>> branch_4
   }
 
   selectMyJobs() {
     this.isMyJobsSelected = true;
     this.isOverviewSelected = false;
     this.isExitInterviewSelected = false;
+<<<<<<< HEAD
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;
+=======
+    this.isTechnicalInterviewSelected = false;
+>>>>>>> branch_4
   }
 
   selectExitInterview() {
     this.isExitInterviewSelected = true;
     this.isMyJobsSelected = false;
+    this.isTechnicalInterviewSelected = false;
+    this.isOverviewSelected = false;
+  }
+  selectTechnicalInterview() {
+    this.isExitInterviewSelected = false;
+    this.isMyJobsSelected = false;
+    this.isTechnicalInterviewSelected = true;
     this.isOverviewSelected = false;
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;

@@ -159,17 +159,7 @@ module.exports = {
         return count + (job.hiredApplicants ? job.hiredApplicants.length : 0);
       }, 0);
 
-      // const simplifiedJobs = jobs.map((job) => ({
-      //   id: job._id,
-      //   jobTitle: job.jobTitle,
-      //   noOfApplications: job.applicants.length,
-      //   jobType: job.jobType,
-      //   status:
-      //     new Date(job.expirationDate).getTime() > new Date().getTime()
-      //       ? "Active"
-      //       : "Expired",
-      //   createdDate: job.createdAt,
-      //   expirationDate: job.expirationDate,
+pirationDate: job.expirationDate,
       // }));
       res.status(200).json({
         totalJobs,

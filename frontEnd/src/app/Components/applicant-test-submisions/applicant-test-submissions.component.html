@@ -1,0 +1,43 @@
+<div (click)="onClickArrowLeft()" class="cursor-pointer my-8 flex items-center">
+    <img src="assets/icons/fi_arrow-left.svg" alt="Back" class="w-5 h-5" />
+    <p class="font-light text-md ml-2">Back to Technical Interview</p>
+</div>
+
+<div *ngIf="!isLoading" class="flex items-center justify-center bg-[#FCFCFC]">
+    <div class="w-full p-4">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-8">Applicant Submissions</h1>
+
+        <div class="space-y-8">
+            <div *ngFor="let result of submissionData.results" class="rounded-lg shadow-md p-4 bg-white mt-5 border border-gray-200">
+                <h2 class="text-xl font-semibold mb-4">Question:</h2>
+                <p class="text-gray-800 text-sm mb-2">{{ result.questionText }}</p>
+
+                <h3 class="text-lg font-semibold mb-2">Candidate Answer : </h3>
+                <div class="flex items-center mb-4">
+                    <span class="font-medium">{{ result.givenAnswer }}</span>
+                    <span *ngIf="!result.isCorrect" class="text-red-600 ml-2">(Incorrect)</span>
+                    <span *ngIf="result.isCorrect" class="text-green-600 ml-2">(Correct)</span>
+                </div>
+
+                <h3 class="text-lg font-semibold mb-2">Options:</h3>
+                <div *ngIf="result.options && result.options.length > 0" class="mt-2 space-y-2">
+                    <div *ngFor="let option of result.options" 
+                         [ngClass]="{
+                             'bg-green-100 border-green-400': option === result.correctAnswer && result.isCorrect,
+                             'bg-red-100 border-red-400': option === result.givenAnswer && !result.isCorrect,
+                             'bg-gray-100 border-gray-300': option !== result.correctAnswer && option !== result.givenAnswer
+                         }"
+                         class="p-2 border flex justify-between rounded-md">
+                        <span>{{ option }}</span>
+                        <span *ngIf="option === result.correctAnswer" class="text-green-600">Correct</span>
+                        <span *ngIf="option === result.givenAnswer && !result.isCorrect" class="text-red-600">Incorrect</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoading" class="flex justify-center items-center h-screen">
+    <p class="text-lg text-gray-600">Loading submissions...</p>
+</div>
