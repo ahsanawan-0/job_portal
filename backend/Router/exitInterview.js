@@ -5,7 +5,6 @@ const {
 
   getAllExitInterviewForms,
   getFormById,
-<<<<<<< HEAD
 
   submitExitInterview,
   deleteFormById,
@@ -15,23 +14,12 @@ const {
   updateForm,
 } = require("../controller/exitInterviewController");
 const checkId = require("../middleweres/checkId");
-=======
-  getAllInterviews,
-  submitFormResponses,
-} = require('../controller/exitInterviewController');
-const checkId = require('../middleweres/checkId');
->>>>>>> branch_4
 
 // Route to create a new form
 router.post("/create", createExitInterviewForm);
 
 // Route to get a form by its unique link ID
-<<<<<<< HEAD
 // router.get("/exitInterviewForm/:id", getFormById);
-=======
-router.get('/:uniqueLinkId', getFormById);
-router.get('/getAllInterviews/forms', getAllInterviews);
->>>>>>> branch_4
 
 // Route to submit responses
 // router.post("/submit", submitFormResponses);

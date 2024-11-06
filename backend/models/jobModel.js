@@ -193,10 +193,8 @@ const getJobTitleById = async (jobId) => {
 
 const getHiredCandidates = async () => {
   try {
-    // Fetch all jobs
     const jobs = await Job.find().populate("hiredApplicants");
 
-    // Extract hired candidates from all jobs
     const hiredCandidates = jobs
       .flatMap((job) => (job.hiredApplicants ? job.hiredApplicants : []))
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

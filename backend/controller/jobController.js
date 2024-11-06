@@ -158,9 +158,6 @@ module.exports = {
       const totalHiredApplicants = jobs.reduce((count, job) => {
         return count + (job.hiredApplicants ? job.hiredApplicants.length : 0);
       }, 0);
-
-pirationDate: job.expirationDate,
-      // }));
       res.status(200).json({
         totalJobs,
         expiredJobs,
