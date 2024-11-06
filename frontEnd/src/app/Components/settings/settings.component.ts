@@ -89,7 +89,7 @@ export class SettingsComponent implements OnInit {
 
   users: any[] = [];
   getAllUsersNotAdmin() {
-    this.service.getAllUsersNotAdmin().subscribe((res: any) => {
+    this.service.getAllUsersExceptAdmin().subscribe((res: any) => {
       this.users = res.data;
     });
   }

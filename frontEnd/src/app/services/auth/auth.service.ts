@@ -77,8 +77,8 @@ export class AuthService {
     });
   }
 
-  getAllUsersNotAdmin(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/notadmin/users`, {
+  getAllUsersExceptAdmin(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getAllUserExceptAdmin/users`, {
       withCredentials: true,
     });
   }

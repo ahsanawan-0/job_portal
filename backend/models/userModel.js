@@ -74,7 +74,7 @@ module.exports = {
   getAllUsersExcludingAdmin: async (adminId) => {
     try {
       // Fetch all users except the one with the adminId and sort by name
-      return await User.find({ _id: { $ne: adminId } }).sort({ name: 1 });
+      return await User.find({ _id: { $ne: adminId } }).sort({ createdAt: -1 });
     } catch (error) {
       console.error(`Error fetching users excluding admin: ${error.message}`);
       throw error;
