@@ -77,7 +77,7 @@ export class ExitInterviewResultComponent implements OnInit {
 
   updatePaginatedJobs(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
+    // const endIndex = startIndex + this.itemsPerPage;
     this.paginatedResults = this.applicants;
   }
 

@@ -64,4 +64,23 @@ export class AuthService {
   getUserData(): Observable<any> {
     return this.http.get(`${this.apiUrl}/userData`, { withCredentials: true });
   }
+
+  updateUserData(updatedUser: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/updateUserData`, updatedUser, {
+      withCredentials: true,
+    });
+  }
+
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/admin/users`, {
+      withCredentials: true,
+    });
+  }
+
+  deleteUserByEmail(email: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/delete-user`, {
+      body: { email },
+      withCredentials: true,
+    });
+  }
 }

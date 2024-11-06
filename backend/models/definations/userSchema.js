@@ -29,8 +29,8 @@ const userSchema = new mongoose.Schema(
         message: "Password must be atleast 10 characters long",
       },
     },
-    passwordResetToken: { type: String },
-    passwordResetExpires: { type: Date },
+    // passwordResetToken: { type: String },
+    // passwordResetExpires: { type: Date },
   },
   { timestamps: true }
 );

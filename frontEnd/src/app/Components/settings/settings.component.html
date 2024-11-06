@@ -1,1 +1,51 @@
-<p class="mt-5">settings works!</p>
+<div class="container w-full mt-5 p-5 text-custom-black font-sans">
+  <h2 class="text-2xl font-bold mb-4">User Settings</h2>
+
+  <app-edit-able-field
+    label="Name"
+    [value]="userData.name"
+    [editingField]="editingField"
+    field="name"
+    (edit)="toggleEdit($event)"
+    (update)="updateUserData('name', $event)"
+    (cancel)="cancelEdit()"
+  >
+  </app-edit-able-field>
+
+  <app-edit-able-field
+    label="Email"
+    [value]="userData.email"
+    [editingField]="editingField"
+    field="email"
+    inputType="email"
+    (edit)="toggleEdit($event)"
+    (update)="updateUserData('email', $event)"
+    (cancel)="cancelEdit()"
+  >
+  </app-edit-able-field>
+
+  <app-edit-able-field
+    label="Password"
+    [value]="userData.password"
+    [editingField]="editingField"
+    field="password"
+    inputType="password"
+    (edit)="toggleEdit($event)"
+    (update)="updateUserData('password', $event)"
+    (cancel)="cancelEdit()"
+  >
+  </app-edit-able-field>
+
+  <div class="mb-4">
+    <p class="font-medium">
+      Designation:
+      <span class="font-normal">{{ userData.designation }}</span>
+    </p>
+  </div>
+
+  <app-user-data-table
+    *ngIf="designation === 'admin'"
+    [users]="users"
+    (deleteUser)="onDelete($event.email, $event.name)"
+  ></app-user-data-table>
+</div>

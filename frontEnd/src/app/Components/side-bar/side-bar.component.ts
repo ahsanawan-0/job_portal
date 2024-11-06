@@ -43,6 +43,8 @@ export class SideBarComponent {
     this.isMyJobsSelected = false;
     this.isTechnicalInterviewSelected = false;
     this.isOverviewSelected = false;
+    this.isHiredCandidateSelected = false;
+    this.isSettingsSelected = false;
   }
   selectTechnicalInterview() {
     this.isExitInterviewSelected = false;
@@ -59,6 +61,7 @@ export class SideBarComponent {
     this.isMyJobsSelected = false;
     this.isOverviewSelected = false;
     this.isSettingsSelected = false;
+    this.isTechnicalInterviewSelected = false;
   }
 
   selectSettings() {
@@ -67,6 +70,7 @@ export class SideBarComponent {
     this.isExitInterviewSelected = false;
     this.isMyJobsSelected = false;
     this.isOverviewSelected = false;
+    this.isTechnicalInterviewSelected = false;
   }
 
   route = inject(Router);

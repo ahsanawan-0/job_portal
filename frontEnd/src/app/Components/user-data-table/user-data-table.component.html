@@ -1,0 +1,57 @@
+<div main class="font-sans">
+  <div class="py-7">
+    <div>
+      <p class="font-medium text-base text-custom-black">All Users List</p>
+    </div>
+    <div>
+      <div
+        grid
+        class="grid grid-cols-5 bg-[#F1F2F4] text-[#474C54] font-normal text-xs pl-5 py-3 mt-5"
+      >
+        <div class="col-span-2">
+          <p>NAME</p>
+        </div>
+        <div>
+          <p>EMAIL</p>
+        </div>
+        <div>
+          <p>DESIGNATION</p>
+        </div>
+        <div>
+          <p>ACTION</p>
+        </div>
+      </div>
+      <div
+        class="grid grid-cols-5 py-5 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8]"
+        *ngFor="let item of users; let i = index"
+      >
+        <div class="col-span-2">
+          <p class="font-medium text-base">{{ item.name | titlecase }}</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <p
+            class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+          >
+            {{ item.email }}
+          </p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <p
+            class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]"
+          >
+            {{ item.designation }}
+          </p>
+        </div>
+        <div
+          (click)="triggerDelete(item.email, item.name)"
+          class="flex gap-2 hover:bg-[#F1F2F4] transition duration-200 rounded-[3px] w-32 py-3 px-6 cursor-pointer"
+        >
+          <img src="assets/icons/Trash.svg" />
+          <button class="font-sans font-semibold text-base text-[#E05151]">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

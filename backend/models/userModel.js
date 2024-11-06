@@ -54,4 +54,21 @@ module.exports = {
       throw error;
     }
   },
+
+  getAllUsers: async () => {
+    try {
+      return await User.find({}, "name email designation");
+    } catch (error) {
+      throw new Error("Error fetching users");
+    }
+  },
+
+  deleteUserByEmail: async (email) => {
+    try {
+      const result = await User.findOneAndDelete({ email: email });
+      return result ? true : false;
+    } catch (error) {
+      throw new Error("Error deleting user");
+    }
+  },
 };

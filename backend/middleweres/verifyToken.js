@@ -10,7 +10,6 @@ const verifyToken = async (req, res, next) => {
     });
   }
 
-
   try {
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (err) {
@@ -19,7 +18,7 @@ const verifyToken = async (req, res, next) => {
           message: "Forbidden Request",
         });
       }
-      req.user = { id: user.id }; // Only include user ID
+      req.user = { id: user.id };
       next();
     });
   } catch (error) {

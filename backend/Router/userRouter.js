@@ -5,14 +5,19 @@ const {
   resetPassword,
   getUserData,
   updateUserData,
+  getAllUsers,
+  deleteUser,
 } = require("../controller/userController");
 const verifyToken = require("../middleweres/verifyToken");
+const verifyAdmin = require("../middleweres/verifyAdmin");
 
 router.post("/signup", signUp);
 router.post("/signin", signIn);
 router.post("/reset-password", resetPassword);
 router.get("/userData", verifyToken, getUserData);
 router.post("/updateUserData", verifyToken, updateUserData);
+router.get("/admin/users", verifyToken, verifyAdmin, getAllUsers);
+router.delete("/delete-user", verifyToken, verifyAdmin, deleteUser);
 
 // router.get("/profile", verifyToken, (req, res) => {
 

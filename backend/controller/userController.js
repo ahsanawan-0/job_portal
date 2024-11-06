@@ -169,4 +169,45 @@ module.exports = {
         .json({ message: "Failed to update user data.", error: error.message });
     }
   },
+
+  getAllUsers: async (req, res) => {
+    try {
+      const users = await userModel.getAllUsers();
+      res.status(200).json({
+        success: true,
+        message: "Users retrieved successfully",
+        data: users,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve users",
+        error: error.message,
+      });
+    }
+  },
+
+  deleteUser: async (req, res) => {
+    const { email } = req.body;
+    try {
+      const result = await userModel.deleteUserByEmail(email);
+      if (result) {
+        res.status(200).json({
+          success: true,
+          message: "User deleted successfully",
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete user",
+        error: error.message,
+      });
+    }
+  },
 };

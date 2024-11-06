@@ -1,0 +1,25 @@
+<div class="flex items-center justify-between mb-4">
+  <div class="w-full">
+    <label class="font-medium">{{ label }}:</label>
+    <input
+      *ngIf="editingField === field"
+      [(ngModel)]="value"
+      [type]="inputType"
+      class="border border-gray-300 p-2 rounded w-1/2 ml-2"
+    />
+    <span *ngIf="editingField !== field" class="ml-2">{{ value }}</span>
+  </div>
+  <button
+    class="bg-custom-blue text-white px-4 py-2 rounded ml-2"
+    (click)="editingField === field ? onUpdate() : onEdit()"
+  >
+    {{ editingField === field ? "Update" : "Edit" }}
+  </button>
+  <button
+    *ngIf="editingField === field"
+    class="bg-gray-400 text-white px-4 py-2 rounded ml-2"
+    (click)="onCancel()"
+  >
+    Cancel
+  </button>
+</div>
