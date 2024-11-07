@@ -19,6 +19,7 @@ export class SideBarComponent {
   isHiredCandidateSelected: boolean = false;
   isSettingsSelected: boolean = false;
   isTechnicalInterviewSelected: boolean = false;
+  isReviewFormSelected: Boolean = false;
 
   selectOverview() {
     this.isOverviewSelected = true;
@@ -27,6 +28,7 @@ export class SideBarComponent {
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;
     this.isTechnicalInterviewSelected = false;
+    this.isReviewFormSelected = false;
   }
 
   selectMyJobs() {
@@ -36,6 +38,7 @@ export class SideBarComponent {
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;
     this.isTechnicalInterviewSelected = false;
+    this.isReviewFormSelected = false;
   }
 
   selectExitInterview() {
@@ -45,6 +48,7 @@ export class SideBarComponent {
     this.isOverviewSelected = false;
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;
+    this.isReviewFormSelected = false;
   }
   selectTechnicalInterview() {
     this.isExitInterviewSelected = false;
@@ -53,6 +57,7 @@ export class SideBarComponent {
     this.isOverviewSelected = false;
     this.isHiredCandidateSelected = false;
     this.isSettingsSelected = false;
+    this.isReviewFormSelected = false;
   }
 
   selectHiredCandidate() {
@@ -62,10 +67,22 @@ export class SideBarComponent {
     this.isOverviewSelected = false;
     this.isSettingsSelected = false;
     this.isTechnicalInterviewSelected = false;
+    this.isReviewFormSelected = false;
   }
 
   selectSettings() {
     this.isSettingsSelected = true;
+    this.isHiredCandidateSelected = false;
+    this.isExitInterviewSelected = false;
+    this.isMyJobsSelected = false;
+    this.isOverviewSelected = false;
+    this.isTechnicalInterviewSelected = false;
+    this.isReviewFormSelected = false;
+  }
+
+  selectReviewForm() {
+    this.isReviewFormSelected = true;
+    this.isSettingsSelected = false;
     this.isHiredCandidateSelected = false;
     this.isExitInterviewSelected = false;
     this.isMyJobsSelected = false;
@@ -79,7 +96,6 @@ export class SideBarComponent {
   logout() {
     this.service.logout().subscribe(
       (response: any) => {
-        console.log(response.message);
         this.notifictaion.showSuccess(response.message);
         this.route.navigate(['/login']);
       },

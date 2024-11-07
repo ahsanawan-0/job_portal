@@ -9,22 +9,19 @@ export const loginRedirectGuardGuard: CanActivateFn = (route, state) => {
 
   return service.isAuthenticated().pipe(
     map((isAuth: boolean) => {
-      // Check if the current route is 'login'
       if (route.routeConfig?.path === 'login') {
         if (isAuth) {
-          // If authenticated, redirect to dashboard
           router.navigate(['/dashboard']);
-          return false; // Prevent access to login
+          return false;
         } else {
-          return true; // Allow access to login
+          return true;
         }
       } else {
         if (!isAuth) {
-          // If not authenticated, redirect to login
           router.navigate(['/login']);
-          return false; // Prevent access to other routes
+          return false;
         }
-        return true; // Allow access to other routes if authenticated
+        return true;
       }
     })
   );

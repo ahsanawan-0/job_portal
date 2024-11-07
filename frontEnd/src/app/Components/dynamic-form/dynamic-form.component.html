@@ -1,8 +1,8 @@
 <div class="font-sans bg-[#FCFCFC] mt-6 mx-5">
   <div class="flex justify-between">
-    <p class="font-medium text-2xl">Exit Interviews</p>
+    <p class="font-medium text-2xl">{{ title }}</p>
     <div
-      (click)="onClickCreateForm()"
+      (click)="onCreateForm()"
       class="bg-custom-blue py-4 px-8 flex gap-3 justify-center items-center rounded-[4px] cursor-pointer"
     >
       <img src="assets/icons/fi_plus-circle.svg" />
@@ -11,9 +11,7 @@
   </div>
   <div class="mt-8">
     <div>
-      <p class="font-medium text-base text-custom-black">
-        All Exit Interview List
-      </p>
+      <p class="font-medium text-base text-custom-black">{{ sectionTitle }}</p>
     </div>
     <div
       grid
@@ -32,7 +30,7 @@
 
     <div
       class="grid grid-cols-4 py-6 pl-5 shadow-[inset_0_-1px_0_0_#E4E5E8] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg"
-      *ngFor="let item of applicants; let i = index"
+      *ngFor="let item of forms; let i = index"
     >
       <div class="col-span-2 content-center">
         <p class="font-medium text-base">{{ item.formTitle }}</p>
@@ -47,7 +45,7 @@
       </div>
       <div class="flex items-center gap-2 relative">
         <button
-          (click)="onClickViewResults(item.uniqueLinkId)"
+          (click)="onClickResults(item.uniqueLinkId)"
           class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
         >
           View Results
@@ -63,10 +61,7 @@
         >
           <ul class="list-none py-2 pl-2 pr-7">
             <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div
-                class="flex gap-2"
-                (click)="onClickViewDetail(item.uniqueLinkId)"
-              >
+              <div class="flex gap-2" (click)="onEdit(item.uniqueLinkId)">
                 <img src="assets/icons/Pencil.svg" />
                 <p class="font-sans font-medium text-sm text-[#5E6670]">
                   Edit Form
@@ -76,7 +71,7 @@
             <li class="py-2 px-4 hover:bg-gray-100">
               <div
                 class="flex gap-2 cursor-pointer"
-                (click)="deleteFormById(item.uniqueLinkId, item.formTitle)"
+                (click)="onClickDelete(item.uniqueLinkId, item.formTitle)"
               >
                 <img src="assets/icons/Trash.svg" />
                 <p
@@ -89,7 +84,7 @@
             <li class="py-2 px-4 hover:bg-gray-100">
               <div
                 class="flex gap-2 cursor-pointer"
-                (click)="openModal(item.uniqueLinkId, item.formTitle)"
+                (click)="onClickLink(item.uniqueLinkId, item.formTitle)"
               >
                 <img src="assets/icons/ShareNetworkBlue.svg" />
                 <p

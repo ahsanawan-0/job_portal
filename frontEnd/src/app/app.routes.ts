@@ -28,6 +28,8 @@ import { NotFoundComponentComponent } from './Components/not-found-component/not
 import { HiredCandidateComponent } from './Components/hired-candidate/hired-candidate.component';
 import { SettingsComponent } from './Components/settings/settings.component';
 import { loginRedirectGuardGuard } from './services/loginRedirectedGuard/login-redirect-guard.guard';
+import { ReviewFormComponent } from './Components/review-form/review-form.component';
+import { DynamicCreateFormComponent } from './Components/dynamic-create-form/dynamic-create-form.component';
 
 export const routes: Routes = [
   {
@@ -139,6 +141,14 @@ export const routes: Routes = [
       {
         path: 'settings',
         component: SettingsComponent,
+      },
+      {
+        path: 'reviewForm',
+        component: ReviewFormComponent,
+      },
+      {
+        path: 'reviewForm/create',
+        component: DynamicCreateFormComponent,
       },
     ],
   },

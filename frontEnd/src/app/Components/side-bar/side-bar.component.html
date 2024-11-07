@@ -106,38 +106,38 @@
           Hired Candidate
         </p>
       </div>
-<div
-class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-routerLink="technicalinterview"
-[ngClass]="{
-  'bg-[#E7F0FA]': isTechnicalInterviewSelected,
-  'bg-transparent': !isTechnicalInterviewSelected
-}"
-(click)="selectTechnicalInterview()"
->
-<hr
-  class="absolute left-0 h-full w-[4px] bg-custom-blue"
-  *ngIf="isTechnicalInterviewSelected"
-/>
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="technicalinterview"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isTechnicalInterviewSelected,
+          'bg-transparent': !isTechnicalInterviewSelected
+        }"
+        (click)="selectTechnicalInterview()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isTechnicalInterviewSelected"
+        />
 
-<img
-  [src]="
-  isTechnicalInterviewSelected
-      ? 'assets/icons/UserCircleGearBlue.svg'
-      : 'assets/icons/UserCircleGear.svg'
-  "
-/>
+        <img
+          [src]="
+            isTechnicalInterviewSelected
+              ? 'assets/icons/UserCircleGearBlue.svg'
+              : 'assets/icons/UserCircleGear.svg'
+          "
+        />
 
-<p
-  class="font-[500] font-sans text-[14px] leading-[20px]"
-  [ngClass]="{
-    'text-custom-blue': isTechnicalInterviewSelected,
-    'text-[#767F8C]': !isTechnicalInterviewSelected
-  }"
->
-Technical Interview
-</p>
-</div>
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isTechnicalInterviewSelected,
+            'text-[#767F8C]': !isTechnicalInterviewSelected
+          }"
+        >
+          Technical Interview
+        </p>
+      </div>
 
       <div
         class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
@@ -172,10 +172,34 @@ Technical Interview
         </p>
       </div>
 
-      <div class="flex items-center space-x-4 pl-[20px] py-[10px]">
-        <img src="assets/icons/Note.svg" />
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="reviewForm"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isReviewFormSelected,
+          'bg-transparent': !isReviewFormSelected
+        }"
+        (click)="selectReviewForm()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isReviewFormSelected"
+        />
+
+        <img
+          [src]="
+            isReviewFormSelected
+              ? 'assets/icons/NoteBlue.svg'
+              : 'assets/icons/Note.svg'
+          "
+        />
+
         <p
-          class="font-[500] font-sans text-[14px] leading-[20px] text-[#767F8C]"
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isReviewFormSelected,
+            'text-[#767F8C]': !isReviewFormSelected
+          }"
         >
           Review Form
         </p>

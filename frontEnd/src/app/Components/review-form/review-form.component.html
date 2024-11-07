@@ -1,0 +1,12 @@
+<div class="mt-5">
+  <app-dynamic-form
+    [forms]="forms"
+    [title]="'Review Form'"
+    [sectionTitle]="'All Review Form List'"
+    (deleteFormById)="deleteFormById($event.uniqueLinkId, $event.formTitle)"
+    (openModal)="openModal($event.uniqueLinkId, $event.formTitle)"
+    (onClickViewResults)="onClickViewResults($event.uniqueLinkId)"
+    (onClickViewDetail)="onClickViewDetail($event.uniqueLinkId)"
+    (onClickCreateForm)="onClickCreateForm()"
+  ></app-dynamic-form>
+</div>

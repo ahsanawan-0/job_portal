@@ -9,21 +9,26 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './exit-interview-modal.component.html',
-  styleUrls: ['./exit-interview-modal.component.css']
+  styleUrls: ['./exit-interview-modal.component.css'],
 })
 export class ExitInterviewModalComponent {
   private subscriptions: Subscription = new Subscription();
-  
+
   public activeModal = inject(NgbActiveModal);
-  
+
   @Input() link: string = ''; // Property to hold the link
+  @Input() title: string = '';
+  @Input() name: string = '';
 
   copyLink() {
-    navigator.clipboard.writeText(this.link).then(() => {
-      alert('Link copied to clipboard!');
-    }).catch(err => {
-      console.error('Failed to copy: ', err);
-    });
+    navigator.clipboard
+      .writeText(this.link)
+      .then(() => {
+        alert('Link copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
   }
 
   closeModal(): void {

@@ -83,8 +83,10 @@ export class ExitInterviewComponent implements OnInit {
     });
   }
 
-  openModal(uniqueLinkId: string) {
+  openModal(uniqueLinkId: string, formTitle: string) {
     const modalRef = this.modalService.open(ExitInterviewModalComponent);
     modalRef.componentInstance.link = `http://localhost:4200/exitInterviewViewForm/${uniqueLinkId}`;
+    modalRef.componentInstance.title = formTitle;
+    modalRef.componentInstance.name = 'Exit Interviews';
   }
 }

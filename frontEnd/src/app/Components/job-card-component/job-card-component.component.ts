@@ -103,8 +103,10 @@ export class JobCardComponentComponent {
     this.route.navigateByUrl(`jobdetail/admin/${jobId}`);
   }
 
-  openModal(jobId: string) {
+  openModal(jobId: string, jobTitle: string) {
     const modalRef = this.modalService.open(ExitInterviewModalComponent);
     modalRef.componentInstance.link = `http://localhost:4200/jobdetail/user/${jobId}`;
+    modalRef.componentInstance.title = jobTitle;
+    modalRef.componentInstance.name = 'Job';
   }
 }
