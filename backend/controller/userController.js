@@ -6,6 +6,15 @@ module.exports = {
   signUp: async (req, res) => {
     try {
       const { name, designation, email, password } = req.body;
+      if (!name) {
+        return res.status(400).json({ message: "Name is required." });
+      }
+      if (!email) {
+        return res.status(400).json({ message: "Email is required." });
+      }
+      if (!password) {
+        return res.status(400).json({ message: "Password is required." });
+      }
 
       if (designation !== "HR Manager" && designation !== "admin") {
         return res.status(400).json({ message: "Invalid designation." });
@@ -35,9 +44,7 @@ module.exports = {
       if (error.name === "ValidationError") {
         // Extract the specific validation error message
         const errors = Object.values(error.errors).map((err) => err.message);
-        res
-          .status(400)
-          .json({ message: "Password should be at least 10 characters long." });
+        res.status(400).json({ message: errors });
       } else {
         // For other errors, log and send a generic error response
         console.error("Error during sign up:", error.message);
@@ -69,7 +76,7 @@ module.exports = {
 
       // Generate JWT token
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "2h",
+        expiresIn: "7d",
       });
 
       // Send token as a cookie

@@ -8,12 +8,11 @@ module.exports = {
     const token = req.cookies.token; // Get the token from the cookie
     // console.log("jkhhgiuhkuhkihihihi", token);
     if (!token) {
-      return res.status(401).json(false); // Not authenticated
+      return res.send(false); // Not authenticated
     }
 
     // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      console.log(err);
+    jwt.verify(token, process.env.JWT_SECRET, (err) => {
       if (err) {
         return res.status(401).json("false"); // Token is invalid
       }
