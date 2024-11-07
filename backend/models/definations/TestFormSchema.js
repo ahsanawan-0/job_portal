@@ -7,16 +7,27 @@ const questionSchema = new mongoose.Schema({
     correctAnswer: { type: String, default: null },
 });
 
-const formSchema = new mongoose.Schema({
+const TestSchema = new mongoose.Schema({
     title: { type: String, required: true },
     questions: { type: [questionSchema], required: true },
     duration: { type: Number, required: true },
     evaluations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Evaluation' }] ,
     applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Applicants', default: [] }], 
+    generatedQuestions_id: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Question',
+        required: true, 
+    },
+    job_id: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Job',
+        required: true, 
+    },
+
 
 }, {
     timestamps: true
 });
 
-const Form = mongoose.model('testForms', formSchema);
+const Form = mongoose.model('testForm', TestSchema);
 module.exports = Form;

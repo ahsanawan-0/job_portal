@@ -19,14 +19,15 @@ export class CreateTestFormComponent implements OnInit {
     generatedQuestions: any[] = [];
     selectedQuestions: any[] = [];
     isDurationDropdownOpen: boolean = false;
-    durations: number[] = [1, 30, 60, 90, 120]; 
+    durations: number[] = [1, 30, 60, 90, 120];
     selectedDuration: number | null = null; // Use number to represent duration
-
+    generatedQuestionId: string = '';
+    job_id: string = '';
     isLoading: boolean = false;
     errorMessage: string | null = null;
     isDropdownOpen: boolean = false;
 
-    constructor(private fb: FormBuilder, private testService: TestServiceService, private router: Router,private route: ActivatedRoute) {
+    constructor(private fb: FormBuilder, private testService: TestServiceService, private router: Router, private route: ActivatedRoute) {
         this.form = this.fb.group({
             title: ['', Validators.required],
             questions: this.fb.array([]),
@@ -34,13 +35,13 @@ export class CreateTestFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const generatedQuestionId = this.route.snapshot.paramMap.get('question_id');
-
-        if (generatedQuestionId) {
-          this.fetchGeneratedQuestions(generatedQuestionId);
-        }
+        this.route.params.subscribe((params) => {
+            this.generatedQuestionId = params['generatedQuestions_id']; 
+            this.job_id = params['job_id'];           
+            this.fetchGeneratedQuestions(this.generatedQuestionId);
+        });
     }
- 
+
     fetchGeneratedQuestions(generatedQuestionId: string): void {
         this.isLoading = true;
         this.testService.fetchGeneratedQuestions(generatedQuestionId).subscribe({
@@ -66,7 +67,7 @@ export class CreateTestFormComponent implements OnInit {
             this.selectedQuestions = [...this.generatedQuestions]; // Select all
         }
     }
-    
+
     setDuration(event: Event): void {
         const selectElement = event.target as HTMLSelectElement; // Cast event target
         this.selectedDuration = Number(selectElement.value); // Store as a number
@@ -91,7 +92,7 @@ export class CreateTestFormComponent implements OnInit {
             this.addQuestionToForm(question);
             this.toggleQuestionSelection(question);
         } else {
-            alert('Question already selected!');
+            this.errorMessage = 'Question already selected!';
         }
     }
 
@@ -109,7 +110,7 @@ export class CreateTestFormComponent implements OnInit {
     unselectQuestion(index: number): void {
         this.questions.removeAt(index);
         this.selectedQuestions.splice(index, 1); // Remove from selected questions
-        alert('Question has been unselected.');
+        this.errorMessage = 'Question has been unselected.';
     }
 
     get questions(): FormArray {
@@ -121,8 +122,8 @@ export class CreateTestFormComponent implements OnInit {
         dynamicFormValues.forEach((question: any) => {
             const questionGroup = this.fb.group({
                 question: [question.label, Validators.required],
-                answer: [null], // Initially set to null
-                correctAnswer: [question.correctAnswer || null], // Store correct answer
+                answer: [null],
+                correctAnswer: [question.correctAnswer || null],
                 options: this.fb.array(question.options.map((opt: string) => this.fb.control(opt, Validators.required))),
             });
             this.questions.push(questionGroup);
@@ -137,31 +138,30 @@ export class CreateTestFormComponent implements OnInit {
 
         const title = this.form.get('title')?.value;
 
-        // Clear existing questions and add selected questions
-        this.questions.clear(); // Clear existing questions in the form
+        this.questions.clear(); 
 
-        // Add selected questions to the form
+       
         this.selectedQuestions.forEach(q => this.addQuestionToForm(q));
+
         
-        // Add dynamic questions to the form
         this.addDynamicQuestions();
 
-        // Create final data structure
         const questions = this.questions.value;
 
-        // Log the final data structure
         console.log('Final Data to be Sent:', { title, questions });
+        
 
-        this.testService.createTest({ title, questions, duration: this.selectedDuration }).subscribe({
+        this.testService.createTestForm({job_id:this.job_id,generatedQuestionId:this.generatedQuestionId, title, questions, duration: this.selectedDuration }).subscribe({
             next: () => {
-                alert('Custom test created successfully!');
+                this.router.navigateByUrl('technicalinterview'); 
             },
-            error: (error) => {
+            error: (error:any) => {
                 this.errorMessage = error.message || 'An error occurred while creating the test.';
             }
         });
     }
-onClickArrowLeft() {
-  this.router.navigateByUrl('technicalinterview');
-}
+
+    onClickArrowLeft(): void {
+        this.router.navigateByUrl('technicalinterview');
+    }
 }

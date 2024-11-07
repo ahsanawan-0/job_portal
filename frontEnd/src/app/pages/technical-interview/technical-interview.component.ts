@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TestServiceService } from '../../services/test_service/test-service.service';
+// import { trigger, state, style, animate, transition } from '@angular/animations';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormCard } from '../../models/jobModel';
@@ -12,6 +13,7 @@ import { QuestionCardComponent } from '../../Components/question-card/question-c
   imports: [QuestionCardComponent, RouterLink, CommonModule, FormCardComponent],
   templateUrl: './technical-interview.component.html',
   styleUrls: ['./technical-interview.component.css'],
+
 })
 export class TechnicalInterviewComponent implements OnInit {
   tests: any[] = []; 
@@ -48,7 +50,8 @@ export class TechnicalInterviewComponent implements OnInit {
           interview_type: test.interview_type,
           experience_level: test.experience_level,
           field: test.field,
-          createdAt: test.createdAt
+          createdAt: test.createdAt,
+          job_id:test. job_id
         }));
       },
       (error: any) => {

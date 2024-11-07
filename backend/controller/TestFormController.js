@@ -2,18 +2,33 @@ const mongoose = require("mongoose");
 const Submission = require("../models/definations/submisionSchema");
 const Applicants = require("../models/definations/applicantsSchema");
 const Form = require("../models/definations/TestFormSchema");
+const Evaluation =require("../models/definations/evaluationSchema")
+const { evaluateAnswersSequentially } = require("../helpers/evaluateAnswers");
+
 const createForm = async (req, res) => {
+  const { job_id,generatedQuestions_id } = req.params;  
   const { title, questions, duration } = req.body;
+
   try {
-    const newForm = new Form({ title, questions, duration });
+    const newForm = new Form({
+      title,
+      questions,
+      duration,
+      generatedQuestions_id,
+      job_id,  
+    });
+
     await newForm.save();
-    res
-      .status(201)
-      .json({ message: "Form created successfully", form: newForm });
+
+    res.status(201).json({
+      message: "Form created successfully",
+      form: newForm
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 const updateForm = async (req, res) => {
   const { title, questions, duration } = req.body;
@@ -38,52 +53,183 @@ const updateForm = async (req, res) => {
   }
 };
 
+// const submitForm = async (req, res) => {
+//   const { name, email, questions } = req.body;
+//   const formId = req.params.formId;
+
+//   console.log("Incoming Form Data:", req.body);
+
+//   try {
+//     let applicant = await Applicants.findOne({ email });
+//     if (!applicant) {
+//       return res.status(404).json({ message: "Applicant not found" });
+//     }
+
+//     const form = await Form.findById(formId);
+//     if (!form) {
+//       return res.status(404).json({ message: "Form not found" });
+//     }
+
+//     const answers = questions.map((question) => ({
+//       questionId: question.id,
+//       answer: question.answer,
+//     }));
+
+//     const submission = new Submission({
+//       applicantId: applicant._id,
+//       formId: formId,
+//       answers: answers,
+//     });
+
+//     await submission.save();
+
+//     if (!form.applicants.includes(applicant._id)) {
+//       form.applicants.push(applicant._id); // Link the applicant to the form
+//       await form.save(); // Save the updated form with applicants
+//     }
+
+//     // Optionally, create an evaluation entry here
+//     // await evaluateApplicant(applicant._id, formId, questions);
+
+//     return res
+//       .status(200)
+//       .json({ message: "Submission successful", submission });
+//   } catch (error) {
+//     console.error("Error during form submission:", error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+const createEvaluationEntry = async (applicantId, formId, submissionId, evaluations, questions) => {
+  try {
+      const evaluationEntry = new Evaluation({
+          applicantId: applicantId,
+          formId: formId,
+          submissionId: submissionId, // Include submissionId
+          answerEvaluations: Object.entries(evaluations).map(([questionKey, evaluation], index) => {
+              const questionObj = questions[index]; // Get the corresponding question from the incoming data
+              const userAnswer = questionObj.answer; // Directly use the answer from the question object
+
+              return {
+                  questionId: questionObj.id, // Extract question ID
+                  givenAnswer: userAnswer,      // Use the answer provided by the user
+                  correctnessPercentage: evaluation.correctnessPercentage,
+                  remarks: evaluation.remark,
+              };
+          }),
+      });
+
+      await evaluationEntry.save();
+  } catch (error) {
+      console.error("Error creating evaluation entry:", error.message);
+      throw new Error("Failed to create evaluation entry.");
+  }
+};
 const submitForm = async (req, res) => {
   const { name, email, questions } = req.body;
   const formId = req.params.formId;
 
   console.log("Incoming Form Data:", req.body);
 
+  // Input validation
+  if (!name || !email || !questions || !Array.isArray(questions)) {
+      return res.status(400).json({ message: "Missing required fields." });
+  }
+
   try {
-    let applicant = await Applicants.findOne({ email });
-    if (!applicant) {
-      return res.status(404).json({ message: "Applicant not found" });
-    }
+      let applicant = await Applicants.findOne({ email });
+      if (!applicant) {
+          return res.status(404).json({ message: "Applicant not found" });
+      }
 
-    const form = await Form.findById(formId);
-    if (!form) {
-      return res.status(404).json({ message: "Form not found" });
-    }
+      const form = await Form.findById(formId);
+      if (!form) {
+          return res.status(404).json({ message: "Form not found" });
+      }
 
-    const answers = questions.map((question) => ({
-      questionId: question.id,
-      answer: question.answer,
-    }));
+      // Create answers array based on submitted questions
+      const answers = questions.map((question) => ({
+          questionId: question.id,
+          answer: question.answer,
+      }));
 
-    const submission = new Submission({
-      applicantId: applicant._id,
-      formId: formId,
-      answers: answers,
-    });
+      const submission = new Submission({
+          applicantId: applicant._id,
+          formId: formId,
+          answers: answers,
+      });
 
-    await submission.save();
+      await submission.save();
 
-    if (!form.applicants.includes(applicant._id)) {
-      form.applicants.push(applicant._id); // Link the applicant to the form
-      await form.save(); // Save the updated form with applicants
-    }
+      if (!form.applicants.includes(applicant._id)) {
+          form.applicants.push(applicant._id);
+          await form.save();
+      }
 
-    // Optionally, create an evaluation entry here
-    // await evaluateApplicant(applicant._id, formId, questions);
+      // Create evaluations based on answers
+      const evaluations = await evaluateAnswersSequentially(questions, answers);
+      
+      // Pass submission._id to createEvaluationEntry
+      await createEvaluationEntry(applicant._id, formId, submission._id, evaluations, questions);
 
-    return res
-      .status(200)
-      .json({ message: "Submission successful", submission });
+      return res.status(200).json({ message: "Submission successful", submission });
   } catch (error) {
-    console.error("Error during form submission:", error);
-    return res.status(500).json({ message: "Internal server error" });
+      console.error("Error during form submission:", error.message);
+      return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+const getEvaluationBySubmissionId = async (req, res) => {
+  const { submissionId, applicantId } = req.params; 
+  console.log('Received request for:', req.params);
+  
+  try {
+      // Fetch evaluation based on submissionId and applicantId
+      const evaluation = await Evaluation.findOne({ applicantId, submissionId }).exec();
+      
+      if (!evaluation) {
+          return res.status(404).json({ message: "Evaluation not found." });
+      }
+
+      // Fetch applicant information
+      const applicant = await Applicants.findById(applicantId).exec();
+      if (!applicant) {
+          return res.status(404).json({ message: "Applicant not found." });
+      }
+
+      // Fetch the form associated with the evaluation
+      const form = await Form.findById(evaluation.formId).exec();
+      if (!form) {
+          return res.status(404).json({ message: "Form not found." });
+      }
+
+      const result = evaluation.answerEvaluations.map(evaluation => {
+          const question = form.questions.find(q => q._id.toString() === evaluation.questionId.toString());
+          return {
+              questionId: evaluation.questionId,
+              questionText: question ? question.question : "Question not found", // Safely access the question text
+              options: question ? question.options : [], // Include the options
+              givenAnswer: evaluation.givenAnswer,
+              correctnessPercentage: evaluation.correctnessPercentage,
+              remarks: evaluation.remarks,
+              correctAnswer: question ? question.correctAnswer : null // Safely access the correct answer
+          };
+      });
+
+      return res.status(200).json({
+          applicant: {
+              id: applicant._id,
+              name: applicant.name,
+              email: applicant.email,
+          },
+          evaluations: result
+      });
+  } catch (error) {
+      console.error("Error retrieving evaluation:", error.message);
+      return res.status(500).json({ message: "Failed to retrieve evaluation." });
+  }
+};
+
 
 const getFormById = async (req, res) => {
   const { test_form_id } = req.params;
@@ -105,58 +251,7 @@ const getFormById = async (req, res) => {
   }
 };
 
-const submitAnswers = async (req, res) => {
-  const { session_id } = req.params;
-  const answers = req.body;
 
-  try {
-    const test = await Test.findById(session_id);
-    if (!test) {
-      return res.status(404).json({ message: "Test session not found." });
-    }
-
-    const questions = test.questions;
-
-    if (Object.keys(answers).length !== questions.length) {
-      return res
-        .status(400)
-        .json({
-          message: `Expected ${questions.length} answers, but received ${
-            Object.keys(answers).length
-          }.`,
-        });
-    }
-
-    questions.forEach((q, index) => {
-      const answerKey = (index + 1).toString();
-      const userAnswer = answers[answerKey];
-
-      if (typeof userAnswer !== "string") {
-        throw new Error(`Invalid answer format for question ${index + 1}.`);
-      }
-
-      test.questions[index].answer = userAnswer.trim();
-    });
-
-    await test.save();
-
-    const evaluations = await evaluateAnswersSequentially(questions, answers);
-
-    questions.forEach((q, index) => {
-      const questionKey = `Question ${index + 1}`;
-      if (evaluations[questionKey]) {
-        test.questions[index].evaluation = evaluations[questionKey];
-      }
-    });
-
-    await test.save();
-
-    return res.json(evaluations);
-  } catch (error) {
-    console.error("Error submitting answers:", error.message);
-    return res.status(500).json({ message: error.message });
-  }
-};
 const getAllForms = async (req, res) => {
   try {
     const forms = await Form.find();
@@ -228,50 +323,50 @@ const getApplicantsByFormId = async (req, res) => {
   }
 };
 
-const getSubmissionWithQuestions = async (req, res) => {
-  try {
-    const { submissionId } = req.params;
+// const getSubmissionWithQuestions = async (req, res) => {
+//   try {
+//     const { submissionId } = req.params;
 
-    const submission = await Submission.findById(submissionId);
+//     const submission = await Submission.findById(submissionId);
 
-    if (!submission) {
-      return res.status(404).json({ message: "Submission not found" });
-    }
+//     if (!submission) {
+//       return res.status(404).json({ message: "Submission not found" });
+//     }
 
-    // Fetch the associated form using formId
-    const form = await Form.findById(submission.formId); // Ensure formId corresponds to Form ID
-    if (!form) {
-      return res.status(404).json({ message: "Form not found" });
-    }
+//     // Fetch the associated form using formId
+//     const form = await Form.findById(submission.formId); // Ensure formId corresponds to Form ID
+//     if (!form) {
+//       return res.status(404).json({ message: "Form not found" });
+//     }
 
-    // Prepare response data
-    const results = form.questions.map((question) => {
-      const answer = submission.answers.find(
-        (a) => a.questionId.toString() === question._id.toString()
-      );
-      return {
-        questionId: question._id,
-        questionText: question.question,
-        options: question.options,
-        correctAnswer: question.correctAnswer,
-        givenAnswer: answer ? answer.answer : null,
-        isCorrect: answer ? answer.answer === question.correctAnswer : null,
-      };
-    });
+//     // Prepare response data
+//     const results = form.questions.map((question) => {
+//       const answer = submission.answers.find(
+//         (a) => a.questionId.toString() === question._id.toString()
+//       );
+//       return {
+//         questionId: question._id,
+//         questionText: question.question,
+//         options: question.options,
+//         correctAnswer: question.correctAnswer,
+//         givenAnswer: answer ? answer.answer : null,
+//         isCorrect: answer ? answer.answer === question.correctAnswer : null,
+//       };
+//     });
 
-    const response = {
-      submissionId: submission.id,
-      applicantId: submission.applicantId,
-      formId: submission.formId,
-      results: results,
-    };
+//     const response = {
+//       submissionId: submission.id,
+//       applicantId: submission.applicantId,
+//       formId: submission.formId,
+//       results: results,
+//     };
 
-    res.status(200).json(response);
-  } catch (error) {
-    console.error("Error fetching submission:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//     res.status(200).json(response);
+//   } catch (error) {
+//     console.error("Error fetching submission:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 module.exports = {
   createForm,
@@ -279,7 +374,6 @@ module.exports = {
   updateForm,
   getApplicantsByFormId,
   getAllForms,
-  getSubmissionWithQuestions,
   submitForm,
-  submitAnswers,
+  getEvaluationBySubmissionId
 };

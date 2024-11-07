@@ -8,8 +8,12 @@ const questionSchema = new mongoose.Schema(
   },
 );
 
-const testSchema = new mongoose.Schema(
+const Question = new mongoose.Schema(
   {
+    job_id: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      required: true
+    },
     num_questions: { type: Number, required: true },
     interview_type: { type: String, required: true },
     experience_level: { type: String, required: true },
@@ -23,5 +27,5 @@ const testSchema = new mongoose.Schema(
   }
 );
 
-const Test = mongoose.model("Test", testSchema);
+const Test = mongoose.model("Question", Question);
 module.exports = Test;

@@ -107,24 +107,24 @@ export const routes: Routes = [
         component: ExitInterviewFormViewerComponent,
       },
       {
-        path: 'questionform/:question_id',
+        path: 'questionform/:generatedQuestions_id/:job_id',
         component: CreateTestFormComponent,
       },
 
       { path: 'edit-test/:formId', component: TestEditPageComponent }, // Route for editing a test
 
       {
-        path: 'viewQuestions/:question_id',
+        path: 'viewQuestions/:generatedQuestions_id',
         component: GeneratedQuestionsViewComponent,
       },
       {
         path: 'test-applicants-list/:formId',
         component: TestFormResultsComponent,
       },
-      {
-        path: 'applicant-test-submission/:submissionId',
-        component: ApplicantTestSubmissionsComponent,
-      },
+{
+    path: 'applicant-test-submission/:submissionId/:applicantId',
+    component: ApplicantTestSubmissionsComponent,
+},
       {
         path: 'exitApplicantInfo/:applicantId',
         component: ExitApplicantInfoComponent,

@@ -1,100 +1,69 @@
-<form [formGroup]="form">
-  <main class="flex-1 p-5 bg-[#FCFCFC]">
-    <div class="w-full">
-      <!-- Header Section -->
-      <div (click)="onClickArrowLeft()" class="cursor-pointer my-4 flex items-center">
-        <img src="assets/icons/fi_arrow-left.svg" />
-        <p class="font-light text-md ml-3">Technical Interview</p>
-      </div>
-      <div class="flex justify-between my-6">
-        <div class="text-2xl text-[#18191C]">GENERATE QUESTIONS</div>
+<div (click)="onClickArrowLeft()" class="cursor-pointer mt-8 flex items-center mr-3">
+  <img src="assets/icons/fi_arrow-left.svg" />
+  <p class="font-light text-md ml-2">Technical Interview</p>
+</div>
 
-      </div>
+<div class="flex items-center justify-center bg-[#FCFCFC]">
+  <div class="w-full p-4 bg-[#FCFCFC] rounded-lg">
+    <h1 class="text-3xl font-semibold text-gray-800 mb-8 mt-2">Create Test</h1>
 
-      <!-- AI Generated Questions Input -->
-      <div class="space-y-6 w-2/3 mb-6">
-        <div>
-          <label for="numQuestions" class="block text-[#18191C] text-sm font-medium mb-2">Number of Questions</label>
-          <input
-            type="number"
-            formControlName="num_questions"
-            placeholder="Enter number of questions"
-            id="numQuestions"
-            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
-          />
-        </div>
-        
-        <div>
-          <label for="interviewType" class="block text-[#18191C] text-sm font-medium mb-2">Interview Type</label>
-          <input
-            type="text"
-            formControlName="interview_type"
-            placeholder="Enter interview type"
-            id="interviewType"
-            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
-          />
-          <div class="flex gap-2 mt-2">
-            <span (click)="selectTag('interview_type', 'MCQs')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">MCQs</span>
-            <span (click)="selectTag('interview_type', 'Coding')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Coding</span>
-            <span (click)="selectTag('interview_type', 'Technical')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Technical</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="experienceLevel" class="block text-[#18191C] text-sm font-medium mb-2">Experience Level</label>
-          <input
-            type="text"
-            formControlName="experience_level"
-            placeholder="Enter experience level"
-            id="experienceLevel"
-            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
-          />
-          <div class="flex gap-2 mt-2">
-            <span (click)="selectTag('experience_level', 'Beginner')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Beginner</span>
-            <span (click)="selectTag('experience_level', 'Intermediate')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Intermediate</span>
-            <span (click)="selectTag('experience_level', 'Expert')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Expert</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="field" class="block text-[#18191C] text-sm font-medium mb-2">Field</label>
-          <input
-            type="text"
-            formControlName="field"
-            placeholder="Enter field"
-            id="field"
-            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
-          />
-          <div class="flex gap-2 mt-2">
-            <span (click)="selectTag('field', 'Software Development')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Software Development</span>
-            <span (click)="selectTag('field', 'Data Science')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Data Science</span>
-            <span (click)="selectTag('field', 'UI/UX Design')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">UI/UX Design</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="interviewTime" class="block text-[#18191C] text-sm font-medium mb-2">Interview Time</label>
-          <input
-            type="text"
-            formControlName="interview_time"
-            placeholder="Enter interview time"
-            id="interviewTime"
-            class="border border-borderColor rounded-md w-full px-3 py-2 focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <!-- Generate AI Questions Button -->
-      <div class="flex justify-start mt-8">
-        <button 
-          type="button"
-          (click)="generateAIQuestions()"
-          class="bg-[#0A65CC] text-white px-6 py-3 rounded-md flex justify-center items-center gap-3"
-        >
-          Generate Questions
-          <span><img src="assets/icons/fi_arrow-right-white.svg" alt="Generate" /></span>
-        </button>
-      </div>
+    <div class="mb-4">
+      <label for="jobSelect" class="block text-lg font-medium text-gray-700">Select Job</label>
+      <select id="jobSelect" [(ngModel)]="selectedJobId" (change)="onJobSelect()" class="w-full p-2 border rounded-lg">
+        <option value="" disabled selected>Select a job</option>
+        <option *ngFor="let job of jobs" [value]="job._id">{{ job.jobTitle }}</option>
+      </select>
     </div>
-  </main>
-</form>
+
+    <form [formGroup]="form" (ngSubmit)="generateAIQuestions()" class="space-y-8">
+      <div>
+        <label for="numQuestions" class="block text-lg font-medium text-gray-700">Number of Questions</label>
+        <input type="number" formControlName="num_questions" placeholder="Enter number of questions" id="numQuestions" class="w-full p-2 border rounded-lg" />
+        <div *ngIf="form.get('num_questions')?.invalid && form.get('num_questions')?.touched" class="text-red-500 text-sm mt-1">Please enter a valid number of questions.</div>
+      </div>
+
+      <div>
+        <label for="interviewType" class="block text-lg font-medium text-gray-700">Interview Type</label>
+        <input type="text" formControlName="interview_type" placeholder="Enter interview type" id="interviewType" class="w-full p-2 border rounded-lg" />
+        <div class="flex gap-2 mt-2">
+          <span (click)="selectTag('interview_type', 'MCQs')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">MCQs</span>
+          <span (click)="selectTag('interview_type', 'Coding')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Coding</span>
+          <span (click)="selectTag('interview_type', 'Technical')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Technical</span>
+        </div>
+      </div>
+
+      <div>
+        <label for="experienceLevel" class="block text-lg font-medium text-gray-700">Experience Level</label>
+        <input type="text" formControlName="experience_level" placeholder="Enter experience level" id="experienceLevel" class="w-full p-2 border rounded-lg" />
+        <div class="flex gap-2 mt-2">
+          <span (click)="selectTag('experience_level', 'Beginner')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Beginner</span>
+          <span (click)="selectTag('experience_level', 'Intermediate')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Intermediate</span>
+          <span (click)="selectTag('experience_level', 'Expert')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Expert</span>
+        </div>
+      </div>
+
+      <div>
+        <label for="field" class="block text-lg font-medium text-gray-700">Field</label>
+        <input type="text" formControlName="field" placeholder="Enter field" id="field" class="w-full p-2 border rounded-lg" />
+        <div class="flex gap-2 mt-2">
+          <span (click)="selectTag('field', 'Software Development')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Software Development</span>
+          <span (click)="selectTag('field', 'Data Science')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">Data Science</span>
+          <span (click)="selectTag('field', 'UI/UX Design')" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-full">UI/UX Design</span>
+        </div>
+      </div>
+
+      <div>
+        <label for="interviewTime" class="block text-lg font-medium text-gray-700">Interview Time</label>
+        <input type="text" formControlName="interview_time" placeholder="Enter interview time" id="interviewTime" class="w-full p-2 border rounded-lg" />
+      </div>
+
+      <button type="submit" [disabled]="form.invalid" class="bg-blue-600 text-white font-semibold py-3 px-7 rounded-lg hover:bg-blue-700 transition duration-200">
+        Generate AI Questions
+      </button>
+    </form>
+
+    <div *ngIf="form.invalid" class="text-red-500 text-center mt-6">
+      Please fill in all required fields.
+    </div>
+  </div>
+</div>

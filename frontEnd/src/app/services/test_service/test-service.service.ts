@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SubmissionData } from '../../models/jobModel';
 
 @Injectable({
   providedIn: 'root',
@@ -23,23 +24,33 @@ export class TestServiceService {
     return this.http.delete(`${this.apiUrl}/generated_questions/${questionId}`);
   }
 
+  getActiveJobs(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/jobs/active`);
+  }
+
   
   deleteGeneratedForms(formsId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/generated_forms/${formsId}`);
   }
   getAllGeneratedForms(): Observable<any> {
-    return this.http.get(`${this.apiUrl}//generated/forms/getAllforms`);
+    return this.http.get(`${this.apiUrl}/generated/forms/getAllforms`);
   }
 
-  createTest(testData: {
-    title: string;
-    questions: any[];
-    duration: number;
-  }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create_test_form`, testData, {
+
+  createTestForm(
+    job_id: string,
+    generatedQuestionId: string,
+    testData: {
+      title: string;
+      questions: any[];
+      duration: number;
+    }
+  ): Observable<any> {
+    const url = `${this.apiUrl}/create_test_form/${job_id}/${generatedQuestionId}`;
+    return this.http.post(url, testData, {
       withCredentials: true,
-    });
-  }
+    });}
+
   getTestForm(formId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/forms/${formId}`);
   }
@@ -80,7 +91,8 @@ updateTest(testId: string, testData: { title: string; questions: any[]; duration
       updateData
     );
   }
-  getApplicantsSubmissions(submissionId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/submisions/results/${submissionId}`);
-  }
+// In test-service.service.ts
+getEvalutionOfApplicants(formId: string, applicantId: string): Observable<SubmissionData> {
+  return this.http.get<SubmissionData>(`${this.apiUrl}/view/answers/${formId}/${applicantId}`);
+}
 }

@@ -18,7 +18,7 @@ export class GeneratedQuestionsViewComponent implements OnInit{
   constructor( private testService: TestServiceService,private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    const generatedQuestionId = this.route.snapshot.paramMap.get('question_id');
+    const generatedQuestionId = this.route.snapshot.paramMap.get('generatedQuestions_id');
 
     if (generatedQuestionId) {
       this.fetchGeneratedQuestions(generatedQuestionId);

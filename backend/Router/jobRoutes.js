@@ -10,6 +10,7 @@ const {
   getAllJobsForCount,
   updateJobStatus,
   getHiredCandidates,
+  getAllActiveJobs,
 } = require("../controller/jobController");
 const verifyToken = require("../middleweres/verifyToken");
 
@@ -31,5 +32,7 @@ router.delete("/jobs/:id/delete", deleteJobPost);
 router.get("/jobs/search", searchJobPosts); 
 
 router.get("/jobs/hired-candidates", getHiredCandidates);
+// Route to get all active jobs
+router.get('/jobs/active', getAllActiveJobs);
 
 module.exports = router;

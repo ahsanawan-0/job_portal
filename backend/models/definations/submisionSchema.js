@@ -1,4 +1,3 @@
-// models/Submission.js
 const mongoose = require('mongoose');
 
 const submissionSchema = new mongoose.Schema({
@@ -15,7 +14,6 @@ const submissionSchema = new mongoose.Schema({
     answers: [{ 
         questionId: { 
             type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Questions', // Optional: reference to a Questions model if needed
             required: true 
         },
         answer: { 

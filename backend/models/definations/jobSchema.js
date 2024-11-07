@@ -88,7 +88,8 @@ const jobSchema = new mongoose.Schema(
       trim: true,
     },
     applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }], // Array of applicant IDs
-    shortListedApplicants: [
+
+     shortListedApplicants: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Applicants" },
     ],
     testInvitedApplicants: [

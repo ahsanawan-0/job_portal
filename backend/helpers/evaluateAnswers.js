@@ -24,7 +24,8 @@ const generateFeedback = async (prompt) => {
 };
 
 // Helper function to evaluate the answer
-const evaluateAnswer = async (question, answer, experience_level) => {
+const evaluateAnswer = async (question, answer) => {
+    const experience_level = "1 year"; // Hardcoded experience level
     const prompt = `
 Evaluate the following answer to the question '${question}' considering the experience level of the candidate (${experience_level}). Ensure to provide a complete statement, remark, and percentage.
 
@@ -43,19 +44,18 @@ Evaluation:
         const feedback = await generateFeedback(prompt);
         console.log("Feedback Received:", feedback);
 
-        // Remove Markdown syntax (e.g., **, ##) using regex
+        // Remove Markdown syntax using regex
         const plainTextFeedback = feedback.replace(/\*\*/g, '').replace(/##\s+/g, '').trim();
 
         // Attempt to parse the feedback
         const correctnessMatch = plainTextFeedback.match(/1\.\s*Correctness Percentage:\s*(\d+)%/i);
-        const remarkMatch = plainTextFeedback.match(/2\.\s*Remark:\s*([\s\S]*?)(?:\n|$)/i); // Match until newline or end
+        const remarkMatch = plainTextFeedback.match(/2\.\s*Remark:\s*([\s\S]*?)(?:\n|$)/i);
 
         if (correctnessMatch && remarkMatch) {
-            const evaluation = {
+            return {
                 correctnessPercentage: parseInt(correctnessMatch[1], 10),
                 remark: remarkMatch[1].trim(),
             };
-            return evaluation;
         } else {
             console.warn('Failed to parse evaluation components from the feedback.');
             return {
@@ -77,9 +77,9 @@ const evaluateAnswersSequentially = async (questions, answers) => {
     const evaluations = {};
 
     for (let i = 0; i < questions.length; i++) {
-        const questionNumber = (i + 1).toString(); // '1', '2', etc.
+        const questionNumber = (i + 1).toString(); 
         const questionObj = questions[i];
-        const userAnswer = answers[questionNumber];
+        const userAnswer = answers[i] && answers[i].answer;
 
         const questionKey = `Question ${questionNumber}`;
 
@@ -89,12 +89,22 @@ const evaluateAnswersSequentially = async (questions, answers) => {
                 correctnessPercentage: 0,
                 remark: "No answer provided.",
             };
-            continue; // Skip to the next question
+            continue; 
         }
 
         try {
-            const evaluation = await evaluateAnswer(questionObj.question, userAnswer, questionObj.experience_level);
-            evaluations[questionKey] = evaluation;
+            if (questionObj.options && questionObj.options.length > 0) {
+                // Handling MCQ
+                const isCorrect = userAnswer.trim().toLowerCase() === questionObj.correctAnswer.toLowerCase();
+                evaluations[questionKey] = {
+                    correctnessPercentage: isCorrect ? 100 : 0,
+                    remark: isCorrect ? "Correct answer." : "Incorrect answer.",
+                };
+            } else {
+                // Handling non-MCQ
+                const evaluation = await evaluateAnswer(questionObj.question, userAnswer);
+                evaluations[questionKey] = evaluation;
+            }
         } catch (error) {
             console.error(`Error evaluating ${questionKey}:`, error.message);
             evaluations[questionKey] = {
@@ -105,6 +115,6 @@ const evaluateAnswersSequentially = async (questions, answers) => {
     }
 
     return evaluations;
-};
+};;
 
 module.exports = { evaluateAnswersSequentially };
