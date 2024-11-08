@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { createForm,getFormById,updateForm,submitForm ,getAllForms, getApplicantsByFormId, getEvaluationBySubmissionId} = require('../controller/TestFormController')
+const { createTest,getFormById,updateForm,submitForm ,getAllForms, getApplicantsByFormId, getEvaluationBySubmissionId} = require('../controller/TestFormController')
 
 
-router.post('/create_test_form/:generatedQuestions_id/:job_id', createForm);
+router.post('/create_test_form/:generatedQuestions_id/:job_id', createTest);
 router.get('/forms/:test_form_id', getFormById); 
 router.get('/generated/forms/getAllforms', getAllForms); 
 router.post('/forms/submitTest/:formId', submitForm); 

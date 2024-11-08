@@ -135,27 +135,29 @@ export class CreateTestFormComponent implements OnInit {
             this.errorMessage = 'Please fill in all required fields.';
             return;
         }
-
+    
         const title = this.form.get('title')?.value;
-
+    
         this.questions.clear(); 
-
-       
+    
         this.selectedQuestions.forEach(q => this.addQuestionToForm(q));
-
-        
+    
         this.addDynamicQuestions();
-
+    
         const questions = this.questions.value;
-
+    
         console.log('Final Data to be Sent:', { title, questions });
-        
-
-        this.testService.createTestForm({job_id:this.job_id,generatedQuestionId:this.generatedQuestionId, title, questions, duration: this.selectedDuration }).subscribe({
+    
+        // Pass the parameters separately
+        this.testService.createTestForm(this.job_id, this.generatedQuestionId, {
+            title,
+            questions,
+            duration: this.selectedDuration
+        }).subscribe({
             next: () => {
                 this.router.navigateByUrl('technicalinterview'); 
             },
-            error: (error:any) => {
+            error: (error: any) => {
                 this.errorMessage = error.message || 'An error occurred while creating the test.';
             }
         });

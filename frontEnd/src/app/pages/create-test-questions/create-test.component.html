@@ -57,8 +57,9 @@
         <input type="text" formControlName="interview_time" placeholder="Enter interview time" id="interviewTime" class="w-full p-2 border rounded-lg" />
       </div>
 
-      <button type="submit" [disabled]="form.invalid" class="bg-blue-600 text-white font-semibold py-3 px-7 rounded-lg hover:bg-blue-700 transition duration-200">
-        Generate AI Questions
+      <button type="submit" [disabled]="form.invalid || isSubmitting" class="bg-blue-600 text-white font-semibold py-3 px-7 rounded-lg hover:bg-blue-700 transition duration-200">
+        <span *ngIf="isSubmitting">Generating...</span>
+        <span *ngIf="!isSubmitting">Generate AI Questions</span>
       </button>
     </form>
 

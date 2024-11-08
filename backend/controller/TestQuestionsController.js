@@ -1,12 +1,15 @@
-const Test = require('../models/definations/questionSchema');
+const Questions = require('../models/definations/questionSchema');
 const { generateQuestions, } = require('../helpers/generateQuestions');
 // const { evaluateAnswersSequentially } = require('../helpers/evaluateAnswers');
 
 const createQuestions = async (req, res) => {
-    const { num_questions, interview_type, experience_level, field, interview_time, job_id
-    } = req.body;
+    const { num_questions, interview_type, experience_level, field, interview_time, job_id } = req.body;
 
     try {
+        // Log the incoming request to see if it's being called multiple times
+        console.log('Creating questions with params:', req.body);
+
+        // Generate questions
         const questions = await generateQuestions({ num_questions, interview_type, experience_level, field, interview_time });
 
         const questionsFormatted = [];
@@ -44,20 +47,23 @@ const createQuestions = async (req, res) => {
             }
         });
 
-        const test = new Test({
+
+        // Create new test document
+        const test = new Questions({
             num_questions,
             interview_type,
             experience_level,
             field,
             interview_time,
             questions: questionsFormatted,
-            job_id
-, // Add jobId to the test document
+            job_id, // Associate jobId with the test document
         });
 
+        // Save test
         await test.save();
         res.status(201).json(test);
     } catch (error) {
+        console.error('Failed to create test:', error); // Log the error for debugging
         res.status(500).json({ error: 'Failed to create test' });
     }
 };
@@ -68,12 +74,12 @@ const getQuestionsById = async (req, res) => {
     const { generatedQuestions_id } = req.params;
 
     try {
-        const test = await Test.findById(generatedQuestions_id).populate('questions');
-        if (!test) {
+        const questions = await Questions.findById(generatedQuestions_id).populate('questions');
+        if (!questions) {
             return res.status(404).json({ message: "Test not found." });
         }
 
-        return res.json(test.questions);
+        return res.json(questions.questions);
     } catch (error) {
         console.error("Error retrieving questions:", error.message);
         return res.status(500).json({ message: error.message });
@@ -84,9 +90,9 @@ const deleteGeneratedQuestion = async (req, res) => {
     const { generatedQuestions_id } = req.params;
 
     try {
-        const deletedTest = await Test.findByIdAndDelete(generatedQuestions_id);
+        const deletedgeneratedQuestions = await Questions.findByIdAndDelete(generatedQuestions_id);
         
-        if (!deletedTest) {
+        if (!deletedgeneratedQuestions) {
             return res.status(404).json({ message: "generated questions not found." });
         }
 
@@ -99,7 +105,7 @@ const deleteGeneratedQuestion = async (req, res) => {
 
 const getAllGeneratedQuestions = async (req, res) => {
     try {
-        const tests = await Test.find({}, 'job_id num_questions interview_type experience_level field createdAt');
+        const tests = await Questions.find({}, 'job_id num_questions interview_type experience_level field createdAt');
         res.status(200).json(tests); 
     } catch (error) {
         res.status(500).json({ error: 'Failed to retrieve tests' });

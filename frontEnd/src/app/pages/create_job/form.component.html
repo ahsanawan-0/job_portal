@@ -299,19 +299,24 @@
           </div>
 
           <!-- Submit Button -->
-          <div class="flex justify-start">
-            <button
-              type="submit"
-              class="py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
-            >
-              Post a Job
-              <img
-                src="assets/icons/fi_arrow-right-white.svg"
-                alt="Arrow Right Icon"
-                class="w-5 h-5"
-              />
-            </button>
-          </div>
+      <!-- Submit Button -->
+<div class="flex justify-start">
+  <button
+    type="submit"
+    [disabled]="form.invalid || isPosting"
+    class="py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
+  >
+    <span *ngIf="isPosting">Posting...</span>
+    <span *ngIf="!isPosting">Post a Job</span>
+    <img
+      *ngIf="!isPosting"
+      src="assets/icons/fi_arrow-right-white.svg"
+      alt="Arrow Right Icon"
+      class="w-5 h-5"
+    />
+    <div *ngIf="isPosting" class="loader w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin"></div>
+  </button>
+</div>
         </form>
       </div>
     </main>

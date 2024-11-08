@@ -46,7 +46,7 @@ export class TestServiceService {
       duration: number;
     }
   ): Observable<any> {
-    const url = `${this.apiUrl}/create_test_form/${job_id}/${generatedQuestionId}`;
+    const url = `${this.apiUrl}/create_test_form/${generatedQuestionId}/${job_id}`;
     return this.http.post(url, testData, {
       withCredentials: true,
     });}

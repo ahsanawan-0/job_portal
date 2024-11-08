@@ -57,10 +57,10 @@ const ApplicantsApplyForJob = async (req, res) => {
     });
 
     // console.log("sjdbnkjasd", newUser);
-    await newUser.save();
+    await newApplicant.save();
     console.log(`User ${name} with email ${email} created successfully.`);
 
-    const updatedJob = await jobModel.applyForJob(jobId, newUser._id);
+    const updatedJob = await jobModel.applyForJob(jobId, newApplicant._id);
     if (!updatedJob) {
       return res.status(404).json({ message: "Job not found" });
     }
@@ -74,7 +74,7 @@ const ApplicantsApplyForJob = async (req, res) => {
 
     try {
       console.log("Calling sendEmail function.");
-      await sendEmail(newUser, jobDetails);
+      await sendEmail(newApplicant, jobDetails);
     } catch (emailError) {
       console.error("Error sending email:", emailError);
       return res

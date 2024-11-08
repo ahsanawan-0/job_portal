@@ -4,31 +4,59 @@ const Applicants = require("../models/definations/applicantsSchema");
 const Form = require("../models/definations/TestFormSchema");
 const Evaluation =require("../models/definations/evaluationSchema")
 const { evaluateAnswersSequentially } = require("../helpers/evaluateAnswers");
+const jobSchema = require("../models/definations/jobSchema"); 
+const Job = mongoose.model("Job", jobSchema); 
 
-const createForm = async (req, res) => {
-  const { job_id,generatedQuestions_id } = req.params;  
+const createTest = async (req, res) => {
+  const { job_id, generatedQuestions_id } = req.params;  
+  console.log('Request Parameters:', req.params);
+  
   const { title, questions, duration } = req.body;
 
+  // Validate request parameters and body
+  if (!job_id || !generatedQuestions_id) {
+      return res.status(400).json({ message: "Job ID and Generated Questions ID are required." });
+  }
+
+  if (!title || !Array.isArray(questions) || questions.length === 0 || typeof duration !== 'number') {
+      return res.status(400).json({ message: "Title, questions (array), and duration (number) are required." });
+  }
+
   try {
-    const newForm = new Form({
-      title,
-      questions,
-      duration,
-      generatedQuestions_id,
-      job_id,  
-    });
+      // Create the new form
+      const newForm = new Form({
+          title,
+          questions,
+          duration,
+          generatedQuestions_id,
+          job_id,
+      });
 
-    await newForm.save();
+      // Save the new form
+      await newForm.save();
 
-    res.status(201).json({
-      message: "Form created successfully",
-      form: newForm
-    });
+      // Update the Job schema with the new form ID
+      const updatedJob = await Job.findByIdAndUpdate(
+          job_id,
+          { $push: { testForms: newForm._id } }, // Add the form ID to the testForms array
+          { new: true } // Return the updated document
+      );
+
+      if (!updatedJob) {
+          // If the job was not found, return a 404 response
+          return res.status(404).json({ message: "Job not found." });
+      }
+
+      res.status(201).json({
+          message: "Form created successfully",
+          form: newForm,
+          updatedJob 
+      });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      console.error('Error creating form:', error); // Log the error to the console
+      res.status(500).json({ message: error.message });
   }
 };
-
 
 const updateForm = async (req, res) => {
   const { title, questions, duration } = req.body;
@@ -52,53 +80,6 @@ const updateForm = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// const submitForm = async (req, res) => {
-//   const { name, email, questions } = req.body;
-//   const formId = req.params.formId;
-
-//   console.log("Incoming Form Data:", req.body);
-
-//   try {
-//     let applicant = await Applicants.findOne({ email });
-//     if (!applicant) {
-//       return res.status(404).json({ message: "Applicant not found" });
-//     }
-
-//     const form = await Form.findById(formId);
-//     if (!form) {
-//       return res.status(404).json({ message: "Form not found" });
-//     }
-
-//     const answers = questions.map((question) => ({
-//       questionId: question.id,
-//       answer: question.answer,
-//     }));
-
-//     const submission = new Submission({
-//       applicantId: applicant._id,
-//       formId: formId,
-//       answers: answers,
-//     });
-
-//     await submission.save();
-
-//     if (!form.applicants.includes(applicant._id)) {
-//       form.applicants.push(applicant._id); // Link the applicant to the form
-//       await form.save(); // Save the updated form with applicants
-//     }
-
-//     // Optionally, create an evaluation entry here
-//     // await evaluateApplicant(applicant._id, formId, questions);
-
-//     return res
-//       .status(200)
-//       .json({ message: "Submission successful", submission });
-//   } catch (error) {
-//     console.error("Error during form submission:", error);
-//     return res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 
 const createEvaluationEntry = async (applicantId, formId, submissionId, evaluations, questions) => {
   try {
@@ -131,7 +112,7 @@ const submitForm = async (req, res) => {
 
   console.log("Incoming Form Data:", req.body);
 
-  // Input validation
+
   if (!name || !email || !questions || !Array.isArray(questions)) {
       return res.status(400).json({ message: "Missing required fields." });
   }
@@ -323,53 +304,106 @@ const getApplicantsByFormId = async (req, res) => {
   }
 };
 
-// const getSubmissionWithQuestions = async (req, res) => {
-//   try {
-//     const { submissionId } = req.params;
 
-//     const submission = await Submission.findById(submissionId);
 
-//     if (!submission) {
-//       return res.status(404).json({ message: "Submission not found" });
-//     }
+const sendTestInviteToApplicant = async (req, res) => {
+  const { jobId, applicantId } = req.body;
 
-//     // Fetch the associated form using formId
-//     const form = await Form.findById(submission.formId); // Ensure formId corresponds to Form ID
-//     if (!form) {
-//       return res.status(404).json({ message: "Form not found" });
-//     }
+  // Fetch the job to get the associated testForm
+  const job = await Job.findById(jobId).populate('testForms');
+  if (!job) {
+      return res.status(404).json({ message: "Job not found." });
+  }
 
-//     // Prepare response data
-//     const results = form.questions.map((question) => {
-//       const answer = submission.answers.find(
-//         (a) => a.questionId.toString() === question._id.toString()
-//       );
-//       return {
-//         questionId: question._id,
-//         questionText: question.question,
-//         options: question.options,
-//         correctAnswer: question.correctAnswer,
-//         givenAnswer: answer ? answer.answer : null,
-//         isCorrect: answer ? answer.answer === question.correctAnswer : null,
-//       };
-//     });
+  // Since there is only one test for each job, we can access the first element
+  const test = job.testForms[0];
+  if (!test) {
+      return res.status(404).json({ message: "No test associated with this job." });
+  }
 
-//     const response = {
-//       submissionId: submission.id,
-//       applicantId: submission.applicantId,
-//       formId: submission.formId,
-//       results: results,
-//     };
+  const applicant = await Applicants.findById(applicantId);
+  if (!applicant) {
+      return res.status(404).json({ message: "Applicant not found." });
+  }
 
-//     res.status(200).json(response);
-//   } catch (error) {
-//     console.error("Error fetching submission:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
+  const token = generateToken();
+  const testLink = new TestLink({
+      token,
+      testId: test._id,
+      userEmail: applicant.email,
+      createdAt: Date.now(),
+      used: false
+  });
+
+  await testLink.save();
+  const link = `https://yourdomain.com/test/${token}`;
+
+  await sendTestInviteEmail(applicant.email, test.title, link);
+
+  res.status(200).json({ message: "Test invite sent successfully", inviteLink: link });
+};
+
+const sendTestInvitesToAll = async (req, res) => {
+  const { jobId, applicantIds } = req.body;
+
+  // Fetch the job to get the associated testForm
+  const job = await Job.findById(jobId).populate('testForms');
+  if (!job) {
+      return res.status(404).json({ message: "Job not found." });
+  }
+
+  // Since there is only one test for each job, we can access the first element
+  const test = job.testForms[0];
+  if (!test) {
+      return res.status(404).json({ message: "No test associated with this job." });
+  }
+
+  const testInvites = [];
+
+  for (const applicantId of applicantIds) {
+      const applicant = await Applicants.findById(applicantId);
+      if (!applicant) {
+          continue; // Skip if applicant not found
+      }
+
+      const token = generateToken();
+      const testLink = new TestLink({
+          token,
+          testId: test._id,
+          userEmail: applicant.email,
+          createdAt: Date.now(),
+          used: false
+      });
+
+      await testLink.save();
+      const link = `https://yourdomain.com/test/${token}`; // Construct the test link
+
+      // Send the test invite email
+      await sendTestInviteEmail(applicant.email, test.title, link);
+
+      testInvites.push(link); // Collecting invites for logging or response
+  }
+
+  res.status(200).json({ message: "Test invites sent successfully", invites: testInvites });
+};
+
+
+
+// Implement the email sending function
+const sendTestInviteEmail = async (email, testTitle, link) => {
+  // Your email sending logic (e.g., using nodemailer)
+  console.log(`Sending email to: ${email}`);
+  console.log(`Test Title: ${testTitle}`);
+  console.log(`Test Link: ${link}`);
+ 
+};
+
+
 
 module.exports = {
-  createForm,
+  createTest,
+  sendTestInviteToApplicant,
+  sendTestInvitesToAll,
   getFormById,
   updateForm,
   getApplicantsByFormId,

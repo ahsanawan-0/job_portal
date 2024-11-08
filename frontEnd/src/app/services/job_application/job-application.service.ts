@@ -30,7 +30,10 @@ export class JobApplicationService {
   getAllApplications() {
     return this.http.get(`${this.apiUrl}/getAllApplications`);
   }
-
+  getFileById(resumeId: string) {
+    return this.http.get(`${this.apiUrl}/file/${resumeId}`);
+  }
+  
   getApplicantsForJob(jobId: string | null) {
     return this.http.get(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
   }

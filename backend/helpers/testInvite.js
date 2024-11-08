@@ -9,28 +9,25 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
-const sendEmail = async (applicant, job) => {
+const sendTestInviteEmail = async (applicant, job, testLink) => {
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
     to: applicant.email,
-    subject: `Job Application: ${job.title}`,
+    subject: `Test Invitation for Job Application: ${job.title}`,
     html: `
       <div style="font-family: Arial, sans-serif; margin: 20px;">
-        <h2 style="color: #333;">Thank you for applying!</h2>
+        <h2 style="color: #333;">You've Been Invited to Take a Test!</h2>
         <p style="font-size: 16px; color: #555;">Dear ${applicant.name},</p>
-        <p style="font-size: 16px; color: #555;">We have received your application for the position of <strong>${job.title}</strong>.</p>
+        <p style="font-size: 16px; color: #555;">We are pleased to invite you to take a test for the position of <strong>${job.title}</strong>.</p>
         
-        <h3 style="color: #007BFF;">Job Details</h3>
-        <ul style="font-size: 16px; color: #555;">
-          <li><strong>Position:</strong> ${job.title}</li>
-          <li><strong>Company:</strong> ${job.company}</li>
-          <li><strong>Location:</strong> ${job.location}</li>
-          <li><strong>Experience Required:</strong> ${job.experienceRequired}</li>
-        </ul>
+        <h3 style="color: #007BFF;">Test Details</h3>
+        <p style="font-size: 16px; color: #555;">
+          Please click the link below to access your test:
+        </p>
+        <p>
+          <a href="${testLink}" style="color: #007BFF; text-decoration: underline;">Take the Test</a>
+        </p>
 
-        <p style="font-size: 16px; color: #555;">We will review your resume and cover letter and get back to you soon.</p>
-        
         <p style="font-size: 16px; color: #555;">If you have any questions, feel free to contact us at <a href="mailto:${process.env.EMAIL_USERNAME}">${process.env.EMAIL_USERNAME}</a>.</p>
 
         <hr style="margin: 20px 0; border: 1px solid #e0e0e0;">
@@ -46,4 +43,6 @@ const sendEmail = async (applicant, job) => {
   }
 };
 
-module.exports = sendEmail;
+module.exports = {
+  sendTestInviteEmail // New function for test invitations
+};

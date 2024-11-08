@@ -43,6 +43,8 @@ export class JobApplicationsComponent implements OnInit {
   applicants: any[] = [];
   jobExpirationDate: string | null = null;
   jobStatus: string = '';
+  resumeLoading: boolean = false; // Add a loading state variable
+
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
@@ -68,6 +70,7 @@ export class JobApplicationsComponent implements OnInit {
       this.extractApplicantId();
     });
   }
+  
   shortListed: any[] = [];
   createShortListedApplicant(applicantId: string) {
     this.service
@@ -200,4 +203,31 @@ export class JobApplicationsComponent implements OnInit {
   isHired(applicantId: string): boolean {
     return this.hiredId.includes(applicantId);
   }
+
+  downloadResume(resumeId: string) {
+    this.resumeLoading = true; // Start loading
+
+    this.service.getFileById(resumeId).subscribe(
+      (response: any) => {
+        if (response?.data?.webContentLink) {
+          // Create an anchor element to trigger the download
+          const anchor = document.createElement('a');
+          anchor.href = response.data.webContentLink;
+          anchor.target = '_blank'; // Optional: opens in a new tab
+          anchor.download = response.data.name; // Optional: filename if needed
+          anchor.click();
+          this.resumeLoading = false; // Stop loading
+
+        } else {
+          console.error("Download link not available");
+          this.resumeLoading = false; // Stop loading on error
+
+        }
+      },
+      (error:any) => {
+        console.error("Error fetching file data:", error);
+      }
+    );
+  }
+  
 }

@@ -14,10 +14,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class CreateTestComponent implements OnInit {
   form: FormGroup;
-  jobs: any[] = []; 
-  selectedJob: any; 
-  selectedJobId: string = ''; 
-
+  jobs: any[] = [];
+  selectedJob: any;
+  selectedJobId: string = '';
+  isSubmitting: boolean = false; // Flag to indicate submission state
 
   constructor(
     private fb: FormBuilder,
@@ -26,22 +26,22 @@ export class CreateTestComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       num_questions: [1, [Validators.required, Validators.min(1)]],
-      interview_type: ['', Validators.required], 
-      experience_level: ['', Validators.required], 
+      interview_type: ['', Validators.required],
+      experience_level: ['', Validators.required],
       field: ['', Validators.required],
       interview_time: ['', Validators.required],
-      job_id: ['', Validators.required], 
+      job_id: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
-    this.fetchActiveJobs(); 
+    this.fetchActiveJobs();
   }
 
   fetchActiveJobs(): void {
     this.testService.getActiveJobs().subscribe({
       next: (response) => {
-        this.jobs = response.activeJobs; 
+        this.jobs = response.activeJobs;
       },
       error: (error) => {
         console.error('Error fetching jobs:', error);
@@ -54,17 +54,17 @@ export class CreateTestComponent implements OnInit {
     if (job) {
       this.selectedJob = job;
       this.form.patchValue({
-        interview_type: job.jobTitle,
+        interview_type: "",
         experience_level: job.experience,
         job_id: job._id,
-        field: '',
+        field: job.jobTitle,
       });
     }
   }
-  
 
   generateAIQuestions(): void {
-    if (this.form.valid) {
+    if (this.form.valid && !this.isSubmitting) { // Check if not submitting
+      this.isSubmitting = true; // Set submitting flag
       const formData = this.form.value;
       console.log('Generating AI questions with:', formData);
 
@@ -73,12 +73,14 @@ export class CreateTestComponent implements OnInit {
           alert('AI questions generated successfully!');
           console.log('AI questions:', response);
           this.form.reset();
-          this.selectedJob = null; 
-          this.fetchActiveJobs(); 
+          this.selectedJob = null;
+          this.fetchActiveJobs();
+          this.isSubmitting = false; // Reset the submitting flag
         },
         error: (error: any) => {
           console.error('Error generating AI questions:', error);
           alert('There was an error generating AI questions.');
+          this.isSubmitting = false; // Reset the submitting flag on error
         },
       });
     } else {
@@ -89,6 +91,7 @@ export class CreateTestComponent implements OnInit {
   onClickArrowLeft() {
     this.router.navigateByUrl('technicalinterview');
   }
+
   selectTag(controlName: string, value: string): void {
     this.form.get(controlName)?.setValue(value);
   }

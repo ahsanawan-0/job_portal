@@ -133,12 +133,13 @@
             </li>
           </ul>
         </div>
-
-        <div class="flex gap-[6px] pl-4 py-3 cursor-pointer">
-          <img src="assets/icons/DownloadSimple.svg" />
-
-          <p class="font-medium text-sm text-custom-blue">Download CV</p>
+        <div class="flex gap-[6px] pl-4 py-3 cursor-pointer" (click)="downloadResume(item.resume)" [class.loading]="resumeLoading">
+          <img *ngIf="!resumeLoading" src="assets/icons/DownloadSimple.svg" />
+          <p class="font-medium text-sm text-custom-blue">
+            {{ resumeLoading ? 'Downloading...' : 'Download CV' }}
+          </p>
         </div>
+        
         <div class="flex flex-col items-center justify-center p-2 gap-2">
           <p class="text-sm text-gray-500" *ngIf="!isShortListed(item._id)">
             Click to Short List
@@ -340,7 +341,8 @@
         <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
           <img src="assets/icons/DownloadSimple.svg" />
 
-          <p class="font-medium text-sm text-custom-blue">Download CV</p>
+          <button class="font-medium text-sm text-custom-blue">Download CV</button>
+
         </div>
         <div class="flex flex-col items-center justify-center p-2 gap-2">
           <p class="text-sm text-gray-500" *ngIf="!isHired(item._id)">
