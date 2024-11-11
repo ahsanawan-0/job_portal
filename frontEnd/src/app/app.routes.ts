@@ -30,6 +30,10 @@ import { SettingsComponent } from './Components/settings/settings.component';
 import { loginRedirectGuardGuard } from './services/loginRedirectedGuard/login-redirect-guard.guard';
 import { ReviewFormComponent } from './Components/review-form/review-form.component';
 import { DynamicCreateFormComponent } from './Components/dynamic-create-form/dynamic-create-form.component';
+import { ReviewFormAdminViewComponent } from './Components/review-form-admin-view/review-form-admin-view.component';
+import { ReviewFormViewComponent } from './Components/review-form-view/review-form-view.component';
+import { ReviewFormResultComponent } from './Components/review-form-result/review-form-result.component';
+import { ReviewFormAnswersComponent } from './Components/review-form-answers/review-form-answers.component';
 
 export const routes: Routes = [
   {
@@ -150,9 +154,26 @@ export const routes: Routes = [
         path: 'reviewForm/create',
         component: DynamicCreateFormComponent,
       },
+      {
+        path: 'reviewFormAdminView/:uniqueLinkId',
+        component: ReviewFormAdminViewComponent,
+      },
+      {
+        path: 'reviewFormResults/:uniqueLinkId',
+        component: ReviewFormResultComponent,
+      },
+      {
+        path: 'reviewFormAnswers/:applicantId',
+        component: ReviewFormAnswersComponent,
+      },
     ],
   },
 
+  {
+    path: 'reviewFormViewer/:uniqueLinkId',
+    component: ReviewFormViewComponent,
+    canActivate: [authGuard],
+  },
   {
     path: 'jobdetail/admin/:id',
     component: JobDetailComponent,
@@ -163,7 +184,7 @@ export const routes: Routes = [
     component: LoaderComponent,
   },
   {
-    path: '**', // This wildcard route matches any path that doesn't exist
-    component: NotFoundComponentComponent, // Render the NotFoundComponent
+    path: '**',
+    component: NotFoundComponentComponent,
   },
 ];

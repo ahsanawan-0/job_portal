@@ -23,4 +23,33 @@ export class ReviewFormService {
   createReviewForm(form: any) {
     return this.http.post(`${this.apiUrl}/reviewForm/create`, form);
   }
+
+  updateForm(updateData: any) {
+    return this.http.put(`${this.apiUrl}/reviewForm/update`, updateData);
+  }
+
+  submitReviewForm(uniqueLinkId: string, formData: any) {
+    return this.http.post(
+      `${this.apiUrl}/reviewForm/${uniqueLinkId}`,
+      formData
+    );
+  }
+
+  getApplicantsByFormId(uniqueLinkId: string) {
+    return this.http.get(
+      `${this.apiUrl}/reviewForm/applicants/${uniqueLinkId}`
+    );
+  }
+
+  getApplicantQuestionsAndAnswers(applicantId: string) {
+    return this.http.get(
+      `${this.apiUrl}/reviewForm/applicant-answers/${applicantId}`
+    );
+  }
+
+  deleteReviewFormApplicant(applicantId: string) {
+    return this.http.delete(
+      `${this.apiUrl}/reviewForm/applicant-delete/${applicantId}`
+    );
+  }
 }

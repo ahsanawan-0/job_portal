@@ -62,9 +62,8 @@ export interface QuestionCard {
 export interface FormCard {
   id: string;
   title: string;
-  applicants:string[];
+  applicants: string[];
 }
-
 
 export interface jobCard {
   id: string;
@@ -75,4 +74,11 @@ export interface jobCard {
   applications: number;
   expirationDate: string;
   applicants: string[];
+}
+
+export interface ReviewFormData {
+  _id: string;
+  title: string;
+  questions: Question[];
+  uniqueLinkId: string;
 }

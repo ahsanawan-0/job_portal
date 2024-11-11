@@ -24,6 +24,7 @@ export class DynamicFormComponent {
   @Output() onClickViewResults = new EventEmitter<{ uniqueLinkId: string }>();
   @Output() onClickViewDetail = new EventEmitter<{ uniqueLinkId: string }>();
   @Output() onClickCreateForm = new EventEmitter<string>();
+  @Output() onClickAdmin = new EventEmitter<void>();
 
   dropdownIndex: number | null = null;
   onClickThreeDots(index: number) {

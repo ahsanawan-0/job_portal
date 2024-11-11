@@ -3,6 +3,7 @@ import { Component, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-exit-interview-modal',
@@ -13,6 +14,7 @@ import { Subscription } from 'rxjs';
 })
 export class ExitInterviewModalComponent {
   private subscriptions: Subscription = new Subscription();
+  notification = inject(NotificationService);
 
   public activeModal = inject(NgbActiveModal);
 
@@ -24,10 +26,10 @@ export class ExitInterviewModalComponent {
     navigator.clipboard
       .writeText(this.link)
       .then(() => {
-        alert('Link copied to clipboard!');
+        this.notification.showSuccess('Link copied to clipboard!');
       })
       .catch((err) => {
-        console.error('Failed to copy: ', err);
+        this.notification.showError(err);
       });
   }
 

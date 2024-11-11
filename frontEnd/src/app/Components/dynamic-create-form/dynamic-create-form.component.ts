@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -24,17 +24,25 @@ export class DynamicCreateFormComponent {
   @Output() createReviewForm = new EventEmitter<{
     formData: any;
   }>();
-  @Output() openModal = new EventEmitter<{
-    uniqueLinkId: string;
-    formTitle: string;
-  }>();
+  @Output() openModal = new EventEmitter<{}>();
+  @Output() onClickBack = new EventEmitter<void>();
+
+  @Input() isCreatingForm: boolean = true;
+
+  // onClickBackArrow() {
+  //   this.onClickBack.emit = this.isCreatingForm false;
+  // }
+
+  onClickBackArrow() {
+    this.onClickBack.emit();
+  }
 
   onClickSave(formData: any) {
     this.createReviewForm.emit({ formData });
   }
 
-  onClickLink(uniqueLinkId: string, formTitle: string) {
-    this.openModal.emit({ uniqueLinkId, formTitle });
+  onClickLink() {
+    this.openModal.emit();
   }
 
   form: FormGroup;
@@ -165,7 +173,7 @@ export class DynamicCreateFormComponent {
     const formData = this.form.value;
     console.log('Form Data:', formData);
     this.onClickSave(formData);
-    this.onClickLink(formData.uniqueLinkId, formData.title);
+    this.onClickLink();
     this.form.reset();
   }
 }

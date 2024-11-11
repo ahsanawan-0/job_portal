@@ -1,5 +1,6 @@
 <div class="mt-5">
   <app-dynamic-form
+    *ngIf="!isCreatingForm"
     [forms]="forms"
     [title]="'Review Form'"
     [sectionTitle]="'All Review Form List'"
@@ -9,4 +10,20 @@
     (onClickViewDetail)="onClickViewDetail($event.uniqueLinkId)"
     (onClickCreateForm)="onClickCreateForm()"
   ></app-dynamic-form>
+
+  <app-dynamic-create-form
+    *ngIf="isCreatingForm && !isAdminView"
+    [isCreatingForm]="isCreatingForm"
+    (onClickBack)="onClickBack()"
+    (createReviewForm)="createReviewForm($event.formData)"
+    (openModal)="openModal2()"
+  ></app-dynamic-create-form>
+
+  <app-review-form-admin-view
+    *ngIf="isAdminView && isCreatingForm"
+    [formData]="formData"
+    (updateFormEvent)="updateForm($event)"
+    (onClickBackAdminView)="onClickBackAdminView()"
+  >
+  </app-review-form-admin-view>
 </div>

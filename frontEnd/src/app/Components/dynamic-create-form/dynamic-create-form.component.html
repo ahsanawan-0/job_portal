@@ -3,9 +3,19 @@
   <main class="flex-1 p-5 bg-[#FCFCFC]">
     <div class="w-full">
       <div class="flex justify-between mb-6">
-        <div class="text-2xl text-[#18191C]">Create Exit Interview Form</div>
+        <div class="flex items-center gap-2">
+          <div class="cursor-pointer">
+            <img
+              (click)="onClickBackArrow()"
+              src="assets/icons/fi_arrow-left.svg"
+            />
+          </div>
+          <div class="text-2xl text-[#18191C]">Create Exit Interview Form</div>
+        </div>
+
         <div>
           <button
+            (click)="onClickLink()"
             type="button"
             class="bg-[#0A65CC] text-white flex justify-center gap-4 px-5 py-3 rounded-md"
           >

@@ -201,22 +201,19 @@ module.exports = {
   },
 
   updateForm: async (req, res) => {
-    const { uniqueLinkId } = req.params; // Extract uniqueLinkId from request parameters
-    const updateData = req.body; // Extract update data from request body
+    const { uniqueLinkId } = req.params;
+    const updateData = req.body;
 
     try {
-      // Call the model function to update the form
       const updatedForm = await exitInterviewModel.updateForm(
         uniqueLinkId,
         updateData
       );
 
-      // Handle errors returned from the model function
       if (updatedForm.error) {
         return res.status(404).json({ error: updatedForm.error });
       }
 
-      // Return the updated form in the response
       return res.status(200).json({
         message: "Form updated successfully",
         response: updatedForm,

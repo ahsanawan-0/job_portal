@@ -1,0 +1,132 @@
+<div class="container w-full mt-5 p-5 text-custom-black font-sans">
+  <div class="flex items-center gap-2 mb-4">
+    <img
+      src="assets/icons/fi_arrow-left.svg"
+      (click)="onClickBackArrow()"
+      class="cursor-pointer"
+    />
+
+    <h2 *ngIf="!isEditing" class="text-2xl font-bold">
+      Exit Interview Form: {{ formData.title }}
+    </h2>
+
+    <!-- <button
+      *ngIf="!isEditing"
+      class="bg-custom-blue text-white px-4 py-2 rounded"
+      (click)="openModal()"
+    >
+      Link
+    </button> -->
+  </div>
+  <input
+    *ngIf="isEditing"
+    [(ngModel)]="formData.title"
+    placeholder="Enter form title"
+    class="border border-gray-300 p-2 rounded text-2xl font-bold mb-4"
+  />
+
+  <div *ngFor="let question of formData.questions; let i = index" class="mb-4">
+    <div class="flex flex-col">
+      <div class="flex items-center justify-between mb-2">
+        <label class="font-medium">Question {{ i + 1 }}:</label>
+        <button
+          *ngIf="isEditing"
+          (click)="removeQuestion(i)"
+          class="mt-2 bg-[#E05151] text-white rounded p-2"
+        >
+          Remove Question
+        </button>
+      </div>
+      <input
+        type="text"
+        [(ngModel)]="question.label"
+        [disabled]="!isEditing"
+        placeholder="Enter question label"
+        class="border border-gray-300 p-2 rounded mb-2"
+      />
+
+      <label class="font-medium mt-2 mb-2">Question Type:</label>
+      <select
+        [(ngModel)]="question.type"
+        [disabled]="!isEditing"
+        class="border border-gray-300 p-2 rounded w-1/6"
+      >
+        <option value="text">Text</option>
+        <option value="textarea">Textarea</option>
+        <option value="radio">Radio</option>
+      </select>
+
+      <hr
+        *ngIf="question.type === 'text' || question.type === 'textarea'"
+        class="my-4"
+      />
+
+      <div *ngIf="question.type === 'radio'" class="mt-2">
+        <label class="font-medium">Options:</label>
+        <div
+          *ngFor="
+            let option of question.options;
+            let j = index;
+            trackBy: trackByIndex
+          "
+          class="flex items-center mb-2"
+        >
+          <input
+            type="text"
+            [(ngModel)]="question.options[j]"
+            [disabled]="!isEditing"
+            placeholder="Enter option"
+            class="border border-gray-300 p-2 rounded"
+          />
+
+          <!-- <button
+            *ngIf="isEditing"
+            (click)="removeOption(question.options, j)"
+            class="ml-2 text-red-500"
+          >
+            Remove
+          </button> -->
+          <img
+            *ngIf="isEditing"
+            (click)="removeOption(question.options, j)"
+            src="assets/icons/fi_x-circle.svg"
+            alt=""
+            class="ml-2"
+          />
+        </div>
+        <button
+          *ngIf="isEditing"
+          (click)="addOption(question)"
+          class="text-custom-blue mt-1"
+        >
+          Add Option
+        </button>
+        <hr class="my-4" />
+      </div>
+    </div>
+  </div>
+
+  <button
+    *ngIf="isEditing"
+    (click)="addQuestion()"
+    class="bg-custom-green text-white px-4 py-2 rounded mt-4"
+  >
+    Add Question
+  </button>
+
+  <div class="mt-4">
+    <button
+      (click)="toggleEdit()"
+      class="bg-custom-blue text-white px-4 py-2 rounded"
+    >
+      {{ isEditing ? "Stop Editing" : "Edit Form" }}
+    </button>
+    <button
+      *ngIf="isEditing"
+      (click)="onUpdateClick()"
+      class="bg-custom-blue text-white px-4 py-2 rounded ml-2"
+    >
+      Save Changes
+    </button>
+  </div>
+</div>
