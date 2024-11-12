@@ -1,12 +1,18 @@
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit, inject, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { TextareaComponent } from '../../Components/textarea/textarea.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobApplicationService } from '../../services/job_application/job-application.service';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-apply-job-modal',
@@ -17,6 +23,7 @@ import { JobApplicationService } from '../../services/job_application/job-applic
   providers: [JobApplicationService],
 })
 export class ApplyJobModalComponent implements OnInit, OnDestroy {
+  notification = inject(NotificationService);
   @Input() jobId: string | null = null; // Input property for jobId
   applicationForm: FormGroup;
   private subscriptions: Subscription = new Subscription();
@@ -67,55 +74,70 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   }
 
   // Submit the application
-// Submit the application
-submitApplication(): void {
-  if (this.applicationForm.valid && this.selectedResume) {
-    const formData = this.createFormData();
+  // Submit the application
+  submitApplication(): void {
+    if (this.applicationForm.valid && this.selectedResume) {
+      const formData = this.createFormData();
 
-    // Log the jobId before submission
-    console.log('Submitting application with jobId:', this.jobId);
+      // Log the jobId before submission
+      console.log('Submitting application with jobId:', this.jobId);
 
-    // Check if jobId is defined
-    if (!this.jobId) {
-      this.showErrorAlert('Job ID is missing. Please try again.');
-      return;
+      // Check if jobId is defined
+      if (!this.jobId) {
+        this.notification.showError('Job ID is missing. Please try again.');
+
+        return;
+      }
+
+      this.jobApplicationService
+        .getApplication(formData, this.jobId)
+        .subscribe({
+          next: (response) => {
+            console.log('Application submitted:', response);
+            this.notification.showSuccess(
+              'Thank you for applying. Please check your confirmation email.'
+            );
+            // this.showSuccessAlert();
+            this.resetForm();
+            this.closeModal();
+          },
+          error: (error) => {
+            console.error('Error submitting application:', error.error);
+
+            // Check if the error has the specific message for duplicate email
+            const errorMessage =
+              error.error?.error ||
+              'There was an error submitting your application. Please try again.';
+
+            // If the error message matches your criteria, show the specific message
+            if (errorMessage === 'A user with this email already exists.') {
+              this.notification.showError(
+                'A user with this email already exists. Please use a different email.'
+              );
+            } else {
+              this.notification.showError(errorMessage);
+            }
+          },
+        });
+    } else {
+      this.notification.showError('Please fill out all fields correctly.');
     }
-
-    this.jobApplicationService.getApplication(formData, this.jobId).subscribe({
-      next: (response) => {
-        console.log('Application submitted:', response);
-        this.showSuccessAlert();
-        this.resetForm();
-        this.closeModal();
-      },
-      error: (error) => {
-        console.error('Error submitting application:', error.error);
-        
-        // Check if the error has the specific message for duplicate email
-        const errorMessage = error.error?.error || 'There was an error submitting your application. Please try again.';
-        
-        // If the error message matches your criteria, show the specific message
-        if (errorMessage === 'A user with this email already exists.') {
-          this.showErrorAlert('A user with this email already exists. Please use a different email.');
-        } else {
-          this.showErrorAlert(errorMessage); // Show the specific error message
-        }
-      },
-    });
-  } else {
-    this.showErrorAlert('Please fill out all fields correctly.');
   }
-}
-
 
   // Create FormData object
   private createFormData(): FormData {
     const formData = new FormData();
     formData.append('name', this.applicationForm.get('name')?.value);
     formData.append('email', this.applicationForm.get('email')?.value);
-    formData.append('experience', this.applicationForm.get('experience')?.value);
+    formData.append(
+      'experience',
+      this.applicationForm.get('experience')?.value
+    );
     formData.append('resume', this.selectedResume!, this.selectedResume!.name); // Add the file with its name
-    formData.append('coverLetter', this.applicationForm.get('coverLetter')?.value);
+    formData.append(
+      'coverLetter',
+      this.applicationForm.get('coverLetter')?.value
+    );
     formData.append('jobId', this.jobId!); // Include jobId in the FormData
     return formData;
   }

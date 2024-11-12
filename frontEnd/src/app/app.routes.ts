@@ -102,10 +102,6 @@ export const routes: Routes = [
       },
 
       {
-        path: 'test',
-        component: TestComponent,
-      },
-      {
         path: 'questionCard',
         component: QuestionCardComponent,
       },
@@ -167,6 +163,11 @@ export const routes: Routes = [
         component: ReviewFormAnswersComponent,
       },
     ],
+  },
+  {
+    path: 'test',
+    component: TestComponent,
+    canActivate: [authGuard],
   },
 
   {

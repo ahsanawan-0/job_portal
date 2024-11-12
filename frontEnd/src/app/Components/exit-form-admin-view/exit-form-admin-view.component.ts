@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
+import { NotificationService } from '../../services/notification/notification.service';
 interface Question {
   label: string;
   type: string;
@@ -29,6 +30,7 @@ export class ExitFormAdminViewComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   uniqueLinkId: string = '';
   modalService = inject(NgbModal);
+  notification = inject(NotificationService);
 
   extractUniqueLinkIdId(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -54,7 +56,7 @@ export class ExitFormAdminViewComponent implements OnInit {
     this.service
       .updateForm(this.uniqueLinkId, this.formData)
       .subscribe((res: any) => {
-        alert('form updated');
+        this.notification.showSuccess(res.message);
       });
   }
   isEditing: boolean = false;

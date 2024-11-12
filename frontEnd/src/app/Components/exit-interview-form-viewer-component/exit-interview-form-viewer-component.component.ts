@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service'; // Adjust the path as needed
 import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 import { Observable } from 'rxjs';
+import { NotificationService } from '../../services/notification/notification.service';
 
 interface ExitInterviewForm {
   title: string;
@@ -33,6 +34,7 @@ interface Question {
   styleUrls: ['./exit-interview-form-viewer-component.component.css'],
 })
 export class ExitInterviewFormViewerComponent implements OnInit {
+  notification = inject(NotificationService);
   form: FormGroup;
   exitInterviewForm?: ExitInterviewForm;
   isLoading: boolean = true;
@@ -100,7 +102,8 @@ export class ExitInterviewFormViewerComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.invalid) {
-      alert('Please answer all required questions.');
+      this.notification.showError('Please answer all required questions.');
+
       return;
     }
 
@@ -111,7 +114,10 @@ export class ExitInterviewFormViewerComponent implements OnInit {
 
     if (!this.exitInterviewForm) {
       console.error('Exit interview form is not available.');
-      alert('The form is not available at this time. Please try again later.');
+      this.notification.showError(
+        'The form is not available at this time. Please try again later.'
+      );
+
       return;
     }
     const responses = this.exitInterviewForm.questions.map(
@@ -132,13 +138,16 @@ export class ExitInterviewFormViewerComponent implements OnInit {
       .submitExitInterview(uniqueLinkId, payload)
       .subscribe({
         next: (response: any) => {
-          alert('Your responses have been submitted successfully!');
+          this.notification.showSuccess(
+            'Your responses have been submitted successfully!'
+          );
+
           console.log('Form submitted successfully:', response);
           this.form.reset();
         },
         error: (error: any) => {
           console.error('Error submitting form:', error);
-          alert(
+          this.notification.showError(
             'There was an error submitting your responses. Please try again.'
           );
         },

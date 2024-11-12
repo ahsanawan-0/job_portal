@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms'; // Required for Reactive Forms
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExitInterviewModalComponent } from '../../modals/exit-interview-modal/exit-interview-modal.component';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-exit-interview-form',
@@ -24,6 +25,7 @@ import { ExitInterviewService } from '../../services/exit_interview/exit-intervi
   styleUrls: ['./exit-interview-form.component.css'],
 })
 export class ExitInterviewFormComponent implements OnInit {
+  notification = inject(NotificationService);
   form: FormGroup;
   maxOptions: number = 5; // Maximum allowed options for radio questions
   private modalService = inject(NgbModal);
@@ -76,7 +78,10 @@ export class ExitInterviewFormComponent implements OnInit {
 
     // Validate minimum number of radio options
     if (questionType === 'radio' && radioOptionsCount < 2) {
-      alert('Radio questions must have at least 2 options.');
+      this.notification.showError(
+        'Radio questions must have at least 2 options.'
+      );
+
       return;
     }
 
@@ -124,7 +129,10 @@ export class ExitInterviewFormComponent implements OnInit {
   addOption(questionIndex: number): void {
     const options = this.getOptions(questionIndex);
     if (options.length >= this.maxOptions) {
-      alert(`Maximum of ${this.maxOptions} options allowed.`);
+      this.notification.showError(
+        `Maximum of ${this.maxOptions} options allowed.`
+      );
+
       return;
     }
     options.push(this.fb.control('', Validators.required));
@@ -140,15 +148,18 @@ export class ExitInterviewFormComponent implements OnInit {
         `Removed Option ${optionIndex + 1} from Question ${questionIndex + 1}`
       );
     } else {
-      alert('Radio questions must have at least 2 options.');
+      this.notification.showError(
+        'Radio questions must have at least 2 options.'
+      );
     }
   }
 
   saveForm(): void {
     if (this.form.invalid) {
-      alert(
+      this.notification.showError(
         'Please fill all required fields and ensure all radio options are unique.'
       );
+
       return;
     }
 
@@ -157,7 +168,8 @@ export class ExitInterviewFormComponent implements OnInit {
 
     this.exitInterviewService.createForm(formData).subscribe({
       next: (response: any) => {
-        alert('Form created successfully!');
+        this.notification.showSuccess('Form created successfully!');
+
         console.log('Form created:', response);
 
         // Generate a dynamic link using the form ID
@@ -170,7 +182,7 @@ export class ExitInterviewFormComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error creating form:', error);
-        alert('There was an error creating the form.');
+        this.notification.showError('There was an error creating the form.');
       },
     });
   }

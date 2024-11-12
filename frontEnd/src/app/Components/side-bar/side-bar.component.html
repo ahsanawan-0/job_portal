@@ -7,236 +7,36 @@
         DASHBOARD
       </p>
     </div>
+
     <div class="flex-col">
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="dashboard"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isOverviewSelected,
-          'bg-transparent': !isOverviewSelected
-        }"
-        (click)="selectOverview()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isOverviewSelected"
-        />
-
-        <img
-          [src]="
-            isOverviewSelected
-              ? 'assets/icons/BlueStack.svg'
-              : 'assets/icons/GreyStack.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
+      <ng-container *ngFor="let item of sideBarItems">
+        <div
+          class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+          [routerLink]="item.route"
           [ngClass]="{
-            'text-custom-blue': isOverviewSelected,
-            'text-[#767F8C]': !isOverviewSelected
+            'bg-[#E7F0FA]': selectedRoute === item.route,
+            'bg-transparent': selectedRoute !== item.route
           }"
+          (click)="selectRoute(item.route)"
         >
-          Overview
-        </p>
-      </div>
-
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="myjobs"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isMyJobsSelected,
-          'bg-transparent': !isMyJobsSelected
-        }"
-        (click)="selectMyJobs()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isMyJobsSelected"
-        />
-
-        <img
-          [src]="
-            isMyJobsSelected
-              ? 'assets/icons/BriefcaseBlue.svg'
-              : 'assets/icons/Briefcase.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
-          [ngClass]="{
-            'text-custom-blue': isMyJobsSelected,
-            'text-[#767F8C]': !isMyJobsSelected
-          }"
-        >
-          My Jobs
-        </p>
-      </div>
-
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="hiredCandidate"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isHiredCandidateSelected,
-          'bg-transparent': !isHiredCandidateSelected
-        }"
-        (click)="selectHiredCandidate()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isHiredCandidateSelected"
-        />
-
-        <img
-          [src]="
-            isHiredCandidateSelected
-              ? 'assets/icons/BookmarkSimpleBlue.svg'
-              : 'assets/icons/BookmarkSimple.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
-          [ngClass]="{
-            'text-custom-blue': isHiredCandidateSelected,
-            'text-[#767F8C]': !isHiredCandidateSelected
-          }"
-        >
-          Hired Candidate
-        </p>
-      </div>
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="technicalinterview"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isTechnicalInterviewSelected,
-          'bg-transparent': !isTechnicalInterviewSelected
-        }"
-        (click)="selectTechnicalInterview()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isTechnicalInterviewSelected"
-        />
-
-        <img
-          [src]="
-            isTechnicalInterviewSelected
-              ? 'assets/icons/UserCircleGearBlue.svg'
-              : 'assets/icons/UserCircleGear.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
-          [ngClass]="{
-            'text-custom-blue': isTechnicalInterviewSelected,
-            'text-[#767F8C]': !isTechnicalInterviewSelected
-          }"
-        >
-          Technical Interview
-        </p>
-      </div>
-
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="exitinterview"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isExitInterviewSelected,
-          'bg-transparent': !isExitInterviewSelected
-        }"
-        (click)="selectExitInterview()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isExitInterviewSelected"
-        />
-
-        <img
-          [src]="
-            isExitInterviewSelected
-              ? 'assets/icons/UserCircleMinusBlue.svg'
-              : 'assets/icons/UserCircleMinus.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
-          [ngClass]="{
-            'text-custom-blue': isExitInterviewSelected,
-            'text-[#767F8C]': !isExitInterviewSelected
-          }"
-        >
-          Exit Interview
-        </p>
-      </div>
-
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="reviewForm"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isReviewFormSelected,
-          'bg-transparent': !isReviewFormSelected
-        }"
-        (click)="selectReviewForm()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isReviewFormSelected"
-        />
-
-        <img
-          [src]="
-            isReviewFormSelected
-              ? 'assets/icons/NoteBlue.svg'
-              : 'assets/icons/Note.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
-          [ngClass]="{
-            'text-custom-blue': isReviewFormSelected,
-            'text-[#767F8C]': !isReviewFormSelected
-          }"
-        >
-          Review Form
-        </p>
-      </div>
-
-      <div
-        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
-        routerLink="settings"
-        [ngClass]="{
-          'bg-[#E7F0FA]': isSettingsSelected,
-          'bg-transparent': !isSettingsSelected
-        }"
-        (click)="selectSettings()"
-      >
-        <hr
-          class="absolute left-0 h-full w-[4px] bg-custom-blue"
-          *ngIf="isSettingsSelected"
-        />
-
-        <img
-          [src]="
-            isSettingsSelected
-              ? 'assets/icons/GearBlue.svg'
-              : 'assets/icons/Gear.svg'
-          "
-        />
-
-        <p
-          class="font-[500] font-sans text-[14px] leading-[20px]"
-          [ngClass]="{
-            'text-custom-blue': isSettingsSelected,
-            'text-[#767F8C]': !isSettingsSelected
-          }"
-        >
-          Settings
-        </p>
-      </div>
+          <hr
+            class="absolute left-0 h-full w-[4px] bg-custom-blue"
+            *ngIf="selectedRoute === item.route"
+          />
+          <img
+            [src]="selectedRoute === item.route ? item.iconSelected : item.icon"
+          />
+          <p
+            class="font-[500] font-sans text-[14px] leading-[20px]"
+            [ngClass]="{
+              'text-custom-blue': selectedRoute === item.route,
+              'text-[#767F8C]': selectedRoute !== item.route
+            }"
+          >
+            {{ item.label }}
+          </p>
+        </div>
+      </ng-container>
     </div>
   </div>
 

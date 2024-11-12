@@ -1,12 +1,9 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { alert, notice } from '@pnotify/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobApplicationService } from '../../services/job_application/job-application.service';
 import { CapitalizeWordsPipe } from '../../Pipes/capitalize-words.pipe';
-import { success, error } from '@pnotify/core';
-import '@pnotify/core/dist/PNotify.css';
-import '@pnotify/core/dist/BrightTheme.css';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-job-applications',
@@ -16,6 +13,7 @@ import '@pnotify/core/dist/BrightTheme.css';
   styleUrl: './job-applications.component.css',
 })
 export class JobApplicationsComponent implements OnInit {
+  notification = inject(NotificationService);
   route = inject(Router);
   onClickArrowLeft() {
     this.route.navigateByUrl('myjobs');
@@ -47,7 +45,6 @@ export class JobApplicationsComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
       this.jobId = params.get('id');
-      console.log(this.jobId);
     });
     this.getApplicantsForJob();
     this.getAllShortListedApplicants();
@@ -74,11 +71,7 @@ export class JobApplicationsComponent implements OnInit {
       .createShortlistedApplicant(this.jobId, applicantId)
       .subscribe((res: any) => {
         this.shortListed = res.response;
-        success({
-          text: 'Applicant is ShortListed!',
-          delay: 3000,
-          width: '300px',
-        });
+        this.notification.showSuccess('Applicant is ShortListed!');
       });
     this.getApplicantsForJob();
     this.getAllShortListedApplicants();
@@ -129,11 +122,7 @@ export class JobApplicationsComponent implements OnInit {
       .createTestInvitedApplicantsForJob(this.jobId, applicantId)
       .subscribe((res: any) => {
         this.testInvited = res.response;
-        success({
-          text: 'Applicant is Invited For Test!',
-          delay: 3000,
-          width: '300px',
-        });
+        this.notification.showSuccess('Applicant is Invited For Test!');
       });
     this.getApplicantsForJob();
     this.getAllTestInvitedApplicants();
@@ -169,11 +158,7 @@ export class JobApplicationsComponent implements OnInit {
       .createHiredApplicantsForJob(this.jobId, applicantId)
       .subscribe((res: any) => {
         this.hiredApplicant = res.response;
-        success({
-          text: 'Applicant is Hired!',
-          delay: 3000,
-          width: '300px',
-        });
+        this.notification.showSuccess('Applicant is Hired!');
       });
     this.getApplicantsForJob();
     this.getAllHiredApplicants();

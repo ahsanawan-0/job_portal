@@ -1,80 +1,253 @@
 <div
-  class="grid grid-cols-5 bg-[#F1F2F4] py-[10px] px-5 rounded-[4px] items-center text-[#474C54]"
+  class="flex flex-col justify-between shadow-[inset_-1px_0_0_0_#E4E5E8] bg-white py-8 h-[calc(100vh-76px-72px)] border border-black;"
 >
-  <div class="col-span-2">
-    <p class="font-sans font-normal text-[12px] leading-[18px]">JOBS</p>
-  </div>
-  <div class="font-sans font-normal text-[12px] leading-[18px]">STATUS</div>
-  <div class="font-sans font-normal text-[12px] leading-[18px]">
-    APPLICATONS
-  </div>
-  <div class="font-sans font-normal text-[12px] leading-[18px]">ACTIONS</div>
-</div>
-
-<div
-  class="grid grid-cols-5 pr-2 bg-[#fcfcfc] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg shadow-[inset_0_-1px_0_0_#E4E5E8]"
->
-  <div class="flex flex-col gap-[8px] col-span-2 pl-5 py-5">
-    <p class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]">
-      UI/UI Designer
-    </p>
-    <div
-      class="text-custom-gray font-sans font-normal text-[12px] leading-[20px] flex gap-[10px] items-center"
-    >
-      <p>Full Time</p>
-
-      <p class="mb-3 text-[23px]">.</p>
-
-      <p>27 days remaining</p>
+  <div class="flex flex-col">
+    <div class="mx-[20px] mb-[12px]">
+      <p class="text-[#9199A3] font-sans font-[500] text-[12px] leading-[18px]">
+        DASHBOARD
+      </p>
     </div>
+
+    <!-- <div class="flex-col">
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="dashboard"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isOverviewSelected,
+          'bg-transparent': !isOverviewSelected
+        }"
+        (click)="selectOverview()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isOverviewSelected"
+        />
+
+        <img
+          [src]="
+            isOverviewSelected
+              ? 'assets/icons/BlueStack.svg'
+              : 'assets/icons/GreyStack.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isOverviewSelected,
+            'text-[#767F8C]': !isOverviewSelected
+          }"
+        >
+          Overview
+        </p>
+      </div>
+
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="myjobs"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isMyJobsSelected,
+          'bg-transparent': !isMyJobsSelected
+        }"
+        (click)="selectMyJobs()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isMyJobsSelected"
+        />
+
+        <img
+          [src]="
+            isMyJobsSelected
+              ? 'assets/icons/BriefcaseBlue.svg'
+              : 'assets/icons/Briefcase.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isMyJobsSelected,
+            'text-[#767F8C]': !isMyJobsSelected
+          }"
+        >
+          My Jobs
+        </p>
+      </div>
+
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="hiredCandidate"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isHiredCandidateSelected,
+          'bg-transparent': !isHiredCandidateSelected
+        }"
+        (click)="selectHiredCandidate()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isHiredCandidateSelected"
+        />
+
+        <img
+          [src]="
+            isHiredCandidateSelected
+              ? 'assets/icons/BookmarkSimpleBlue.svg'
+              : 'assets/icons/BookmarkSimple.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isHiredCandidateSelected,
+            'text-[#767F8C]': !isHiredCandidateSelected
+          }"
+        >
+          Hired Candidate
+        </p>
+      </div>
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="technicalinterview"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isTechnicalInterviewSelected,
+          'bg-transparent': !isTechnicalInterviewSelected
+        }"
+        (click)="selectTechnicalInterview()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isTechnicalInterviewSelected"
+        />
+
+        <img
+          [src]="
+            isTechnicalInterviewSelected
+              ? 'assets/icons/UserCircleGearBlue.svg'
+              : 'assets/icons/UserCircleGear.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isTechnicalInterviewSelected,
+            'text-[#767F8C]': !isTechnicalInterviewSelected
+          }"
+        >
+          Technical Interview
+        </p>
+      </div>
+
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="exitinterview"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isExitInterviewSelected,
+          'bg-transparent': !isExitInterviewSelected
+        }"
+        (click)="selectExitInterview()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isExitInterviewSelected"
+        />
+
+        <img
+          [src]="
+            isExitInterviewSelected
+              ? 'assets/icons/UserCircleMinusBlue.svg'
+              : 'assets/icons/UserCircleMinus.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isExitInterviewSelected,
+            'text-[#767F8C]': !isExitInterviewSelected
+          }"
+        >
+          Exit Interview
+        </p>
+      </div>
+
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="reviewForm"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isReviewFormSelected,
+          'bg-transparent': !isReviewFormSelected
+        }"
+        (click)="selectReviewForm()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isReviewFormSelected"
+        />
+
+        <img
+          [src]="
+            isReviewFormSelected
+              ? 'assets/icons/NoteBlue.svg'
+              : 'assets/icons/Note.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isReviewFormSelected,
+            'text-[#767F8C]': !isReviewFormSelected
+          }"
+        >
+          Review Form
+        </p>
+      </div>
+
+      <div
+        class="flex items-center space-x-4 pl-[20px] py-[10px] relative cursor-pointer"
+        routerLink="settings"
+        [ngClass]="{
+          'bg-[#E7F0FA]': isSettingsSelected,
+          'bg-transparent': !isSettingsSelected
+        }"
+        (click)="selectSettings()"
+      >
+        <hr
+          class="absolute left-0 h-full w-[4px] bg-custom-blue"
+          *ngIf="isSettingsSelected"
+        />
+
+        <img
+          [src]="
+            isSettingsSelected
+              ? 'assets/icons/GearBlue.svg'
+              : 'assets/icons/Gear.svg'
+          "
+        />
+
+        <p
+          class="font-[500] font-sans text-[14px] leading-[20px]"
+          [ngClass]="{
+            'text-custom-blue': isSettingsSelected,
+            'text-[#767F8C]': !isSettingsSelected
+          }"
+        >
+          Settings
+        </p>
+      </div>
+    </div> -->
   </div>
-  <div class="flex gap-[4px] items-center">
-    <img src="assets/icons/CheckCircle.svg" class="w-5 h-5" />
-    <p
-      class="font-sans font-medium text-[14px] leading-[20px] text-custom-green"
-    >
-      Active
+
+  <div
+    class="flex items-center space-x-4 pl-[20px] py-[10px] mt-24 cursor-pointer"
+    (click)="logout()"
+  >
+    <img src="assets/icons/SignOut.svg" />
+    <p class="font-[500] font-sans text-[14px] leading-[20px] text-[#767F8C]">
+      Log-Out
     </p>
-  </div>
-  <div class="flex gap-2 items-center">
-    <img src="assets/icons/Users.svg" />
-    <p class="font-sans font-normal text-[14px] leading-[20px] text-[#5E6670]">
-      798 Applications
-    </p>
-  </div>
-  <div class="flex justify-center items-center gap-2 relative">
-    <button
-      class="font-sans font-semibold text-base py-3 px-6 whitespace-nowrap text-custom-blue bg-[#F1F2F4] cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
-    >
-      View Applications
-    </button>
-    <img
-      src="assets/icons/DotsThreeVertical.svg"
-      (click)="onClickThreeDots()"
-      class="cursor-pointer w-6 h-6"
-    />
-    <div
-      *ngIf="dropdown"
-      class="absolute bg-white shadow-md rounded-md mt-14 ml-10 py-3 border"
-    >
-      <ul class="list-none py-2 pl-2 pr-7">
-        <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-          <div class="flex gap-2">
-            <img src="assets/icons/Eye.svg" />
-            <p class="font-sans font-medium text-sm text-[#5E6670]">
-              View Detail
-            </p>
-          </div>
-        </li>
-        <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-          <div class="flex gap-2">
-            <img src="assets/icons/XCircle.svg" />
-            <p class="font-sans font-normal text-sm text-[#5E6670]">
-              Mark as expired
-            </p>
-          </div>
-        </li>
-      </ul>
-    </div>
   </div>
 </div>

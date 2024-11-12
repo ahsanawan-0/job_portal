@@ -12,8 +12,11 @@
 </div>
 
 <div
-  *ngFor="let job of jobs; let i = index"
-  class="grid grid-cols-5 pr-2 bg-[#fcfcfc] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg shadow-[inset_0_-1px_0_0_#E4E5E8]"
+  *ngFor="let job of jobs; let i = index; let isLast = last"
+  class="grid grid-cols-5 pr-2 bg-[#fcfcfc] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg"
+  [ngClass]="{
+    'shadow-[inset_0_-1px_0_0_#E4E5E8]': !isLast
+  }"
 >
   <div class="flex flex-col gap-[8px] col-span-2 pl-5 py-5">
     <p class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]">
@@ -54,18 +57,25 @@
       {{ job.applications }} Applications
     </p>
   </div>
-  <div class="pr-2 flex justify-center items-center gap-1 relative">
+  <div class="mr-2 flex justify-center items-center gap-1 relative">
     <button
       (click)="onClickViewApplication(job.id)"
       class="font-sans font-semibold text-base py-3 px-6 whitespace-nowrap text-custom-blue bg-[#F1F2F4] cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
     >
       View Applications
     </button>
+
     <img
-      src="assets/icons/DotsThreeVertical.svg"
       (click)="onClickThreeDots(i)"
-      class="cursor-pointer w-6 h-6"
+      [src]="
+        dropdownIndex === i
+          ? 'assets/icons/DotsThreeVerticalBlack.svg'
+          : 'assets/icons/DotsThreeVertical.svg'
+      "
+      class="py-3 px-1 cursor-pointer"
+      [ngClass]="{ 'bg-[#F1F2F4]': dropdownIndex === i }"
     />
+
     <div
       *ngIf="dropdownIndex === i"
       class="absolute bg-white shadow-md rounded-md py-3 border z-10 top-20"

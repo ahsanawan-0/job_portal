@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  OnInit,
+  Input,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +19,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-dynamic-create-form',
@@ -45,13 +53,12 @@ export class DynamicCreateFormComponent {
     this.openModal.emit();
   }
 
-  form: FormGroup;
-  maxOptions: number = 5; // Maximum allowed options for radio questions
+  notification = inject(NotificationService);
 
-  dynamicLink: string = ''; // Define the dynamicLink property
+  form: FormGroup;
+  maxOptions: number = 5;
 
   constructor(private fb: FormBuilder) {
-    // Initialize the main form with 'title', 'questions', 'newQuestionType', and 'newRadioOptionsCount'
     this.form = this.fb.group({
       title: ['', Validators.required],
       questions: this.fb.array([]),
@@ -94,7 +101,10 @@ export class DynamicCreateFormComponent {
 
     // Validate minimum number of radio options
     if (questionType === 'radio' && radioOptionsCount < 2) {
-      alert('Radio questions must have at least 2 options.');
+      this.notification.showError(
+        'Radio questions must have at least 2 options.'
+      );
+
       return;
     }
 
@@ -142,7 +152,10 @@ export class DynamicCreateFormComponent {
   addOption(questionIndex: number): void {
     const options = this.getOptions(questionIndex);
     if (options.length >= this.maxOptions) {
-      alert(`Maximum of ${this.maxOptions} options allowed.`);
+      this.notification.showError(
+        `Maximum of ${this.maxOptions} options allowed`
+      );
+
       return;
     }
     options.push(this.fb.control('', Validators.required));
@@ -158,15 +171,18 @@ export class DynamicCreateFormComponent {
         `Removed Option ${optionIndex + 1} from Question ${questionIndex + 1}`
       );
     } else {
-      alert('Radio questions must have at least 2 options.');
+      this.notification.showError(
+        'Radio questions must have at least 2 options.'
+      );
     }
   }
 
   saveForm(): void {
     if (this.form.invalid) {
-      alert(
+      this.notification.showError(
         'Please fill all required fields and ensure all radio options are unique.'
       );
+
       return;
     }
 

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../services/notification/notification.service';
 
@@ -12,84 +12,7 @@ import { NotificationService } from '../../services/notification/notification.se
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.css',
 })
-export class SideBarComponent {
-  isOverviewSelected: boolean = false;
-  isMyJobsSelected: boolean = false;
-  isExitInterviewSelected: boolean = false;
-  isHiredCandidateSelected: boolean = false;
-  isSettingsSelected: boolean = false;
-  isTechnicalInterviewSelected: boolean = false;
-  isReviewFormSelected: Boolean = false;
-
-  selectOverview() {
-    this.isOverviewSelected = true;
-    this.isMyJobsSelected = false;
-    this.isExitInterviewSelected = false;
-    this.isHiredCandidateSelected = false;
-    this.isSettingsSelected = false;
-    this.isTechnicalInterviewSelected = false;
-    this.isReviewFormSelected = false;
-  }
-
-  selectMyJobs() {
-    this.isMyJobsSelected = true;
-    this.isOverviewSelected = false;
-    this.isExitInterviewSelected = false;
-    this.isHiredCandidateSelected = false;
-    this.isSettingsSelected = false;
-    this.isTechnicalInterviewSelected = false;
-    this.isReviewFormSelected = false;
-  }
-
-  selectExitInterview() {
-    this.isExitInterviewSelected = true;
-    this.isMyJobsSelected = false;
-    this.isTechnicalInterviewSelected = false;
-    this.isOverviewSelected = false;
-    this.isHiredCandidateSelected = false;
-    this.isSettingsSelected = false;
-    this.isReviewFormSelected = false;
-  }
-  selectTechnicalInterview() {
-    this.isExitInterviewSelected = false;
-    this.isMyJobsSelected = false;
-    this.isTechnicalInterviewSelected = true;
-    this.isOverviewSelected = false;
-    this.isHiredCandidateSelected = false;
-    this.isSettingsSelected = false;
-    this.isReviewFormSelected = false;
-  }
-
-  selectHiredCandidate() {
-    this.isHiredCandidateSelected = true;
-    this.isExitInterviewSelected = false;
-    this.isMyJobsSelected = false;
-    this.isOverviewSelected = false;
-    this.isSettingsSelected = false;
-    this.isTechnicalInterviewSelected = false;
-    this.isReviewFormSelected = false;
-  }
-
-  selectSettings() {
-    this.isSettingsSelected = true;
-    this.isHiredCandidateSelected = false;
-    this.isExitInterviewSelected = false;
-    this.isMyJobsSelected = false;
-    this.isOverviewSelected = false;
-    this.isTechnicalInterviewSelected = false;
-    this.isReviewFormSelected = false;
-  }
-
-  selectReviewForm() {
-    this.isReviewFormSelected = true;
-    this.isSettingsSelected = false;
-    this.isHiredCandidateSelected = false;
-    this.isExitInterviewSelected = false;
-    this.isMyJobsSelected = false;
-    this.isOverviewSelected = false;
-    this.isTechnicalInterviewSelected = false;
-  }
-
+export class SideBarComponent implements OnInit {
   route = inject(Router);
   notifictaion = inject(NotificationService);
   service = inject(AuthService);
@@ -104,5 +27,80 @@ export class SideBarComponent {
         console.error('Logout failed:', error);
       }
     );
+  }
+
+  selectedRoute: string = '';
+  sideBarItems = [
+    {
+      route: '/dashboard',
+      label: 'Overview',
+      icon: 'assets/icons/GreyStack.svg',
+      iconSelected: 'assets/icons/BlueStack.svg',
+    },
+    {
+      route: '/myjobs',
+      label: 'My Jobs',
+      icon: 'assets/icons/Briefcase.svg',
+      iconSelected: 'assets/icons/BriefcaseBlue.svg',
+    },
+    {
+      route: '/hiredCandidate',
+      label: 'Hired Candidate',
+      icon: 'assets/icons/BookmarkSimple.svg',
+      iconSelected: 'assets/icons/BookmarkSimpleBlue.svg',
+    },
+    {
+      route: '/technicalinterview',
+      label: 'Technical Interview',
+      icon: 'assets/icons/UserCircleGear.svg',
+      iconSelected: 'assets/icons/UserCircleGearBlue.svg',
+    },
+    {
+      route: '/exitinterview',
+      label: 'Exit Interview',
+      icon: 'assets/icons/UserCircleMinus.svg',
+      iconSelected: 'assets/icons/UserCircleMinusBlue.svg',
+    },
+    {
+      route: '/reviewForm',
+      label: 'Review Form',
+      icon: 'assets/icons/Note.svg',
+      iconSelected: 'assets/icons/NoteBlue.svg',
+    },
+    {
+      route: '/settings',
+      label: 'Settings',
+      icon: 'assets/icons/Gear.svg',
+      iconSelected: 'assets/icons/GearBlue.svg',
+    },
+  ];
+
+  router = inject(Router);
+  notification = inject(NotificationService);
+  authService = inject(AuthService);
+
+  constructor() {
+    this.route.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.setSelectedRoute();
+      });
+  }
+
+  ngOnInit(): void {
+    // this.selectedRoute = this.router.url.split('/')[1] || 'dashboard';
+    this.setSelectedRoute();
+  }
+
+  setSelectedRoute() {
+    const currentPath = this.route.url;
+    const matchingItem = this.sideBarItems.find((item) =>
+      currentPath.startsWith(item.route)
+    );
+    this.selectedRoute = matchingItem ? matchingItem.route : '';
+  }
+
+  selectRoute(route: string) {
+    this.selectedRoute = route;
   }
 }
