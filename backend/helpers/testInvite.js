@@ -44,5 +44,5 @@ const sendTestInviteEmail = async (applicant, jobTitle, testLink) => {
   };
 
 module.exports = {
-  sendTestInviteEmail // New function for test invitations
+  sendTestInviteEmail 
 };
