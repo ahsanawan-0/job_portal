@@ -243,28 +243,21 @@
         </div>
         <div class="flex flex-col justify-center items-center p-2 gap-2">
           <p class="text-sm text-gray-500" *ngIf="!isTestInvited(item._id)">
-            Click to invite for a test
+            Click to select tests
           </p>
           <button
-            (click)="createShortListedApplicantsForJob(item._id)"
-            [disabled]="isJobExpired() || isTestInvited(item._id)"
-            [ngClass]="{
-              'bg-gray-400 text-white': isJobExpired(),
-              'bg-green-500 cursor-pointer ':
-                !isJobExpired() && isTestInvited(item._id),
-              'bg-blue-500 text-white cursor-pointer':
-                !isJobExpired() && !isTestInvited(item._id)
-            }"
-            class="px-4 py-2 rounded-md cursor-pointer"
-          >
-            {{
-              isJobExpired()
-                ? "Job Expired"
-                : isTestInvited(item._id)
-                ? "Already Invited"
-                : "Invite For Test"
-            }}
-          </button>
+          [disabled]="isJobExpired() || isTestInvited(item._id)"
+          [ngClass]="{
+            'bg-gray-400 text-white': isJobExpired(),
+            'bg-green-500 cursor-pointer': !isJobExpired() && isTestInvited(item._id),
+            'bg-blue-500 text-white cursor-pointer': !isJobExpired() && !isTestInvited(item._id)
+          }"
+          class="px-4 py-2 rounded-md cursor-pointer"
+          (click)="openTestSelectionModal(item._id)"
+        >
+        Select Test
+        </button>
+        
         </div>
       </div>
     </div>
@@ -339,10 +332,14 @@
         </div>
 
         <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
-          <img src="assets/icons/DownloadSimple.svg" />
+          <!-- <img src="assets/icons/DownloadSimple.svg" /> -->
 
-          <button class="font-medium text-sm text-custom-blue">Download CV</button>
-
+          <div class="flex gap-[6px] pl-4 py-3 cursor-pointer" (click)="downloadResume(item.resume)" [class.loading]="resumeLoading">
+            <img *ngIf="!resumeLoading" src="assets/icons/DownloadSimple.svg" />
+            <p class="font-medium text-sm text-custom-blue">
+              {{ resumeLoading ? 'Downloading...' : 'Download CV' }}
+            </p>
+          </div>
         </div>
         <div class="flex flex-col items-center justify-center p-2 gap-2">
           <p class="text-sm text-gray-500" *ngIf="!isHired(item._id)">
@@ -444,8 +441,12 @@
         <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
           <img src="assets/icons/DownloadSimple.svg" />
 
-          <p class="font-medium text-sm text-custom-blue">Download CV</p>
-        </div>
+          <div class="flex gap-[6px] pl-4 py-3 cursor-pointer" (click)="downloadResume(item.resume)" [class.loading]="resumeLoading">
+            <img *ngIf="!resumeLoading" src="assets/icons/DownloadSimple.svg" />
+            <p class="font-medium text-sm text-custom-blue">
+              {{ resumeLoading ? 'Downloading...' : 'Download CV' }}
+            </p>
+          </div>        </div>
         <!-- <div class="flex justify-center p-2 gap-2 cursor-pointer">
           <img src="assets/icons/tick.svg" />
           <img src="assets/icons/Cross.svg" />

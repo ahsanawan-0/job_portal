@@ -12,6 +12,7 @@ const {
   getAllTestInvitedApplicants,
   createHiredApplicantsForJob,
   getAllHiredApplicants,
+  getApplicantById
 } = require("../controller/applicantsController");
 const { getFileById } = require('../helpers/getApplicantData'); // Adjust the path
 
@@ -45,5 +46,6 @@ router.post("/jobs/:jobId/testInvite", createTestInvitedApplicantsForJob);
 router.get("/getAllTestInvitedApplicants/:jobId", getAllTestInvitedApplicants);
 router.post("/jobs/:jobId/hiredApplicant", createHiredApplicantsForJob);
 router.get("/getAllHiredApplicants/:jobId", getAllHiredApplicants);
+router.get('/applicant', getApplicantById);
 
 module.exports = router;

@@ -13,11 +13,11 @@ const TestSchema = new mongoose.Schema({
     duration: { type: Number, required: true },
     evaluations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Evaluation' }] ,
     applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Applicants', default: [] }], 
-    generatedQuestions_id: { 
+    generatedQuestions_id: [{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Question',
         required: true, 
-    },
+    }],
     job_id: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Job',

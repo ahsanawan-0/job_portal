@@ -1,20 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TestServiceService } from '../../services/test_service/test-service.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { JobApplicationService } from '../../services/job_application/job-application.service';
 
 interface Question {
-    _id: string; // Unique identifier for the question
+    _id: string;
     question: string;
     options: string[];
     correctAnswer: string;
-    answer: string | null;
 }
+
 interface TestFormResponse {
     title: string;
     duration: number;
     questions: Question[];
+}
+
+interface Applicant {
+    name: string;
+    email: string;
 }
 
 @Component({
@@ -24,57 +30,78 @@ interface TestFormResponse {
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
     styleUrls: ['./test-view-page.component.css'],
 })
-export class TestViewPageComponent implements OnInit {
+export class TestViewPageComponent implements OnInit, OnDestroy {
     candidateForm: FormGroup;
     questions: Question[] = [];
     isLoading = true;
-    selectedOptions: { [key: number]: string } = {};
     errorMessage: string | null = null;
     submissionSuccess: boolean = false;
-    formattedTime: string = '';
     title: string = '';
-    formId: string =''
+    formId: string = '';
+    remainingTime: number = 0; // Remaining time in seconds
+    formattedTime: string = ''; // Format for displaying time
+    private timer: any; // Timer ID for interval
+    applicantId: string | null = null; // To store applicant ID
+    applicantName: string = ''; // To store applicant's name
+    applicantEmail: string = ''; // To store applicant's email
 
-
-    constructor(private testService: TestServiceService, private fb: FormBuilder,private route: ActivatedRoute    ) {
+    constructor(
+        private testService: TestServiceService,
+        private jobService: JobApplicationService,
+        private fb: FormBuilder,
+        private route: ActivatedRoute
+    ) {
         this.candidateForm = this.fb.group({
-            name: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            answers: this.fb.group({}) // Placeholder for dynamic answer controls
-
+            name: [{ value: '', disabled: true }], // Disabled for the user
+            email: [{ value: '', disabled: true }], // Disabled for the user
         });
     }
 
     ngOnInit(): void {
-        this.formId = this.route.snapshot.paramMap.get('id')!; // Get the ID from route parameters
-
-        this.fetchTestForm();
+        this.formId = this.route.snapshot.paramMap.get('testId')!; // Get the ID from route parameters
+        this.applicantId = this.route.snapshot.queryParamMap.get('applicant'); // Get applicant ID from query params
+        this.fetchApplicantData(); // Fetch applicant data
+        this.fetchTestForm(); // Fetch test form data
     }
-
-    onOptionSelected(index: number, option: string): void {
-        this.selectedOptions[index] = option;
+    fetchApplicantData(): void {
+        if (this.applicantId) {
+            this.jobService.getApplicantById(this.applicantId).subscribe({
+                next: (response: { message: string; data: Applicant }) => {
+                    // Check if the response contains data
+                    if (response.data) {
+                        this.applicantName = response.data.name; // Store applicant's name
+                        this.applicantEmail = response.data.email; // Store applicant's email
+                        this.candidateForm.patchValue({
+                            name: response.data.name,
+                            email: response.data.email
+                        });
+                    } else {
+                        this.errorMessage = 'No applicant data found.';
+                    }
+                },
+                error: () => {
+                    this.errorMessage = 'Failed to load applicant data.';
+                }
+            });
+        }
     }
 
     fetchTestForm(): void {
         this.testService.getTestForm(this.formId).subscribe({
             next: (response: TestFormResponse) => {
                 this.title = response.title;
-                this.formattedTime = this.formatDuration(response.duration);
+                this.remainingTime = response.duration * 60; // Convert duration to seconds
+                this.formattedTime = this.formatDuration(this.remainingTime); // Initialize formatted time
                 this.questions = response.questions;
 
-                const formControls: { [key: string]: FormControl } = {
-                    name: new FormControl('', Validators.required),
-                    email: new FormControl('', [Validators.required, Validators.email])
-                };
-
+                // Add question controls to the form
                 this.questions.forEach((question, index) => {
                     const controlName = `question_${index}`;
-                    formControls[controlName] = new FormControl(question.answer || '', Validators.required);
+                    this.candidateForm.addControl(controlName, new FormControl('')); // No validators
                 });
 
-                this.candidateForm = this.fb.group(formControls);
+                this.startTimer(); // Start the timer
                 this.isLoading = false;
-                console.log('Candidate Form:', this.candidateForm.value);
             },
             error: () => {
                 this.errorMessage = 'Failed to load test form.';
@@ -83,45 +110,58 @@ export class TestViewPageComponent implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        clearInterval(this.timer); // Clear the timer when the component is destroyed
+    }
+
+    startTimer(): void {
+        this.timer = setInterval(() => {
+            if (this.remainingTime > 0) {
+                this.remainingTime--;
+                this.formattedTime = this.formatDuration(this.remainingTime); // Update formatted time
+            } else {
+                clearInterval(this.timer);
+                this.submitAnswers(); // Optional: auto-submit when time is up
+            }
+        }, 1000);
+    }
+
     formatDuration(duration: number): string {
-        const hours = Math.floor(duration / 60);
-        const minutes = duration % 60;
-        return `${hours}h ${minutes}m`;
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const seconds = duration % 60;
+
+        let formattedTime = '';
+        if (hours > 0) {
+            formattedTime += `${hours}h `;
+        }
+        formattedTime += `${minutes}m ${seconds}s`;
+
+        return formattedTime.trim();
     }
 
     submitAnswers(): void {
-        if (this.candidateForm.valid) {
-            const formId = this.formId; // Get the actual form ID
-            const structuredSubmissionData = {
-                name: this.candidateForm.value.name,
-                email: this.candidateForm.value.email,
-                questions: this.questions.map((question) => ({
-                    id: question._id, // Include question ID
-                    question: question.question,
-                    options: question.options,
-                    correctAnswer: question.correctAnswer,
-                    answer: this.candidateForm.value[`question_${this.questions.indexOf(question)}`] || null // Get the answer
-                }))
-            };
+        const structuredSubmissionData = {
+            name: this.applicantName, // Use the stored applicant's name
+            email: this.applicantEmail, // Use the stored applicant's email
+            questions: this.questions.map((question, index) => ({
+                id: question._id,
+                answer: this.candidateForm.value[`question_${index}`] || null // Get the answer, allow null for unattempted
+            }))
+        };
     
-            console.log('Submission Data:', structuredSubmissionData); // Log the submission data for debugging
+        console.log('Submission Data:', structuredSubmissionData);
     
-            this.testService.submitTest(formId, structuredSubmissionData).subscribe({
-                next: () => {
-                    this.submissionSuccess = true;
-                    this.errorMessage = null;
-                    this.candidateForm.reset();
-                },
-                error: (err) => {
-                    this.errorMessage = 'Submission failed. Please try again.';
-                    console.error(err);
-                }
-            });
-        } else {
-            this.candidateForm.markAllAsTouched(); // Marks all controls to show validation errors
-            this.errorMessage = 'Please fill in all required fields.';
-        }
+        this.testService.submitTest(this.formId, structuredSubmissionData).subscribe({
+            next: () => {
+                this.submissionSuccess = true;
+                this.errorMessage = null;
+                this.candidateForm.reset(); 
+            },
+            error: (err) => {
+                this.errorMessage = err.error.message;
+                console.error(err);
+            }
+        });
     }
-    
-    
 }

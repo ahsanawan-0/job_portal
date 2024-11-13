@@ -1,4 +1,3 @@
-// models/definitions/applicantsDefinition.js
 const mongoose = require("mongoose");
 
 const applicantsSchema = new mongoose.Schema(
@@ -47,5 +46,5 @@ const applicantsSchema = new mongoose.Schema(
   }
 );
 
-Applicants = mongoose.model("Applicants", applicantsSchema);
+const Applicants = mongoose.model("Applicants", applicantsSchema);
 module.exports = Applicants;

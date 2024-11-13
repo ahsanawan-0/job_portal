@@ -49,7 +49,11 @@ export const routes: Routes = [
     component: JobViewPageComponent,
   },
   {
-    path: 'test/user/:id',
+    path: 'test/admin/:id',
+    component: TestViewPageComponent,
+  },
+  {
+    path: 'test/user/:testId',
     component: TestViewPageComponent,
   },
   {

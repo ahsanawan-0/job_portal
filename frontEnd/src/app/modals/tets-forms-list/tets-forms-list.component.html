@@ -1,0 +1,33 @@
+<div class="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 p-4 overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b">
+        <h5 class="text-lg font-semibold">Select Tests to Invite for Applicant: <span class="text-custom-blue">{{ applicantName }}</span></h5>
+        <button type="button" class="text-gray-500 hover:text-gray-700" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  
+      <div class="space-y-2">
+        <ul *ngFor="let test of testList" class="space-y-2">
+          <li class="flex items-center justify-between p-2 border rounded-lg">
+            <label class="flex items-center space-x-3">
+              <input type="checkbox" (change)="toggleSelection(test.id)" class="form-checkbox h-5 w-5 text-blue-600" />
+              <span class="text-gray-800">{{ test.title }}</span>
+            </label>
+            <button (click)="openTestPreview(test.id)" class="flex items-center justify-center px-2 py-2 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+              <img src="assets/icons/Eye.svg" alt="Preview" class="w-4 h-4" />
+            </button>
+          </li>
+        </ul>
+      </div>
+  
+      <div class="flex justify-center pt-3">
+        <div class="flex justify-center pt-4">
+            <button type="button" (click)="sendInvitation(applicantId, selectedTestId)" 
+                    class="px-6 py-2 text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-150">
+              Send Invitations
+            </button>
+          </div>
+      </div>
+    </div>
+  </div>

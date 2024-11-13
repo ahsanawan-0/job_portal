@@ -112,36 +112,53 @@ const submitForm = async (req, res) => {
 
   console.log("Incoming Form Data:", req.body);
 
-
+  // Validate inputs
   if (!name || !email || !questions || !Array.isArray(questions)) {
       return res.status(400).json({ message: "Missing required fields." });
   }
 
   try {
+      // Find the applicant by email
       let applicant = await Applicants.findOne({ email });
       if (!applicant) {
           return res.status(404).json({ message: "Applicant not found" });
       }
 
+      // Find the form by ID
       const form = await Form.findById(formId);
       if (!form) {
           return res.status(404).json({ message: "Form not found" });
       }
 
+      // Check if the applicant has already submitted this form
+      const existingSubmission = await Submission.findOne({
+          applicantId: applicant._id,
+          formId: formId
+      });
+      if (existingSubmission) {
+          return res.status(400).json({ message: "You have already submitted this form." });
+      }
+
       // Create answers array based on submitted questions
       const answers = questions.map((question) => ({
           questionId: question.id,
-          answer: question.answer,
+          answer: question.answer || null, // Allow null for unattempted questions
       }));
 
+      // Check if all answers are null
+      const allUnattempted = answers.every(answer => answer.answer === null);
+
+      // Create submission object
       const submission = new Submission({
           applicantId: applicant._id,
           formId: formId,
           answers: answers,
       });
 
+      // Save submission
       await submission.save();
 
+      // Update form applicants list
       if (!form.applicants.includes(applicant._id)) {
           form.applicants.push(applicant._id);
           await form.save();
@@ -153,13 +170,17 @@ const submitForm = async (req, res) => {
       // Pass submission._id to createEvaluationEntry
       await createEvaluationEntry(applicant._id, formId, submission._id, evaluations, questions);
 
+      // Provide feedback based on whether questions were attempted
+      if (allUnattempted) {
+          return res.status(200).json({ message: "Submission successful, but no questions were attempted.", submission });
+      }
+
       return res.status(200).json({ message: "Submission successful", submission });
   } catch (error) {
       console.error("Error during form submission:", error.message);
       return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 const getEvaluationBySubmissionId = async (req, res) => {
   const { submissionId, applicantId } = req.params; 
   console.log('Received request for:', req.params);
@@ -208,6 +229,38 @@ const getEvaluationBySubmissionId = async (req, res) => {
   } catch (error) {
       console.error("Error retrieving evaluation:", error.message);
       return res.status(500).json({ message: "Failed to retrieve evaluation." });
+  }
+};
+const getTestByJobId = async (req, res) => {
+  const { jobId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(jobId)) {
+    return res.status(400).json({ message: "Invalid job ID format" });
+  }
+
+  try {
+    // Find the job by ID and populate the associated test forms
+    const job = await Job.findById(jobId).populate("testForms");
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    if (!job.testForms || job.testForms.length === 0) {
+      return res.status(404).json({ message: "No test forms associated with this job" });
+    }
+
+    res.status(200).json({
+      jobId: job._id,
+      jobTitle: job.title, // Assuming the job schema includes a title field
+      testForms: job.testForms.map(testForm => ({
+        id: testForm._id,
+        title: testForm.title,
+      })),
+    });
+  } catch (error) {
+    console.error("Error fetching test by job ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -306,108 +359,73 @@ const getApplicantsByFormId = async (req, res) => {
 
 
 
-const sendTestInviteToApplicant = async (req, res) => {
-  const { jobId, applicantId } = req.body;
 
-  // Fetch the job to get the associated testForm
-  const job = await Job.findById(jobId).populate('testForms');
-  if (!job) {
-      return res.status(404).json({ message: "Job not found." });
-  }
 
-  // Since there is only one test for each job, we can access the first element
-  const test = job.testForms[0];
-  if (!test) {
-      return res.status(404).json({ message: "No test associated with this job." });
-  }
+// const sendTestInvitesToAll = async (req, res) => {
+//   const { jobId, applicantIds } = req.body;
 
-  const applicant = await Applicants.findById(applicantId);
-  if (!applicant) {
-      return res.status(404).json({ message: "Applicant not found." });
-  }
+//   // Fetch the job to get the associated testForm
+//   const job = await Job.findById(jobId).populate('testForms');
+//   if (!job) {
+//       return res.status(404).json({ message: "Job not found." });
+//   }
 
-  const token = generateToken();
-  const testLink = new TestLink({
-      token,
-      testId: test._id,
-      userEmail: applicant.email,
-      createdAt: Date.now(),
-      used: false
-  });
+//   // Since there is only one test for each job, we can access the first element
+//   const test = job.testForms[0];
+//   if (!test) {
+//       return res.status(404).json({ message: "No test associated with this job." });
+//   }
 
-  await testLink.save();
-  const link = `https://yourdomain.com/test/${token}`;
+//   const testInvites = [];
 
-  await sendTestInviteEmail(applicant.email, test.title, link);
+//   for (const applicantId of applicantIds) {
+//       const applicant = await Applicants.findById(applicantId);
+//       if (!applicant) {
+//           continue; // Skip if applicant not found
+//       }
 
-  res.status(200).json({ message: "Test invite sent successfully", inviteLink: link });
-};
+//       const token = generateToken();
+//       const testLink = new TestLink({
+//           token,
+//           testId: test._id,
+//           userEmail: applicant.email,
+//           createdAt: Date.now(),
+//           used: false
+//       });
 
-const sendTestInvitesToAll = async (req, res) => {
-  const { jobId, applicantIds } = req.body;
+//       await testLink.save();
+//       const link = `https://yourdomain.com/test/${token}`; // Construct the test link
 
-  // Fetch the job to get the associated testForm
-  const job = await Job.findById(jobId).populate('testForms');
-  if (!job) {
-      return res.status(404).json({ message: "Job not found." });
-  }
+//       // Send the test invite email
+//       await sendTestInviteEmail(applicant.email, test.title, link);
 
-  // Since there is only one test for each job, we can access the first element
-  const test = job.testForms[0];
-  if (!test) {
-      return res.status(404).json({ message: "No test associated with this job." });
-  }
+//       testInvites.push(link); // Collecting invites for logging or response
+//   }
 
-  const testInvites = [];
-
-  for (const applicantId of applicantIds) {
-      const applicant = await Applicants.findById(applicantId);
-      if (!applicant) {
-          continue; // Skip if applicant not found
-      }
-
-      const token = generateToken();
-      const testLink = new TestLink({
-          token,
-          testId: test._id,
-          userEmail: applicant.email,
-          createdAt: Date.now(),
-          used: false
-      });
-
-      await testLink.save();
-      const link = `https://yourdomain.com/test/${token}`; // Construct the test link
-
-      // Send the test invite email
-      await sendTestInviteEmail(applicant.email, test.title, link);
-
-      testInvites.push(link); // Collecting invites for logging or response
-  }
-
-  res.status(200).json({ message: "Test invites sent successfully", invites: testInvites });
-};
+//   res.status(200).json({ message: "Test invites sent successfully", invites: testInvites });
+// };
 
 
 
-// Implement the email sending function
-const sendTestInviteEmail = async (email, testTitle, link) => {
-  // Your email sending logic (e.g., using nodemailer)
-  console.log(`Sending email to: ${email}`);
-  console.log(`Test Title: ${testTitle}`);
-  console.log(`Test Link: ${link}`);
+// // Implement the email sending function
+// const sendTestInviteEmail = async (email, testTitle, link) => {
+//   // Your email sending logic (e.g., using nodemailer)
+//   console.log(`Sending email to: ${email}`);
+//   console.log(`Test Title: ${testTitle}`);
+//   console.log(`Test Link: ${link}`);
  
-};
+// };
 
 
 
 module.exports = {
   createTest,
-  sendTestInviteToApplicant,
-  sendTestInvitesToAll,
+  
   getFormById,
   updateForm,
   getApplicantsByFormId,
   getAllForms,
   submitForm,
+  getTestByJobId,
   getEvaluationBySubmissionId
 };

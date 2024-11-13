@@ -7,16 +7,21 @@ import { CapitalizeWordsPipe } from '../../Pipes/capitalize-words.pipe';
 import { success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TetsFormsListComponent } from '../../modals/tets-forms-list/tets-forms-list.component';
 
 @Component({
   selector: 'app-job-applications',
   standalone: true,
-  imports: [CommonModule, DatePipe, CapitalizeWordsPipe],
+  imports: [CommonModule, DatePipe, CapitalizeWordsPipe,TetsFormsListComponent],
   templateUrl: './job-applications.component.html',
   styleUrl: './job-applications.component.css',
 })
 export class JobApplicationsComponent implements OnInit {
   route = inject(Router);
+
+
+
   onClickArrowLeft() {
     this.route.navigateByUrl('myjobs');
   }
@@ -37,7 +42,7 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   activatedRoute = inject(ActivatedRoute);
-  jobId: string | null = null;
+  jobId!: string | null; // Using non-null assertion operator to avoid initialization error
   totalApplicants: number = 0;
   jobTitle: string = '';
   applicants: any[] = [];
@@ -127,9 +132,9 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   testInvited: any[] = [];
-  createShortListedApplicantsForJob(applicantId: string) {
+  createShortListedApplicantsForJob(applicantId: string ,testId: string) {
     this.service
-      .createTestInvitedApplicantsForJob(this.jobId, applicantId)
+    .createTestInvitedApplicantsForJob(this.jobId, applicantId, testId)
       .subscribe((res: any) => {
         this.testInvited = res.response;
         success({
@@ -141,6 +146,9 @@ export class JobApplicationsComponent implements OnInit {
     this.getApplicantsForJob();
     this.getAllTestInvitedApplicants();
   }
+
+
+
 
   testInvitedArray: any[] = [];
   testInvitedCount: number = 0;
@@ -228,6 +236,44 @@ export class JobApplicationsComponent implements OnInit {
         console.error("Error fetching file data:", error);
       }
     );
+  }
+  private modalService = inject(NgbModal);
+  openTestSelectionModal(applicantId: string) {
+    // Find the shortlisted applicant's information based on the ID
+    const applicant = this.shortListedArray.find(app => app._id === applicantId);
+  
+    if (!applicant) {
+      console.error(`Shortlisted applicant with ID ${applicantId} not found`);
+      return; // Early exit if applicant not found
+    }
+  
+    const modalRef = this.modalService.open(TetsFormsListComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+  
+    // Pass the jobId, applicantId, and applicantName to the modal
+    modalRef.componentInstance.jobId = this.jobId; // Pass the job ID
+    modalRef.componentInstance.applicantId = applicantId; // Pass the applicant ID
+    modalRef.componentInstance.applicantName = applicant.name; // Pass the applicant name
+  
+    // Handle the test selection within the modal
+    modalRef.componentInstance.invitationSent.subscribe(() => {
+      this.getAllTestInvitedApplicants(); // Refresh the list of invited applicants
+    });
+  }
+  inviteApplicantToTest(applicantId: string, testId: string) {
+    this.service
+      .createTestInvitedApplicantsForJob(this.jobId, applicantId, testId)
+      .subscribe((res: any) => {
+        // Refresh or update as needed
+        success({
+          text: 'Applicant invited for the selected test!',
+          delay: 3000,
+          width: '300px',
+        });
+        this.getAllTestInvitedApplicants();
+      });
   }
   
 }

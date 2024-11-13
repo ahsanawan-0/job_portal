@@ -1,124 +1,116 @@
 <div class="bg-backgroundcolor w-full">
-  <div class="navbar sticky top-0 z-10 flex justify-between items-center bg-[#ffffff] shadow-[inset_0_-1px_0_#E4E5E8] py-[21px] px-[19px] w-full">
-      <div class="flex items-center justify-between space-x-2">
-          <img src="assets/icons/Logo.svg" alt="Logo" />
-      </div>
-      <div class="relative mt-2">
-          <div class="text-md font-medium text-black">Time Remaining: {{ formattedTime }}</div>
-      </div>
-  </div>
+    <div class="navbar sticky top-0 z-10 flex justify-between items-center bg-white shadow-[inset_0_-1px_0_#E4E5E8] py-[21px] px-[19px] w-full">
+        <div class="flex items-center justify-between space-x-2">
+            <img src="assets/icons/Logo.svg" alt="Logo" />
+        </div>
+        <div class="relative mt-2">
+            <div class="text-md font-medium text-black">Time Remaining: {{ formattedTime }}</div>
+        </div>
+    </div>
 
-  <div class="p-8 w-full items-center justify-start flex-col">
-      <div class="flex justify-center">
-          <div *ngIf="!isLoading" class="flex items-center justify-center ">
-              <div class="max-w-4xl">
-                  <h1 class="text-3xl font-semibold text-gray-800 my-10">{{ title }}</h1> 
+    <div class="p-8 w-full flex-col items-center justify-start">
+        <div class="flex justify-center">
+            <div *ngIf="!isLoading" class="flex items-center justify-center">
+                <div class="max-w-4xl">
+                    <h1 class="text-3xl font-semibold text-gray-800 my-10">{{ title }}</h1>
 
-                  <div class="test-description p-4 bg-backgroundcolor border border-borderColor rounded-md mb-8">
-                      <h2 class="text-2xl font-semibold text-gray-800">Test Overview</h2>
-                      <p class="text-gray-600 mt-2">
-                          This test is designed to assess your knowledge and skills in various subjects.
-                          It consists of multiple-choice questions and some open-ended questions to evaluate 
-                          your critical thinking and analysis abilities. Please read each question carefully 
-                          and select the best answer within the allotted time.
-                      </p>
-                      <p class="text-red-300 mt-5">
-                          Make sure to manage your time wisely. You can review your answers before submitting 
-                          the test. Good luck!
-                      </p>
-                  </div>
-
-                  <form class="space-y-6 max-w-4xl" [formGroup]="candidateForm" (ngSubmit)="submitAnswers()">
-                      <div class="border border-borderColor rounded-md p-6">
-                          <p class="font-semibold text-base mb-4">Candidate Information</p>
-                          <div>
-                              <label class="block text-lg font-medium text-gray-700 mb-2">Name</label>
-                              <input
-                                  type="text"
-                                  formControlName="name"
-                                  class="border w-full border-gray-300 p-3 rounded-lg focus:outline-none transition duration-200"
-                                  placeholder="Enter Your Full Name"
-                              />
-                              <div *ngIf="candidateForm.get('name')?.invalid && candidateForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
-                                  Name is required.
-                              </div>
-                          </div>
-
-                          <div class="mt-4">
-                              <label class="block text-lg font-medium mb-2 text-gray-700">Email</label>
-                              <input
-                                  type="email"
-                                  formControlName="email"
-                                  class="border w-full border-gray-300 p-3 rounded-lg focus:outline-none transition duration-200"
-                                  placeholder="Enter Your Email"
-                              />
-                              <div *ngIf="candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched" class="text-red-500 text-sm mt-1">
-                                  A valid email is required.
-                              </div>
-                          </div>
-                      </div>
-                      <div *ngFor="let question of questions; let i = index" class="rounded-lg shadow-md p-6 bg-white">
-                        <h4 class="text-base font-bold text-gray-700 mb-4">Question {{ i + 1 }}</h4>
-                        <h2 class="text-base font-semibold text-gray-800">{{ question.question }}</h2>
-                    
-                        <div class="mt-4">
-                          <div *ngIf="question.options && question.options.length > 0; else openEnded">
-                            <div *ngFor="let option of question.options; let j = index" class="flex items-center mt-3">
-                              <input
-                                type="radio"
-                                [formControlName]="'question_' + i"
-                                [value]="option"
-                                (change)="onOptionSelected(i, option)"
-                                class="mr-2 text-green-500"
-                              />
-                              <div 
-                                class="p-3 rounded-lg border border-borderColor transition-colors duration-200 flex-1"
-                                [ngClass]="{'bg-borderColor': selectedOptions[i] === option, 'hover:bg-borderColor': true}"
-                              >
-                                <label class="text-gray-700">{{ option }}</label>
-                              </div>
-                            </div>
-                          </div>
-                        
-                          <ng-template #openEnded>
-                            <input
-                              type="text"
-                              [formControlName]="'question_' + i"
-                              class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none transition duration-200"
-                              placeholder="Your answer"
-                              [value]="question.answer || ''"
-                            />
-                          </ng-template>
-                        </div>
-                        
-                        <!-- Validation message for required fields -->
-                        <div *ngIf="candidateForm.get('question_' + i)?.invalid && candidateForm.get('question_' + i)?.touched" class="text-red-500 text-sm mt-2">
-                            Please provide an answer.
-                        </div>
+                    <div class="test-description p-4 bg-backgroundcolor border border-borderColor rounded-md mb-8">
+                        <h2 class="text-2xl font-semibold text-gray-800">Test Overview</h2>
+                        <p class="text-gray-600 mt-2">
+                            This test is designed to assess your knowledge and skills in various subjects.
+                            It consists of multiple-choice and open-ended questions to evaluate your critical thinking and analysis abilities. 
+                            Please read each question carefully and select the best answer within the allotted time.
+                        </p>
+                        <p class="text-red-300 mt-5">
+                            Manage your time wisely. You can review your answers before submitting the test. Good luck!
+                        </p>
                     </div>
-                    
-                      <div class="mt-10 flex justify-center">
-                          <button
-                              class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white rounded-md"
-                              type="submit"
-                          >
-                              Submit Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
-                          </button>
-                      </div>
-                  </form>
 
-                  <div *ngIf="errorMessage" class="text-red-500 text-center mt-6">
-                      {{ errorMessage }}
-                  </div>
-                  <div *ngIf="submissionSuccess" class="text-green-500 text-center mt-6">
-                      Thank you for your submission!
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+                    <form class="space-y-6 max-w-4xl" [formGroup]="candidateForm" (ngSubmit)="submitAnswers()">
+                        <div class="border border-borderColor rounded-md p-6">
+                            <p class="font-semibold text-base mb-4">Candidate Information</p>
+                            <div>
+                                <label class="block text-lg font-medium text-gray-700 mb-2">Name</label>
+                                <input
+                                    type="text"
+                                    formControlName="name"
+                                    class="border w-full border-gray-300 p-3 rounded-lg focus:outline-none transition duration-200"
+                                    placeholder="Enter Your Full Name"
+                                    readonly
+                                />
+                            </div>
 
-  <div *ngIf="isLoading" class="flex items-center justify-center h-screen">
-      <p class="text-lg font-medium text-gray-500">Loading...</p>
-  </div>
+                            <div class="mt-4">
+                                <label class="block text-lg font-medium mb-2 text-gray-700">Email</label>
+                                <input
+                                    type="email"
+                                    formControlName="email"
+                                    class="border w-full border-gray-300 p-3 rounded-lg focus:outline-none transition duration-200"
+                                    placeholder="Enter Your Email"
+                                    readonly
+                                />
+                            </div>
+                        </div>
+
+                        <div *ngFor="let question of questions; let i = index" class="rounded-lg shadow-md p-6 bg-white">
+                            <h4 class="text-base font-bold text-gray-700 mb-4">Question {{ i + 1 }}</h4>
+                            <h2 class="text-base font-semibold text-gray-800">{{ question.question }}</h2>
+
+                            <div class="mt-4">
+                                <div *ngIf="question.options && question.options.length > 0; else openEnded">
+                                    <div *ngFor="let option of question.options; let j = index" class="flex items-center mt-3">
+                                        <input
+                                            type="radio"
+                                            [formControlName]="'question_' + i"
+                                            [value]="option"
+                                            class="mr-2 text-green-500"
+                                        />
+                                        <div 
+                                            class="p-3 rounded-lg border border-borderColor transition-colors duration-200 flex-1"
+                                            [ngClass]="{'bg-borderColor': candidateForm.get('question_' + i)?.value === option, 'hover:bg-borderColor': true}"
+                                        >
+                                            <label class="text-gray-700">{{ option }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #openEnded>
+                                    <input
+                                        type="text"
+                                        [formControlName]="'question_' + i"
+                                        class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none transition duration-200"
+                                        placeholder="Your answer"
+                                    />
+                                </ng-template>
+                            </div>
+                            
+                            <div *ngIf="candidateForm.get('question_' + i)?.invalid && candidateForm.get('question_' + i)?.touched" class="text-red-500 text-sm mt-2">
+                                Please provide an answer.
+                            </div>
+                        </div>
+
+                        <div class="mt-10 flex justify-center">
+                            <button
+                                class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white rounded-md"
+                                type="submit"
+                            >
+                                Submit Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
+                            </button>
+                        </div>
+                    </form>
+
+                    <div *ngIf="errorMessage" class="text-red-500 text-center mt-6">
+                        {{ errorMessage }}
+                    </div>
+                    <div *ngIf="submissionSuccess" class="text-green-500 text-center mt-6">
+                        Thank you for your submission!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="flex items-center justify-center h-screen">
+        <p class="text-lg font-medium text-gray-500">Loading...</p>
+    </div>
 </div>

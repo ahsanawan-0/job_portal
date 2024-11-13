@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const applicant = require("./definations/applicantsSchema");
+const applicant = require("../models/definations/applicantsSchema");
 const jobSchema = require("../models/definations/jobSchema");
 const Job = mongoose.model("Job", jobSchema);
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
         .exec();
 
       //   console.log("in model", applicants);
-      if (jobData.error) {
+      if (!jobData) {
         return {
           error: jobData.error,
         };
@@ -105,30 +105,27 @@ module.exports = {
     }
   },
 
-  createTestInvitedApplicantsForJob: async (jobId, applicantId) => {
+  addApplicantToTestInvited : async (jobId, applicantId) => {
     try {
-      console.log("in model test invited applicantId", applicantId);
-      const addToTestInvited = await Job.findByIdAndUpdate(
+      const updatedJob = await Job.findByIdAndUpdate(
         jobId,
-        {
-          $addToSet: { testInvitedApplicants: applicantId },
-        },
+        { $addToSet: { testInvitedApplicants: applicantId } },
         { new: true }
       ).populate("testInvitedApplicants");
-
-      //   console.log("in model", applicants);
-      if (!addToTestInvited) {
-        return {
-          error: addToTestInvited.error,
-        };
+  
+      if (!updatedJob) {
+        return { error: "Failed to update test invited applicants." };
       }
-      return {
-        response: addToTestInvited,
-      };
+  
+      // Use the correct model name here
+      const applicantData = await applicant.findById(applicantId); // Ensure proper model is referenced
+      if (!applicantData) {
+        return { error: "Applicant not found." };
+      }
+  
+      return { job: updatedJob, applicantData }; 
     } catch (error) {
-      return {
-        error: error,
-      };
+      return { error: error.message };
     }
   },
 
@@ -196,7 +193,6 @@ module.exports = {
         })
         .exec();
 
-      // console.log("in get all test", jobData.testInvitedApplicants);
       if (!jobData) {
         return {
           error: jobData.error,

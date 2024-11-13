@@ -35,4 +35,5 @@ router.get("/jobs/hired-candidates", getHiredCandidates);
 // Route to get all active jobs
 router.get('/jobs/active', getAllActiveJobs);
 
+
 module.exports = router;
