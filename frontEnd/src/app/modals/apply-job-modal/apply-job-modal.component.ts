@@ -26,6 +26,8 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
   notification = inject(NotificationService);
   @Input() jobId: string | null = null; // Input property for jobId
   applicationForm: FormGroup;
+  loading = false; // Add loading state
+
   private subscriptions: Subscription = new Subscription();
   selectedResume: File | null = null; // Store selected file
   fileName: string | null = null; // Store the name of the selected file
@@ -79,50 +81,35 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
     if (this.applicationForm.valid && this.selectedResume) {
       const formData = this.createFormData();
 
-      // Log the jobId before submission
-      console.log('Submitting application with jobId:', this.jobId);
-
       // Check if jobId is defined
       if (!this.jobId) {
         this.notification.showError('Job ID is missing. Please try again.');
-
         return;
       }
 
-      this.jobApplicationService
-        .getApplication(formData, this.jobId)
-        .subscribe({
-          next: (response) => {
-            console.log('Application submitted:', response);
-            this.notification.showSuccess(
-              'Thank you for applying. Please check your confirmation email.'
-            );
-            // this.showSuccessAlert();
-            this.resetForm();
-            this.closeModal();
-          },
-          error: (error) => {
-            console.error('Error submitting application:', error.error);
-
-            // Check if the error has the specific message for duplicate email
-            const errorMessage =
-              error.error?.error ||
-              'There was an error submitting your application. Please try again.';
-
-            // If the error message matches your criteria, show the specific message
-            if (errorMessage === 'A user with this email already exists.') {
-              this.notification.showError(
-                'A user with this email already exists. Please use a different email.'
-              );
-            } else {
-              this.notification.showError(errorMessage);
-            }
-          },
-        });
+      this.loading = true; // Start loading
+      this.jobApplicationService.getApplication(formData, this.jobId).subscribe({
+        next: (response) => {
+          this.loading = false; // Stop loading on success
+          this.notification.showSuccess('Thank you for applying. Please check your confirmation email.');
+          this.resetForm();
+          this.closeModal();
+        },
+        error: (error) => {
+          this.loading = false; // Stop loading on error
+          const errorMessage = error.error?.error || 'There was an error submitting your application. Please try again.';
+          if (errorMessage === 'A user with this email already exists.') {
+            this.notification.showError('A user with this email already exists. Please use a different email.');
+          } else {
+            this.notification.showError(errorMessage);
+          }
+        },
+      });
     } else {
       this.notification.showError('Please fill out all fields correctly.');
     }
   }
+
 
   // Create FormData object
   private createFormData(): FormData {

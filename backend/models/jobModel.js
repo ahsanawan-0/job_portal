@@ -15,6 +15,7 @@ const createJob = async (jobData) => {
   }
 };
 
+
 // Get jobs with pagination
 const getJobsForPagination = async (limit, skip) => {
   try {
@@ -205,9 +206,19 @@ const getHiredCandidates = async () => {
     throw error;
   }
 };
+// Get all active jobs
+const getAllActiveJobs = async () => {
+  try {
+    return await Job.find({ status: "Active" }).select("_id jobTitle experience");
+  } catch (error) {
+    console.error(`Error fetching all active jobs: ${error.message}`);
+    throw error;
+  }
+};
 
 module.exports = {
   createJob,
+  getAllActiveJobs,
   getAllJobs,
   getJobById,
 

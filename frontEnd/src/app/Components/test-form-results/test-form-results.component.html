@@ -47,11 +47,11 @@
         </div>
         <div class="flex gap-2 relative">
           <button
-            (click)="onClickViewAnswers(item.submissionId)"
-            class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
-          >
-            View Answers
-          </button>
+          (click)="onClickViewAnswers(item.submissionId, item.applicant._id)"
+          class="font-sans font-semibold text-base text-custom-blue bg-[#F1F2F4] py-3 px-6 cursor-pointer rounded-[3px] hover:bg-custom-blue hover:text-white transition duration-200"
+      >
+          View Answers
+      </button>
           <img
             src="assets/icons/DotsThreeVertical.svg"
             class="cursor-pointer"

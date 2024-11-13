@@ -34,6 +34,7 @@ import { ReviewFormAdminViewComponent } from './Components/review-form-admin-vie
 import { ReviewFormViewComponent } from './Components/review-form-view/review-form-view.component';
 import { ReviewFormResultComponent } from './Components/review-form-result/review-form-result.component';
 import { ReviewFormAnswersComponent } from './Components/review-form-answers/review-form-answers.component';
+import { TestEditPageComponent } from "./Components/test-edit-page/test-edit-page.component";
 
 export const routes: Routes = [
   {
@@ -56,7 +57,11 @@ export const routes: Routes = [
     component: JobViewPageComponent,
   },
   {
-    path: 'test/user/:id',
+    path: 'test/admin/:id',
+    component: TestViewPageComponent,
+  },
+  {
+    path: 'test/user/:testId',
     component: TestViewPageComponent,
   },
   {
@@ -110,21 +115,24 @@ export const routes: Routes = [
         component: ExitInterviewFormViewerComponent,
       },
       {
-        path: 'questionform/:question_id',
+        path: 'questionform/:generatedQuestions_id/:job_id',
         component: CreateTestFormComponent,
       },
+
+      { path: 'edit-test/:formId', component: TestEditPageComponent }, // Route for editing a test
+
       {
-        path: 'viewQuestions/:question_id',
+        path: 'viewQuestions/:generatedQuestions_id',
         component: GeneratedQuestionsViewComponent,
       },
       {
         path: 'test-applicants-list/:formId',
         component: TestFormResultsComponent,
       },
-      {
-        path: 'applicant-test-submission/:submissionId',
-        component: ApplicantTestSubmissionsComponent,
-      },
+{
+    path: 'applicant-test-submission/:submissionId/:applicantId',
+    component: ApplicantTestSubmissionsComponent,
+},
       {
         path: 'exitApplicantInfo/:applicantId',
         component: ExitApplicantInfoComponent,

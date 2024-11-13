@@ -16,50 +16,7 @@
         <p class="font-medium text-custom-black text-xl">Job Applications</p>
       </div>
     </div>
-    <!-- <div class="font-medium text-sm flex items-center gap-3 relative">
-      <div>
-        <p class="text-[#5E6670]">Filter</p>
-      </div>
-      <div class="bg-custom-blue py-[6px] px-3 w-[53px] rounded">
-        <button class="text-white" (click)="toggleDropdown()">Sort</button>
-      </div>
-      <div
-        *ngIf="isDropdownVisible()"
-        class="absolute z-10 top-full right-0 mt-2 py-3 px-6 bg-white border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)] rounded-lg"
-      >
-        <div class="p-5 flex flex-col gap-3">
-          <p class="whitespace-nowrap font-medium text-xs text-[#9199A3]">
-            SORT APPLICATION
-          </p>
-          <div class="flex gap-2">
-            <input
-              type="radio"
-              id="newest"
-              name="sort"
-              class="peer w-5 h-5 text-custom-blue border-1.5 checked:border-custom-blue checked:bg-custom-blue focus:ring-custom-blue"
-            />
-            <label
-              for="newest"
-              class="peer-checked:font-medium font-medium text-sm text-[#5E6670] peer-checked:text-custom-black"
-              >Newest</label
-            >
-          </div>
-          <div class="flex gap-2">
-            <input
-              type="radio"
-              id="oldest"
-              name="sort"
-              class="peer w-5 h-5 text-custom-blue border-1.5 checked:border-custom-blue checked:bg-custom-blue focus:ring-custom-blue"
-            />
-            <label
-              for="oldest"
-              class="peer-checked:font-medium font-medium text-[#5E6670] text-sm peer-checked:text-custom-black"
-              >Oldest</label
-            >
-          </div>
-        </div>
-      </div>
-    </div> -->
+
   </div>
   <div class="my-6 flex gap-3">
     <!-- <div class="overflow-y-auto max-h-[500px] w-full "> -->
@@ -134,11 +91,15 @@
             </ul>
           </div>
 
-          <div class="flex gap-[6px] pl-4 py-3 cursor-pointer">
-            <img src="assets/icons/DownloadSimple.svg" />
+         
 
-            <p class="font-medium text-sm text-custom-blue">Download CV</p>
-          </div>
+            <div class="flex gap-[6px] pl-4 py-3 cursor-pointer" (click)="downloadResume(item.resume)" [class.loading]="resumeLoading">
+              <img *ngIf="!resumeLoading" src="assets/icons/DownloadSimple.svg" />
+              <p class="font-medium text-sm text-custom-blue">
+                {{ resumeLoading ? 'Downloading...' : 'Download CV' }}
+              </p>
+            </div>
+         
           <div class="flex flex-col items-center justify-center p-2 gap-2">
             <p class="text-sm text-gray-500" *ngIf="!isShortListed(item._id)">
               Click to Short List
@@ -243,29 +204,23 @@
           </div>
           <div class="flex flex-col justify-center items-center p-2 gap-2">
             <p class="text-sm text-gray-500" *ngIf="!isTestInvited(item._id)">
-              Click to invite for a test
+              Click to select tests
             </p>
             <button
-              (click)="createShortListedApplicantsForJob(item._id)"
-              [disabled]="isJobExpired() || isTestInvited(item._id)"
-              [ngClass]="{
-                'bg-gray-400 text-white': isJobExpired(),
-                'bg-green-500 cursor-pointer ':
-                  !isJobExpired() && isTestInvited(item._id),
-                'bg-blue-500 text-white cursor-pointer':
-                  !isJobExpired() && !isTestInvited(item._id)
-              }"
-              class="px-4 py-2 rounded-md cursor-pointer"
-            >
-              {{
-                isJobExpired()
-                  ? "Job Expired"
-                  : isTestInvited(item._id)
-                  ? "Already Invited"
-                  : "Invite For Test"
-              }}
-            </button>
+            [disabled]="isJobExpired() || isTestInvited(item._id)"
+            [ngClass]="{
+              'bg-gray-400 text-white': isJobExpired(),
+              'bg-green-500 cursor-pointer': !isJobExpired() && isTestInvited(item._id),
+              'bg-blue-500 text-white cursor-pointer': !isJobExpired() && !isTestInvited(item._id)
+            }"
+            class="px-4 py-2 rounded-md cursor-pointer"
+            (click)="openTestSelectionModal(item._id)"
+          >
+          Select Test
+          </button>
+          
           </div>
+        
         </div>
       </div>
     </div>

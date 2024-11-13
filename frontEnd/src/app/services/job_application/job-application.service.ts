@@ -1,6 +1,6 @@
 // src/services/job-application.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -30,7 +30,10 @@ export class JobApplicationService {
   getAllApplications() {
     return this.http.get(`${this.apiUrl}/getAllApplications`);
   }
-
+  getFileById(resumeId: string) {
+    return this.http.get(`${this.apiUrl}/file/${resumeId}`);
+  }
+  
   getApplicantsForJob(jobId: string | null) {
     return this.http.get(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
   }
@@ -45,11 +48,13 @@ export class JobApplicationService {
     return this.http.get(`${this.apiUrl}/getAllShortListedApplicants/${jobId}`);
   }
 
-  createTestInvitedApplicantsForJob(jobId: string | null, applicantId: string) {
+  createTestInvitedApplicantsForJob(jobId: string | null, applicantId: string, testId: string) {
     return this.http.post(`${this.apiUrl}/jobs/${jobId}/testInvite`, {
       applicantId,
+      testId
     });
   }
+  
 
   getAllTestInvitedApplicants(jobId: string | null) {
     return this.http.get(`${this.apiUrl}/getAllTestInvitedApplicants/${jobId}`);
@@ -81,4 +86,17 @@ export class JobApplicationService {
   getHiredCandidatesData() {
     return this.http.get(`${this.apiUrl}/jobs/hired-candidates`);
   }
+  getTestsForJob(jobId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/tests/${jobId}`);
+  }
+  getApplicantById(applicantId: string): Observable<any> {
+    // Set the query parameters
+    const params = new HttpParams().set('applicant', applicantId);
+
+    // Make the GET request with query parameters
+    return this.http.get<any>(`${this.apiUrl}/applicant`, { params });
+}
+
+
+
 }

@@ -51,6 +51,24 @@ export interface Question {
   type: string;
   options?: string[]; // Adjust the type based on your actual options structure
 }
+interface Evaluation {
+  questionId: string;
+  questionText: string;
+  options: string[]; // Ensure this is always an array
+  givenAnswer: string;
+  correctnessPercentage: number;
+  remarks: string;
+  correctAnswer: string;
+}
+
+export interface SubmissionData {
+  applicant: {
+      id: string;
+      name: string;
+      email: string;
+  };
+  evaluations: Evaluation[];
+}
 export interface QuestionCard {
   _id: string;
   num_questions: number;
@@ -58,6 +76,7 @@ export interface QuestionCard {
   experience_level: string;
   field: string;
   createdAt: Date; // Include createdAt if you want to show it
+  job_id:string;
 }
 export interface FormCard {
   id: string;

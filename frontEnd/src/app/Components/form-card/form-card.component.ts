@@ -22,9 +22,9 @@ export class FormCardComponent {
   onClickViewResults(formId: string) {
     this.route.navigateByUrl(`test-applicants-list/${formId}`);
   }
-
-  onClickViewDetail(formId: string) {
-    // this.route.navigateByUrl(`exitFormdetail/adminView/${formId}`);
+  
+  onClickEdit(formId: string) {
+    this.route.navigateByUrl(`edit-test/${formId}`);
   }
 
   onClickThreeDots(index: number) {

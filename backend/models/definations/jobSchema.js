@@ -88,7 +88,8 @@ const jobSchema = new mongoose.Schema(
       trim: true,
     },
     applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }], // Array of applicant IDs
-    shortListedApplicants: [
+
+     shortListedApplicants: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Applicants" },
     ],
     testInvitedApplicants: [
@@ -97,6 +98,8 @@ const jobSchema = new mongoose.Schema(
     hiredApplicants: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Applicants" },
     ],
+    testForms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'testForm' }] 
+
   },
   { timestamps: true } // Automatically manage createdAt and updatedAt fields
 );

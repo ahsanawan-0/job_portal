@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to send a job application confirmation email
+
 const sendEmail = async (applicant, job) => {
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,

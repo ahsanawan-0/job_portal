@@ -1,8 +1,11 @@
 const jobModel = require("../models/jobModel"); 
+const mongoose = require('mongoose');
 const sendEmail = require("../helpers/sendEmail"); 
 const applicantModel = require("../models/applicantsModel");
 const applicantsSchema = require("../models/definations/applicantsSchema");
 const { uploadFile } = require('../helpers/fileHelper'); 
+const { sendTestInviteEmail } = require("../helpers/testInvite");
+const jobSchema = require("../models/definations/jobSchema");
 
 const ApplicantsApplyForJob = async (req, res) => {
   try {
@@ -57,10 +60,10 @@ const ApplicantsApplyForJob = async (req, res) => {
     });
 
     // console.log("sjdbnkjasd", newUser);
-    await newUser.save();
+    await newApplicant.save();
     console.log(`User ${name} with email ${email} created successfully.`);
 
-    const updatedJob = await jobModel.applyForJob(jobId, newUser._id);
+    const updatedJob = await jobModel.applyForJob(jobId, newApplicant._id);
     if (!updatedJob) {
       return res.status(404).json({ message: "Job not found" });
     }
@@ -74,7 +77,7 @@ const ApplicantsApplyForJob = async (req, res) => {
 
     try {
       console.log("Calling sendEmail function.");
-      await sendEmail(newUser, jobDetails);
+      await sendEmail(newApplicant, jobDetails);
     } catch (emailError) {
       console.error("Error sending email:", emailError);
       return res
@@ -204,34 +207,48 @@ const getAllShortListedApplicants = async (req, res) => {
   }
 };
 
+
 const createTestInvitedApplicantsForJob = async (req, res) => {
   try {
-    const { applicantId } = req.body;
-    console.log("in controller applicantId", applicantId);
+    const { applicantId, testId } = req.body;
+    console.log(req.body);
     const jobId = req.params.jobId;
-    console.log("in controller jobid", jobId);
-    if (!jobId || !applicantId) {
-      return res.send({
-        message: "job id and applicant id is required",
-      });
+
+    // Validate input parameters
+    if (!jobId || !applicantId || !testId) {
+      return res.status(400).send({ message: "Job ID, Applicant ID, and Test ID are required." });
     }
-    const result = await applicantModel.createTestInvitedApplicantsForJob(
-      jobId,
-      applicantId
-    );
+
+    // Add applicant to the invited list
+    const result = await applicantModel.addApplicantToTestInvited(jobId, applicantId);
     if (result.error) {
-      return res.send({
-        message: result.error,
-      });
+      return res.status(500).send({ message: result.error });
     }
+
+    const { job, applicantData } = result; // Destructure the response
+    const testLink = `${process.env.FRONTEND_URL}/test/user/${testId}?applicant=${applicantId}`;
+
+    // Check if applicant data exists
+    if (!applicantData || !applicantData.email) {
+      return res.status(400).send({ message: "Applicant email not found." });
+    }
+
+    // Fetch the job title using the new function
+    const jobTitle = await jobModel.getJobTitleById(jobId);
+    if (!jobTitle) {
+      return res.status(404).send({ message: "Job not found." });
+    }
+
+    // Send the test invitation email
+    await sendTestInviteEmail(applicantData, jobTitle, testLink);
+
     return res.send({
-      message: "Test Invited Candidate",
-      response: result.response.addToTestInvited,
+      message: "Test invitation sent successfully.",
+      response: job, // Return the job object
     });
   } catch (error) {
-    return res.send({
-      error: error,
-    });
+    console.error("Error inviting applicant for test:", error);
+    return res.status(500).send({ error: error.message });
   }
 };
 
@@ -324,6 +341,37 @@ const getAllHiredApplicants = async (req, res) => {
     });
   }
 };
+const getApplicantById = async (req, res) => {
+  try {
+      // Get applicantId from the query parameters
+      const { applicant } = req.query; // Use req.query to access query parameters
+
+      if (!applicant) {
+          return res.status(400).json({ error: "Applicant ID is required." });
+      }
+
+      // Ensure that applicant is a valid ObjectId format
+      if (!mongoose.Types.ObjectId.isValid(applicant)) {
+          return res.status(400).json({ error: "Invalid Applicant ID format." });
+      }
+console.log(applicant)
+      // Find the applicant by ID and select only the name and email fields
+      const applicantData = await applicantsSchema.findById(applicant).select('name email');
+
+      if (!applicantData) {
+          return res.status(404).json({ error: "Applicant not found." });
+      }
+
+      // Return the applicant's name and email
+      res.status(200).json({
+          message: "Applicant data retrieved successfully.",
+          data: applicantData,
+      });
+  } catch (error) {
+      console.error("Error fetching applicant data:", error);
+      res.status(500).json({ error: "An error occurred while fetching applicant data." });
+  }
+}
 
 module.exports = {
   ApplicantsApplyForJob,
@@ -335,4 +383,5 @@ module.exports = {
   getAllTestInvitedApplicants,
   createHiredApplicantsForJob,
   getAllHiredApplicants,
+  getApplicantById,
 };

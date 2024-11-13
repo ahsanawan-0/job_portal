@@ -12,7 +12,9 @@ const {
   getAllTestInvitedApplicants,
   createHiredApplicantsForJob,
   getAllHiredApplicants,
+  getApplicantById
 } = require("../controller/applicantsController");
+const { getFileById } = require('../helpers/getApplicantData'); // Adjust the path
 
 // POST route to create a user with resume upload
 router.post(
@@ -20,11 +22,8 @@ router.post(
   upload.single("resume"),
   applicantsController.ApplicantsApplyForJob
 );
-// routes/files.js
 
-const { getFileById } = require('../helpers/getApplicantData'); // Adjust the path
 
-// Route to get file by ID
 router.get('/file/:fileId', async (req, res) => {
   const fileId = req.params.fileId;
 
@@ -39,7 +38,6 @@ router.get('/file/:fileId', async (req, res) => {
   }
 });
 
-
 router.get("/getAllApplications", getAllApplications);
 router.get("/getApplicantsForJob/:jobId", getApplicantsForJob);
 router.post("/jobs/:jobId/shortlist", createShortListedApplicantsForJob);
@@ -48,5 +46,6 @@ router.post("/jobs/:jobId/testInvite", createTestInvitedApplicantsForJob);
 router.get("/getAllTestInvitedApplicants/:jobId", getAllTestInvitedApplicants);
 router.post("/jobs/:jobId/hiredApplicant", createHiredApplicantsForJob);
 router.get("/getAllHiredApplicants/:jobId", getAllHiredApplicants);
+router.get('/applicant', getApplicantById);
 
 module.exports = router;

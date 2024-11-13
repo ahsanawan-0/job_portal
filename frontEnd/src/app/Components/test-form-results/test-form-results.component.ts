@@ -47,9 +47,9 @@ export class TestFormResultsComponent implements OnInit {
     });
   }
 
-  onClickViewAnswers(submissionId: string) {
-    this.route.navigateByUrl(`applicant-test-submission/${submissionId}`); // Adjusted to use submissionId
-  }
+  onClickViewAnswers(submissionId: string, applicantId: string) {
+    this.route.navigateByUrl(`applicant-test-submission/${submissionId}/${applicantId}`);
+}
 
   onPageChange(page: number): void {
     this.currentPage = page;
