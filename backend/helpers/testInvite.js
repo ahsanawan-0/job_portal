@@ -10,11 +10,11 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendTestInviteEmail = async (applicant, jobTitle, testLink) => {
-    const mailOptions = {
-      from: process.env.email_username,
-      to: applicant.email,
-      subject: `Test Invitation for Job Application: ${jobTitle}`,
-      html: `
+  const mailOptions = {
+    from: process.env.email_username,
+    to: applicant.email,
+    subject: `Test Invitation for Job Application: ${jobTitle}`,
+    html: `
         <div style="font-family: Arial, sans-serif; margin: 20px;">
           <h2 style="color: #333;">You've Been Invited to Take a Test!</h2>
           <p style="font-size: 16px; color: #555;">Dear ${applicant.name},</p>
@@ -28,21 +28,25 @@ const sendTestInviteEmail = async (applicant, jobTitle, testLink) => {
             <a href="${testLink}" style="color: #007BFF; text-decoration: underline;">Take the Test</a>
           </p>
   
-          <p style="font-size: 16px; color: #555;">If you have any questions, feel free to contact us at <a href="mailto:${process.env.email_username}">${process.env.email_username}</a>.</p>
+          <p style="font-size: 16px; color: #555;">If you have any questions, feel free to contact us at <a href="mailto:${
+            process.env.email_username
+          }">${process.env.email_username}</a>.</p>
   
           <hr style="margin: 20px 0; border: 1px solid #e0e0e0;">
-          <p style="font-size: 14px; color: #888;">Best Regards,<br>${process.env.company_name || 'Your Company Name'}</p>
+          <p style="font-size: 14px; color: #888;">Best Regards,<br>${
+            process.env.company_name || "Your Company Name"
+          }</p>
         </div>
       `,
-    };
-  
-    try {
-      await transporter.sendMail(mailOptions);
-    } catch (error) {
-      throw new Error("Email sending failed: " + error.message);
-    }
   };
 
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw new Error("Email sending failed: " + error.message);
+  }
+};
+
 module.exports = {
-  sendTestInviteEmail 
+  sendTestInviteEmail,
 };

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ExitInterviewService } from '../../services/exit_interview/exit-interview.service';
 
 @Component({
@@ -29,6 +29,7 @@ export class ExitApplicantInfoComponent implements OnInit {
   answers: any[] = [];
   name: string = '';
   employeeId: string = '';
+  uniqueLinkId: string = '';
   getApplicantQuestionsAndAnswers() {
     this.service
       .getApplicantQuestionsAndAnswers(this.applicantId)
@@ -36,6 +37,12 @@ export class ExitApplicantInfoComponent implements OnInit {
         this.answers = res.answers;
         this.name = res.employeeName;
         this.employeeId = res.employeeId;
+        this.uniqueLinkId = res.uniqueLinkId;
       });
+  }
+
+  route = inject(Router);
+  onClickBack() {
+    this.route.navigateByUrl(`exitInterviewResult/${this.uniqueLinkId}`);
   }
 }

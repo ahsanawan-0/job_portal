@@ -154,6 +154,8 @@ export class ExitInterviewFormComponent implements OnInit {
     }
   }
 
+  title: string = '';
+
   saveForm(): void {
     if (this.form.invalid) {
       this.notification.showError(
@@ -175,6 +177,7 @@ export class ExitInterviewFormComponent implements OnInit {
         // Generate a dynamic link using the form ID
         const uniqueLinkId = response.form.uniqueLinkId; // Ensure the response contains the ID of the created form
         const dynamicLink = `http://localhost:4200/exitInterviewViewForm/${uniqueLinkId}`;
+        this.title = response.form.title;
 
         // Open the modal with the dynamic link
         this.openApplyModal(dynamicLink);
@@ -191,5 +194,7 @@ export class ExitInterviewFormComponent implements OnInit {
     this.dynamicLink = dynamicLink; // Assign the dynamicLink to the property
     const modalRef = this.modalService.open(ExitInterviewModalComponent);
     modalRef.componentInstance.link = this.dynamicLink; // Pass the dynamic link to the modal
+    modalRef.componentInstance.name = 'Exit Interview';
+    modalRef.componentInstance.title = this.title;
   }
 }

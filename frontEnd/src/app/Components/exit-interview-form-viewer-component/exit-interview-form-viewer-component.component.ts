@@ -141,15 +141,13 @@ export class ExitInterviewFormViewerComponent implements OnInit {
           this.notification.showSuccess(
             'Your responses have been submitted successfully!'
           );
-
-          console.log('Form submitted successfully:', response);
           this.form.reset();
         },
         error: (error: any) => {
           console.error('Error submitting form:', error);
-          this.notification.showError(
-            'There was an error submitting your responses. Please try again.'
-          );
+          const errorMessage =
+            error.error?.error || error.error?.message || 'An error occurred';
+          this.notification.showError(errorMessage);
         },
       });
   }

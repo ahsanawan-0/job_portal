@@ -115,7 +115,10 @@ module.exports = {
   getApplicantsByFormId: async (uniqueLinkId) => {
     try {
       const formWithApplicants = await ReviewForm.findOne({ uniqueLinkId })
-        .populate("applicants")
+        .populate({
+          path: "applicants",
+          options: { sort: { createdAt: -1 } },
+        })
         .exec();
 
       if (!formWithApplicants) {
@@ -125,6 +128,7 @@ module.exports = {
       const applicants = formWithApplicants.applicants.map((applicant) => ({
         id: applicant._id,
         answers: applicant.answers,
+        submittedAt: applicant.createdAt,
       }));
 
       return {
@@ -169,6 +173,7 @@ module.exports = {
       return {
         applicantId: applicant._id,
         answers: formattedAnswers,
+        uniqueLinkId: reviewForm.uniqueLinkId,
       };
     } catch (error) {
       return { error: error.message };

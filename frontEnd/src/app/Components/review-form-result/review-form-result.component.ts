@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ReviewFormService } from '../../services/review_Form/review-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteConfirmationModalComponent } from '../../modals/delete-confirmation-modal/delete-confirmation-modal.component';
 import { NotificationService } from '../../services/notification/notification.service';
@@ -9,7 +9,7 @@ import { NotificationService } from '../../services/notification/notification.se
 @Component({
   selector: 'app-review-form-result',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe],
   templateUrl: './review-form-result.component.html',
   styleUrl: './review-form-result.component.css',
 })

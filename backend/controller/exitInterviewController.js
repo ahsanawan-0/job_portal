@@ -124,6 +124,9 @@ module.exports = {
         applicant: newApplicant,
       });
     } catch (error) {
+      if (error.message === "Form already submitted by this employee") {
+        return res.status(500).json({ error: error.message });
+      }
       console.error("Error submitting exit interview:", error);
       res.status(500).json({ error: "Error submitting exit interview" });
     }

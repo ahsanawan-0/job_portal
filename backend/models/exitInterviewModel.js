@@ -53,10 +53,22 @@ module.exports = {
 
   addApplicantToForm: async (uniqueLinkId, applicantId) => {
     try {
-      const form = await Interview.findOne({ uniqueLinkId });
+      const form = await Interview.findOne({ uniqueLinkId }).populate(
+        "applicants"
+      );
 
       if (!form) {
         throw new Error("Form not found");
+      }
+
+      const applicant = await exitApplicant.findById(applicantId);
+      const isDuplicate = form.applicants.some(
+        (existingApplicant) =>
+          existingApplicant.employeeId === applicant.employeeId
+      );
+
+      if (isDuplicate) {
+        throw new Error("Form already submitted by this employee");
       }
 
       const updatedForm = await Interview.findOneAndUpdate(
@@ -159,6 +171,7 @@ module.exports = {
         applicantId: applicant._id,
         employeeName: applicant.employeeName,
         employeeId: applicant.employeeId,
+        uniqueLinkId: interviewForm.uniqueLinkId,
         answers: formattedAnswers,
       };
     } catch (error) {

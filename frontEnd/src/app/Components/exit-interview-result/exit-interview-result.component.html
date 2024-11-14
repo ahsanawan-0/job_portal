@@ -53,9 +53,14 @@
             View Answers
           </button>
           <img
-            src="assets/icons/DotsThreeVertical.svg"
-            class="cursor-pointer"
             (click)="onClickThreeDots(i)"
+            [src]="
+              dropdownIndex === i
+                ? 'assets/icons/DotsThreeVerticalBlack.svg'
+                : 'assets/icons/DotsThreeVertical.svg'
+            "
+            class="py-3 px-1 cursor-pointer"
+            [ngClass]="{ 'bg-[#F1F2F4]': dropdownIndex === i }"
           />
           <div
             *ngIf="dropdownIndex === i"

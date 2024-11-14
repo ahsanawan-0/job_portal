@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReviewFormService } from '../../services/review_Form/review-form.service';
 import { CommonModule } from '@angular/common';
 
@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class ReviewFormAnswersComponent implements OnInit {
   service = inject(ReviewFormService);
   activatedRoute = inject(ActivatedRoute);
+  route = inject(Router);
   applicantId: string = '';
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -22,11 +23,17 @@ export class ReviewFormAnswersComponent implements OnInit {
   }
 
   answers: any[] = [];
+  uniqueLinkId: string = '';
   getApplicantResponse() {
     this.service
       .getApplicantQuestionsAndAnswers(this.applicantId)
       .subscribe((res: any) => {
         this.answers = res.answers;
+        this.uniqueLinkId = res.uniqueLinkId;
       });
+  }
+
+  onClickBack() {
+    this.route.navigateByUrl(`reviewFormResults/${this.uniqueLinkId}`);
   }
 }

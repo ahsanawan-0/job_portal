@@ -9,9 +9,12 @@ const answerSchema = new mongoose.Schema({
   answer: { type: String, required: true },
 });
 
-const reviewFormApplicantSchema = new mongoose.Schema({
-  answers: [answerSchema],
-});
+const reviewFormApplicantSchema = new mongoose.Schema(
+  {
+    answers: [answerSchema],
+  },
+  { timestamps: true }
+);
 
 const ReviewFormApplicant = mongoose.model(
   "ReviewFormApplicant",
