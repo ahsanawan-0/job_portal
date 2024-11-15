@@ -1,4 +1,6 @@
 const jobModel = require("../models/jobModel"); 
+const crypto = require('crypto');
+const TestLink = require('../models/definations/TestLinkSchema'); // Ensure you import your TestLink model
 const mongoose = require('mongoose');
 const sendEmail = require("../helpers/sendEmail"); 
 const applicantModel = require("../models/applicantsModel");
@@ -207,49 +209,63 @@ const getAllShortListedApplicants = async (req, res) => {
   }
 };
 
-
 const createTestInvitedApplicantsForJob = async (req, res) => {
-  try {
-    const { applicantId, testId } = req.body;
-    console.log(req.body);
-    const jobId = req.params.jobId;
+    try {
+        const { applicantId, testId } = req.body;
+        const jobId= req.params.jobId;
+        
+        console.log("check1")
+        if (!jobId || !applicantId || !testId) {
+          return res.status(400).send({ message: "Job ID, Applicant ID, and Test ID are required." });
+        }
+        console.log("check2")
 
-    // Validate input parameters
-    if (!jobId || !applicantId || !testId) {
-      return res.status(400).send({ message: "Job ID, Applicant ID, and Test ID are required." });
+        const result = await applicantModel.addApplicantToTestInvited(jobId, applicantId);
+        if (result.error) {
+            return res.status(500).send({ message: result.error });
+        }
+
+        const { job, applicantData } = result; 
+
+        // Check if applicant data exists
+        if (!applicantData || !applicantData.email) {
+            return res.status(400).send({ message: "Applicant email not found." });
+        }
+ 
+        // Generate a unique token for the test link
+        const token = crypto.randomBytes(16).toString('hex'); // Generate unique token
+        const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // Valid for 24 hours
+          console.log("check1")
+        // Create and save the test link record
+        const testLink = new TestLink({
+            applicantId,
+            testId,
+            token,
+            used: false,
+            expiresAt,
+        });
+
+        await testLink.save();
+
+        // Create the test link
+        const testLinkUrl = `${process.env.FRONTEND_URL}/test/user/${testId}?token=${token}&applicant=${applicantId}`;
+
+        // Fetch the job title using the new function
+        const jobTitle = await jobModel.getJobTitleById(jobId);
+        if (!jobTitle) {
+            return res.status(404).send({ message: "Job not found." });
+        }
+
+        await sendTestInviteEmail(applicantData, jobTitle, testLinkUrl);
+
+        return res.send({
+            message: "Test invitation sent successfully.",
+            response: job, // Return the job object
+        });
+    } catch (error) {
+        console.error("Error inviting applicant for test:", error);
+        return res.status(500).send({ error: error.message });
     }
-
-    // Add applicant to the invited list
-    const result = await applicantModel.addApplicantToTestInvited(jobId, applicantId);
-    if (result.error) {
-      return res.status(500).send({ message: result.error });
-    }
-
-    const { job, applicantData } = result; // Destructure the response
-    const testLink = `${process.env.FRONTEND_URL}/test/user/${testId}?applicant=${applicantId}`;
-
-    // Check if applicant data exists
-    if (!applicantData || !applicantData.email) {
-      return res.status(400).send({ message: "Applicant email not found." });
-    }
-
-    // Fetch the job title using the new function
-    const jobTitle = await jobModel.getJobTitleById(jobId);
-    if (!jobTitle) {
-      return res.status(404).send({ message: "Job not found." });
-    }
-
-    // Send the test invitation email
-    await sendTestInviteEmail(applicantData, jobTitle, testLink);
-
-    return res.send({
-      message: "Test invitation sent successfully.",
-      response: job, // Return the job object
-    });
-  } catch (error) {
-    console.error("Error inviting applicant for test:", error);
-    return res.status(500).send({ error: error.message });
-  }
 };
 
 const getAllTestInvitedApplicants = async (req, res) => {

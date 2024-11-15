@@ -49,29 +49,29 @@ export class TestEditPageComponent implements OnInit {
     this.testId = this.route.snapshot.paramMap.get('formId');
 
     if (this.testId) {
-      this.fetchFormData(this.testId);
+      // this.fetchFormData(this.testId);
     }
   }
 
-  fetchFormData(formId: string): void {
-    this.isLoading = true;
-    this.testService.getTestForm(formId).subscribe({
-      next: (data) => {
-        this.formData = data.questions;
-        this.form.patchValue({
-          title: data.title,
-        });
-        this.selectedDuration = data.duration; // Ensure this is set from backend
-        console.log('Fetched Form Data:', data); // Debugging statement
-        this.isLoading = false;
-        this.populateQuestions(data.questions); // Populate questions once the data is fetched
-      },
-      error: () => {
-        this.errorMessage = 'Failed to load questions.';
-        this.isLoading = false;
-      },
-    });
-  }
+  // fetchFormData(formId: string): void {
+  //   this.isLoading = true;
+  //   this.testService.getTestForm(formId).subscribe({
+  //     next: (data) => {
+  //       this.formData = data.questions;
+  //       this.form.patchValue({
+  //         title: data.title,
+  //       });
+  //       this.selectedDuration = data.duration; // Ensure this is set from backend
+  //       console.log('Fetched Form Data:', data); // Debugging statement
+  //       this.isLoading = false;
+  //       this.populateQuestions(data.questions); // Populate questions once the data is fetched
+  //     },
+  //     error: () => {
+  //       this.errorMessage = 'Failed to load questions.';
+  //       this.isLoading = false;
+  //     },
+  //   });
+  // }
 
   get formattedDuration(): string {
     if (this.selectedDuration === null) return 'Select Duration';

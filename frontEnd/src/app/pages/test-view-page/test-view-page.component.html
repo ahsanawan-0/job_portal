@@ -1,10 +1,15 @@
-<div class="bg-backgroundcolor w-full">
+<div   *ngIf="!submissionSuccess" class="bg-backgroundcolor w-full">
     <div class="navbar sticky top-0 z-10 flex justify-between items-center bg-white shadow-[inset_0_-1px_0_#E4E5E8] py-[21px] px-[19px] w-full">
         <div class="flex items-center justify-between space-x-2">
             <img src="assets/icons/Logo.svg" alt="Logo" />
         </div>
         <div class="relative mt-2">
-            <div class="text-md font-medium text-black">Time Remaining: {{ formattedTime }}</div>
+            <div *ngIf="remainingTime > 0" class="text-md font-medium text-black">
+                Time Remaining: {{ formattedTime }}
+            </div>
+            <div *ngIf="remainingTime <= 0" class="text-md font-medium text-black">
+                Time's up!
+            </div>
         </div>
     </div>
 
@@ -26,7 +31,7 @@
                         </p>
                     </div>
 
-                    <form class="space-y-6 max-w-4xl" [formGroup]="candidateForm" (ngSubmit)="submitAnswers()">
+                    <form class="space-y-6 max-w-4xl" [formGroup]="candidateForm"  (ngSubmit)="submitAnswers()">
                         <div class="border border-borderColor rounded-md p-6">
                             <p class="font-semibold text-base mb-4">Candidate Information</p>
                             <div>
@@ -91,11 +96,12 @@
 
                         <div class="mt-10 flex justify-center">
                             <button
-                                class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white rounded-md"
-                                type="submit"
-                            >
-                                Submit Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
-                            </button>
+                            class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white rounded-md"
+                            type="submit"
+                        >
+                            Submit Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
+                        </button>
+                        
                         </div>
                     </form>
 
@@ -112,5 +118,16 @@
 
     <div *ngIf="isLoading" class="flex items-center justify-center h-screen">
         <p class="text-lg font-medium text-gray-500">Loading...</p>
+    </div>
+</div>
+
+<!-- Modal for Submission Success -->
+<div *ngIf="submissionSuccess" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm text-center">
+        <h2 class="text-xl font-semibold mb-4">Thank You!</h2>
+        <p>Thank you for applying to the test.</p>
+        <button (click)="submissionSuccess = false" class="mt-4 px-4 py-2 bg-[#0A65CC] text-white rounded">
+            Close
+        </button>
     </div>
 </div>

@@ -51,9 +51,12 @@ export class JobApplicationsComponent implements OnInit {
   totalApplicants: number = 0;
   jobTitle: string = '';
   applicants: any[] = [];
+  
   jobExpirationDate: string | null = null;
   jobStatus: string = '';
-  resumeLoading: boolean = false; // Add a loading state variable
+  resumeIndex: number | null = null;
+  resumeLoading: { [key: string]: boolean } = {};
+  resumeViewLoading: { [key: string]: boolean } = {};
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
@@ -218,7 +221,8 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   downloadResume(resumeId: string) {
-    this.resumeLoading = true; // Start loading
+    this.resumeLoading[resumeId] = true;
+    this.resumeViewLoading[resumeId] = false;  // res
 
     this.service.getFileById(resumeId).subscribe(
       (response: any) => {
@@ -227,12 +231,66 @@ export class JobApplicationsComponent implements OnInit {
           const anchor = document.createElement('a');
           anchor.href = response.data.webContentLink;
           anchor.target = '_blank'; // Optional: opens in a new tab
-          anchor.download = response.data.name; // Optional: filename if needed
+          // anchor.download = response.data.name; // Optional: filename if needed
           anchor.click();
-          this.resumeLoading = false; // Stop loading
+          this.resumeLoading[resumeId] = false;
+
         } else {
-          console.error('Download link not available');
-          this.resumeLoading = false; // Stop loading on error
+          console.error("Download link not available");
+          this.resumeLoading[resumeId] = false;
+
+        }
+      },
+      (error:any) => {
+        console.error("Error fetching file data:", error);
+      }
+    );
+  }
+  // viewResume(resumeId: string) {
+  //   this.resumeViewLoading[resumeId] = true;
+
+  //   this.service.getFileById(resumeId).subscribe(
+  //     (response: any) => {
+  //       console.log(response)
+  //       if (response?.data?.webContentLink) {
+  //         // Create an anchor element to trigger the download
+  //         const anchor = document.createElement('a');
+  //         anchor.href = response.data.webViewLink;
+  //         anchor.target = '_blank'; // Optional: opens in a new tab
+  //         anchor.click();
+  //         this.resumeViewLoading[resumeId] = false;
+
+  //       } else {
+  //         console.error("View link not available");
+
+  //         this.resumeViewLoading[resumeId] = false;
+
+  //       }
+  //     },
+  //     (error:any) => {
+  //       console.error("Error fetching file data:", error);
+  //     }
+  //   );
+  // }
+  viewResume(resumeId: string) {
+    this.resumeViewLoading[resumeId] = true;
+
+    this.service.getFileById(resumeId).subscribe(
+      (response: any) => {
+        console.log(response)
+        if (response?.data?.webContentLink) {
+          // Create an anchor element to trigger the download
+          const anchor = document.createElement('a');
+          anchor.href = response.data.webViewLink;
+          anchor.target = '_blank'; // Optional: opens in a new tab
+          anchor.click();
+          this.resumeViewLoading[resumeId] = false;
+
+        } else {
+          console.error("View link not available");
+
+          this.resumeViewLoading[resumeId] = false;
+
         }
       },
       (error: any) => {

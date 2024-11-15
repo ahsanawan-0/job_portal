@@ -60,15 +60,40 @@
             </ul>
           </div>
 
-          <div
-            class="flex gap-[6px] pl-4 py-3 cursor-pointer"
-            (click)="downloadResume(item.resume)"
-            [class.loading]="resumeLoading"
-          >
-            <img *ngIf="!resumeLoading" src="assets/icons/DownloadSimple.svg" />
-            <p class="font-medium text-sm text-custom-blue">
-              {{ resumeLoading ? "Downloading..." : "Download CV" }}
-            </p>
+          <div class="flex gap-[35px] pl-4 py-3">
+            <div
+              class="cursor-pointer flex justify-between"
+              (click)="downloadResume(item.resume)"
+              [class.loading]="resumeLoading[item.resumeId]"
+            >
+              <div class="flex gap-[6px]">
+                <img
+                  *ngIf="!resumeLoading[item.resume]"
+                  src="assets/icons/DownloadSimple.svg"
+                />
+
+                <p class="font-medium text-sm text-custom-blue">
+                  {{
+                    resumeLoading[item.resume]
+                      ? "Downloading..."
+                      : "Download CV"
+                  }}
+                </p>
+              </div>
+            </div>
+            <div>
+              <img
+                *ngIf="!resumeViewLoading[item.resume]"
+                src="assets/icons/Eye.svg"
+                alt=""
+                (click)="viewResume(item.resume)"
+                class="cursor-pointer"
+                [class.loading]="resumeViewLoading[item.resume]"
+              />
+              <p>
+                {{ resumeViewLoading[item.resume] ? "..." : "" }}
+              </p>
+            </div>
           </div>
 
           <div class="flex flex-col items-center justify-center p-2 gap-2">
@@ -80,7 +105,7 @@
               [disabled]="isJobExpired() || isShortListed(item._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
-                'bg-green-500 ': !isJobExpired() && isShortListed(item._id),
+                'bg-custom-green ': !isJobExpired() && isShortListed(item._id),
                 'bg-blue-500 text-white cursor-pointer':
                   !isJobExpired() && !isShortListed(item._id)
               }"
@@ -90,7 +115,7 @@
                 isJobExpired()
                   ? "Job Expired"
                   : isShortListed(item._id)
-                  ? "Already ShortListed"
+                  ? "ShortListed"
                   : "Short List"
               }}
             </button>
@@ -168,11 +193,43 @@
             </ul>
           </div>
 
-          <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
-            <img src="assets/icons/DownloadSimple.svg" />
+          <div class="flex gap-[35px] pl-4 py-3">
+            <div
+              class="cursor-pointer flex justify-between"
+              (click)="downloadResume(item.resume)"
+              [class.loading]="resumeLoading[item.resumeId]"
 
-            <p class="font-medium text-sm text-custom-blue">Download CV</p>
+            >
+              <div class="flex gap-[6px]">
+                <img
+                  *ngIf="!resumeLoading[item.resume]"
+                  src="assets/icons/DownloadSimple.svg"
+                />
+
+                <p class="font-medium text-sm text-custom-blue">
+                  {{
+                    resumeLoading[item.resume]
+                      ? "Downloading..."
+                      : "Download CV"
+                  }}
+                </p>
+              </div>
+            </div>
+            <div>
+              <img
+                *ngIf="!resumeViewLoading[item.resume]"
+                src="assets/icons/Eye.svg"
+                alt=""
+                (click)="viewResume(item.resume)"
+                class="cursor-pointer"
+                [class.loading]="resumeViewLoading[item.resume]"
+              />
+              <p>
+                {{ resumeViewLoading[item.resume] ? "..." : "" }}
+              </p>
+            </div>
           </div>
+
           <div class="flex flex-col justify-center items-center p-2 gap-2">
             <p class="text-sm text-gray-500" *ngIf="!isTestInvited(item._id)">
               Click to select tests
@@ -181,7 +238,7 @@
               [disabled]="isJobExpired() || isTestInvited(item._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
-                'bg-green-500 cursor-pointer':
+                'bg-custom-green text-white cursor-pointer':
                   !isJobExpired() && isTestInvited(item._id),
                 'bg-blue-500 text-white cursor-pointer':
                   !isJobExpired() && !isTestInvited(item._id)
@@ -189,7 +246,13 @@
               class="px-4 py-2 rounded-md cursor-pointer"
               (click)="openTestSelectionModal(item._id)"
             >
-              Select Test
+              {{
+                isJobExpired()
+                  ? "Job Expired"
+                  : isTestInvited(item._id)
+                  ? "Invited"
+                  : "Select Test"
+              }}
             </button>
           </div>
         </div>
@@ -235,10 +298,41 @@
             </ul>
           </div>
 
-          <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
-            <img src="assets/icons/DownloadSimple.svg" />
+          <div class="flex gap-[35px] pl-4 py-3">
+            <div
+              class="cursor-pointer flex justify-between"
+              [class.loading]="resumeLoading[item.resumeId]"
 
-            <p class="font-medium text-sm text-custom-blue">Download CV</p>
+              (click)="downloadResume(item.resume)"
+            >
+              <div class="flex gap-[6px]">
+                <img
+                  *ngIf="!resumeLoading[item.resume]"
+                  src="assets/icons/DownloadSimple.svg"
+                />
+
+                <p class="font-medium text-sm text-custom-blue">
+                  {{
+                    resumeLoading[item.resume]
+                      ? "Downloading..."
+                      : "Download CV"
+                  }}
+                </p>
+              </div>
+            </div>
+            <div>
+              <img
+                *ngIf="!resumeViewLoading[item.resume]"
+                src="assets/icons/Eye.svg"
+                alt=""
+                (click)="viewResume(item.resume)"
+                class="cursor-pointer"
+                [class.loading]="resumeViewLoading[item.resume]"
+              />
+              <p>
+                {{ resumeViewLoading[item.resume] ? "..." : "" }}
+              </p>
+            </div>
           </div>
           <div class="flex flex-col items-center justify-center p-2 gap-2">
             <p class="text-sm text-gray-500" *ngIf="!isHired(item._id)">
@@ -249,7 +343,7 @@
               [disabled]="isJobExpired() || isHired(item._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
-                'bg-green-500 cursor-pointer ':
+                'bg-custom-green cursor-pointer ':
                   !isJobExpired() && isHired(item._id),
                 'bg-blue-500  text-white cursor-pointer':
                   !isJobExpired() && !isHired(item._id)
@@ -260,7 +354,7 @@
                 isJobExpired()
                   ? "Job Expired"
                   : isHired(item._id)
-                  ? "Already Hired"
+                  ? "Hired"
                   : "Hire"
               }}
             </button>
@@ -308,10 +402,41 @@
             </ul>
           </div>
 
-          <div class="flex gap-[6px] pl-3 pr-4 py-3 cursor-pointer">
-            <img src="assets/icons/DownloadSimple.svg" />
+          <div class="flex gap-[35px] pl-4 py-3">
+            <div
+              class="cursor-pointer flex justify-between"
+              [class.loading]="resumeLoading[item.resumeId]"
 
-            <p class="font-medium text-sm text-custom-blue">Download CV</p>
+              (click)="downloadResume(item.resume)"
+            >
+              <div class="flex gap-[6px]">
+                <img
+                  *ngIf="!resumeLoading[item.resume]"
+                  src="assets/icons/DownloadSimple.svg"
+                />
+
+                <p class="font-medium text-sm text-custom-blue">
+                  {{
+                    resumeLoading[item.resume]
+                      ? "Downloading..."
+                      : "Download CV"
+                  }}
+                </p>
+              </div>
+            </div>
+            <div>
+              <img
+                *ngIf="!resumeViewLoading[item.resume]"
+                src="assets/icons/Eye.svg"
+                alt=""
+                (click)="viewResume(item.resume)"
+                class="cursor-pointer"
+                [class.loading]="resumeViewLoading[item.resume]"
+              />
+              <p>
+                {{ resumeViewLoading[item.resume] ? "..." : "" }}
+              </p>
+            </div>
           </div>
         </div>
       </div>

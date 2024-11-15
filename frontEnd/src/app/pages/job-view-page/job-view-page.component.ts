@@ -46,8 +46,9 @@ export class JobViewPageComponent implements OnInit {
     );
   }
 
-  openApplyModal() {
+  openApplyModal(jobTitle:string) {
     const modalRef = this.modalService.open(ApplyJobModalComponent);
     modalRef.componentInstance.jobId = this.jobId; // Pass jobId to the modal
+    modalRef.componentInstance.jobTitle = jobTitle; // Pass jobId to the modal
   }
 }

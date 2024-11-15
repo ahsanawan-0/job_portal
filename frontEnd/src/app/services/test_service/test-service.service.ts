@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SubmissionData } from '../../models/jobModel';
@@ -28,14 +28,12 @@ export class TestServiceService {
     return this.http.get(`${this.apiUrl}/jobs/active`);
   }
 
-  
   deleteGeneratedForms(formsId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/generated_forms/${formsId}`);
   }
   getAllGeneratedForms(): Observable<any> {
     return this.http.get(`${this.apiUrl}/generated/forms/getAllforms`);
   }
-
 
   createTestForm(
     job_id: string,
@@ -49,17 +47,29 @@ export class TestServiceService {
     const url = `${this.apiUrl}/create_test_form/${generatedQuestionId}/${job_id}`;
     return this.http.post(url, testData, {
       withCredentials: true,
-    });}
-
-  getTestForm(formId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/forms/${formId}`);
-  }
-updateTest(testId: string, testData: { title: string; questions: any[]; duration: number }): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update_test_form/${testId}`, testData, {
-      withCredentials: true,
     });
   }
-    deleteQuestion(testId: string, questionIndex: number): Observable<any> {
+
+  getTestForm(formId: string, token: string): Observable<any> {
+    const params = new HttpParams().set('token', token); // Create query parameters
+    return this.http.get(`${this.apiUrl}/forms/${formId}`, { params }); // Include params in the request
+  }
+  getTestFormForAdmin(formId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/forms/admin/${formId}`); // Include params in the request
+  }
+  updateTest(
+    testId: string,
+    testData: { title: string; questions: any[]; duration: number }
+  ): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/update_test_form/${testId}`,
+      testData,
+      {
+        withCredentials: true,
+      }
+    );
+  }
+  deleteQuestion(testId: string, questionIndex: number): Observable<any> {
     return this.http.delete(
       `${this.apiUrl}/tests/${testId}/questions/${questionIndex}`
     );
@@ -91,8 +101,13 @@ updateTest(testId: string, testData: { title: string; questions: any[]; duration
       updateData
     );
   }
-// In test-service.service.ts
-getEvalutionOfApplicants(formId: string, applicantId: string): Observable<SubmissionData> {
-  return this.http.get<SubmissionData>(`${this.apiUrl}/view/answers/${formId}/${applicantId}`);
-}
+  // In test-service.service.ts
+  getEvalutionOfApplicants(
+    formId: string,
+    applicantId: string
+  ): Observable<SubmissionData> {
+    return this.http.get<SubmissionData>(
+      `${this.apiUrl}/view/answers/${formId}/${applicantId}`
+    );
+  }
 }

@@ -13,7 +13,6 @@ const {
   deleteExitApplicant,
   updateForm,
 } = require("../controller/exitInterviewController");
-const checkId = require("../middleweres/checkId");
 
 // Route to create a new form
 router.post("/create", createExitInterviewForm);

@@ -16,10 +16,8 @@ const submissionSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId, 
             required: true 
         },
-        answer: { 
-            type: String, 
-            required: true 
-        }
+        answer: { type: String, required: false, default: null }, 
+
     }],
 }, { timestamps: true });
 
