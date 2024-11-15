@@ -33,7 +33,7 @@ interface Applicant {
 export class TestViewPageComponent implements OnInit, OnDestroy {
     candidateForm: FormGroup;
     questions: Question[] = [];
-    isLoading = true;
+    isLoading = false;
     errorMessage: string | null = null;
     submissionSuccess: boolean = false;
     title: string = '';
@@ -44,7 +44,9 @@ export class TestViewPageComponent implements OnInit, OnDestroy {
     applicantId: string | null = null; // To store applicant ID
     applicantName: string = ''; // To store applicant's name
     applicantEmail: string = ''; // To store applicant's email
+    isAdminView: boolean = false; // To determine if it's admin view
 
+token:string="";
     constructor(
         private testService: TestServiceService,
         private jobService: JobApplicationService,
@@ -56,12 +58,26 @@ export class TestViewPageComponent implements OnInit, OnDestroy {
             email: [{ value: '', disabled: true }], // Disabled for the user
         });
     }
-
     ngOnInit(): void {
-        this.formId = this.route.snapshot.paramMap.get('testId')!; // Get the ID from route parameters
-        this.applicantId = this.route.snapshot.queryParamMap.get('applicant'); // Get applicant ID from query params
-        this.fetchApplicantData(); // Fetch applicant data
-        this.fetchTestForm(); // Fetch test form data
+        this.formId = this.route.snapshot.paramMap.get('testId')!; 
+        this.applicantId = this.route.snapshot.queryParamMap.get('applicant'); 
+        this.token = this.route.snapshot.queryParamMap.get('token')!; 
+        this.isAdminView = this.route.snapshot.url[0].path === 'test' && this.route.snapshot.url[1].path === 'admin';
+
+    
+        if (this.isAdminView) {
+            // Admin view: Fetch test form without token
+            console.log("adminview")
+            this.fetchTestFormForAdmin();
+          } else {
+            if (!this.token) {
+              this.errorMessage = 'No token provided.';
+              
+              return;
+            }
+            this.fetchApplicantData();
+            this.fetchTestFormForCandidate(this.token);
+          }
     }
     fetchApplicantData(): void {
         if (this.applicantId) {
@@ -86,31 +102,57 @@ export class TestViewPageComponent implements OnInit, OnDestroy {
         }
     }
 
-    fetchTestForm(): void {
-        this.testService.getTestForm(this.formId).subscribe({
+    fetchTestFormForCandidate(token:string): void {
+        this.testService.getTestForm(this.formId,token).subscribe({
             next: (response: TestFormResponse) => {
                 this.title = response.title;
-                this.remainingTime = response.duration * 60; // Convert duration to seconds
-                this.formattedTime = this.formatDuration(this.remainingTime); // Initialize formatted time
+                this.remainingTime = response.duration * 60;
+                this.formattedTime = this.formatDuration(this.remainingTime); 
                 this.questions = response.questions;
-
+    
                 // Add question controls to the form
                 this.questions.forEach((question, index) => {
                     const controlName = `question_${index}`;
-                    this.candidateForm.addControl(controlName, new FormControl('')); // No validators
+                    this.candidateForm.addControl(controlName, new FormControl('')); 
                 });
-
+    
                 this.startTimer(); // Start the timer
                 this.isLoading = false;
             },
-            error: () => {
-                this.errorMessage = 'Failed to load test form.';
-                this.isLoading = false;
+            error: (err) => {
+                if (err.status === 400) {
+                    this.errorMessage = 'This link has already been used or has expired.';
+                } else {
+                    this.errorMessage = 'Failed to load test form.';
+                }
+                this.isLoading = false; // Ensure loading is set to false on error
             }
         });
     }
-
-    ngOnDestroy(): void {
+    fetchTestFormForAdmin(): void {
+        this.testService.getTestFormForAdmin(this.formId).subscribe({
+            next: (response: TestFormResponse) => {
+                this.title = response.title;
+                this.remainingTime = response.duration * 60;
+                this.formattedTime = this.formatDuration(this.remainingTime); 
+                this.questions = response.questions;
+                this.startTimer(); // Start the timer
+                this.isLoading = false;
+                    // Add question controls to the form
+                    this.questions.forEach((question, index) => {
+                        const controlName = `question_${index}`;
+                        this.candidateForm.addControl(controlName, new FormControl('')); 
+                    });
+        
+                    this.startTimer(); // Start the timer
+                    this.isLoading = false;
+            },
+          error: () => {
+            this.errorMessage = 'Failed to load test form.';
+            this.isLoading = false;
+          },
+        });
+      }   ngOnDestroy(): void {
         clearInterval(this.timer); // Clear the timer when the component is destroyed
     }
 
@@ -141,22 +183,36 @@ export class TestViewPageComponent implements OnInit, OnDestroy {
     }
 
     submitAnswers(): void {
+        // Skip submission logic if it's an admin view
+        if (this.isAdminView) {
+            console.log("Admin view: Submission is disabled.");
+            return;  // Prevent the form submission for admin view
+        }
+    
+        // For candidate view, handle the form submission
+        this.remainingTime = 0;
+        this.formattedTime = this.formatDuration(this.remainingTime); 
+    
         const structuredSubmissionData = {
             name: this.applicantName, // Use the stored applicant's name
             email: this.applicantEmail, // Use the stored applicant's email
-            questions: this.questions.map((question, index) => ({
-                id: question._id,
-                answer: this.candidateForm.value[`question_${index}`] || null // Get the answer, allow null for unattempted
+            questions: this.questions.map((question) => ({
+                id: question._id, // Include question ID
+                question: question.question,
+                options: question.options,
+                correctAnswer: question.correctAnswer,
+                answer: this.candidateForm.value[`question_${this.questions.indexOf(question)}`] || null // Get the answer
             }))
         };
     
         console.log('Submission Data:', structuredSubmissionData);
     
+        // Send the structured data for submission to the server
         this.testService.submitTest(this.formId, structuredSubmissionData).subscribe({
             next: () => {
                 this.submissionSuccess = true;
                 this.errorMessage = null;
-                this.candidateForm.reset(); 
+                this.candidateForm.reset(); // Reset the form after successful submission
             },
             error: (err) => {
                 this.errorMessage = err.error.message;
@@ -164,4 +220,5 @@ export class TestViewPageComponent implements OnInit, OnDestroy {
             }
         });
     }
+    
 }

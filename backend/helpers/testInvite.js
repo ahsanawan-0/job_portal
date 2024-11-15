@@ -27,6 +27,9 @@ const sendTestInviteEmail = async (applicant, jobTitle, testLink) => {
           <p>
             <a href="${testLink}" style="color: #007BFF; text-decoration: underline;">Take the Test</a>
           </p>
+          <p style="font-size: 16px; color: #ff0000;">
+            <strong>Important:</strong> This is a one-time use link. Please complete the test as soon as possible. The link will expire in 24 hours.
+          </p>
   
           <p style="font-size: 16px; color: #555;">If you have any questions, feel free to contact us at <a href="mailto:${process.env.email_username}">${process.env.email_username}</a>.</p>
   
@@ -41,7 +44,7 @@ const sendTestInviteEmail = async (applicant, jobTitle, testLink) => {
     } catch (error) {
       throw new Error("Email sending failed: " + error.message);
     }
-  };
+};
 
 module.exports = {
   sendTestInviteEmail 

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const answerEvaluationSchema = new mongoose.Schema({
     questionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Questions', required: true },
-    givenAnswer: { type: String, required: true },
+    givenAnswer:{ type: String, required: false, default: null }, 
     correctnessPercentage: { type: Number, default: null },
     remarks: { type: String, default: null },
     feedback: { type: String, default: null } 

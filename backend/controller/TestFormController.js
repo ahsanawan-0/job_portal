@@ -130,6 +130,16 @@ const submitForm = async (req, res) => {
           return res.status(404).json({ message: "Form not found" });
       }
 
+      // Check if the applicant has already submitted this form
+      const existingSubmission = await Submission.findOne({
+          applicantId: applicant._id,
+          formId: formId
+      });
+
+      if (existingSubmission) {
+          return res.status(400).json({ message: "You have already submitted this test." });
+      }
+
       // Create answers array based on submitted questions
       const answers = questions.map((question) => ({
           questionId: question.id,

@@ -57,7 +57,7 @@ export const routes: Routes = [
     component: JobViewPageComponent,
   },
   {
-    path: 'test/admin/:id',
+    path: 'test/admin/:testId',
     component: TestViewPageComponent,
   },
   {

@@ -25,6 +25,8 @@ import { NotificationService } from '../../services/notification/notification.se
 export class ApplyJobModalComponent implements OnInit, OnDestroy {
   notification = inject(NotificationService);
   @Input() jobId: string | null = null; // Input property for jobId
+  @Input() jobTitle: string | null = null; // Input property for jobId
+  
   applicationForm: FormGroup;
   loading = false; // Add loading state
 
@@ -50,6 +52,7 @@ export class ApplyJobModalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Received jobId:', this.jobId); // Log the received jobId
+    console.log('Received jobtitle:', this.jobTitle); // Log the received jobId
   }
 
   // Handle file selection

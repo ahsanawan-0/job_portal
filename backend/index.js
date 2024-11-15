@@ -54,7 +54,6 @@ const updateExpiredJobs = async () => {
       { expirationDate: { $lt: currentDate }, status: "Active" },
       { status: "Expired" }
     );
-    console.log("Initial expired job statuses updated successfully.");
   } catch (error) {
     console.error("Error updating initial expired job statuses:", error);
   }
@@ -85,9 +84,7 @@ const initializeAdminAccount = async () => {
       // Save the admin account to the database
       await newAdmin.save();
       console.log("Admin account created successfully.");
-    } else {
-      console.log("Admin account already exists.");
-    }
+    } 
   } catch (error) {
     console.error("Error initializing admin account:", error);
   }
