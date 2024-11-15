@@ -10,7 +10,6 @@ const applicantsSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true,
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
@@ -33,14 +32,13 @@ const applicantsSchema = new mongoose.Schema(
       required: [true, "Cover letter is required"],
     },
     resume: {
-      type: String, 
+      type: String,
       required: [true, "Resume is required"],
     },
-    jobTitle: { type: String, required: true }, 
-    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }], 
-
+    jobTitle: { type: String, required: true },
+    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
   },
-  
+
   {
     timestamps: true,
   }

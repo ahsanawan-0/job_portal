@@ -51,7 +51,7 @@ export class JobApplicationsComponent implements OnInit {
   totalApplicants: number = 0;
   jobTitle: string = '';
   applicants: any[] = [];
-  
+
   jobExpirationDate: string | null = null;
   jobStatus: string = '';
   resumeIndex: number | null = null;
@@ -222,7 +222,7 @@ export class JobApplicationsComponent implements OnInit {
 
   downloadResume(resumeId: string) {
     this.resumeLoading[resumeId] = true;
-    this.resumeViewLoading[resumeId] = false;  // res
+    this.resumeViewLoading[resumeId] = false; // res
 
     this.service.getFileById(resumeId).subscribe(
       (response: any) => {
@@ -234,15 +234,13 @@ export class JobApplicationsComponent implements OnInit {
           // anchor.download = response.data.name; // Optional: filename if needed
           anchor.click();
           this.resumeLoading[resumeId] = false;
-
         } else {
-          console.error("Download link not available");
+          console.error('Download link not available');
           this.resumeLoading[resumeId] = false;
-
         }
       },
-      (error:any) => {
-        console.error("Error fetching file data:", error);
+      (error: any) => {
+        console.error('Error fetching file data:', error);
       }
     );
   }
@@ -277,7 +275,7 @@ export class JobApplicationsComponent implements OnInit {
 
     this.service.getFileById(resumeId).subscribe(
       (response: any) => {
-        console.log(response)
+        console.log(response);
         if (response?.data?.webContentLink) {
           // Create an anchor element to trigger the download
           const anchor = document.createElement('a');
@@ -285,12 +283,10 @@ export class JobApplicationsComponent implements OnInit {
           anchor.target = '_blank'; // Optional: opens in a new tab
           anchor.click();
           this.resumeViewLoading[resumeId] = false;
-
         } else {
-          console.error("View link not available");
+          console.error('View link not available');
 
           this.resumeViewLoading[resumeId] = false;
-
         }
       },
       (error: any) => {
