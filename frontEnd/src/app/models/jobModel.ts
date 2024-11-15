@@ -63,10 +63,11 @@ interface Evaluation {
 
 export interface SubmissionData {
   applicant: {
-      id: string;
-      name: string;
-      email: string;
+    id: string;
+    name: string;
+    email: string;
   };
+  formId: string;
   evaluations: Evaluation[];
 }
 export interface QuestionCard {
@@ -76,7 +77,7 @@ export interface QuestionCard {
   experience_level: string;
   field: string;
   createdAt: Date; // Include createdAt if you want to show it
-  job_id:string;
+  job_id: string;
 }
 export interface FormCard {
   id: string;

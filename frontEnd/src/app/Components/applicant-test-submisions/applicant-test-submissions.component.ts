@@ -11,7 +11,7 @@ import { SubmissionData } from '../../models/jobModel';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './applicant-test-submissions.component.html',
-  styleUrls: ['./applicant-test-submissions.component.css']
+  styleUrls: ['./applicant-test-submissions.component.css'],
 })
 export class ApplicantTestSubmissionsComponent implements OnInit, OnDestroy {
   submissionData: SubmissionData | null = null; // Initial value can be null
@@ -21,7 +21,11 @@ export class ApplicantTestSubmissionsComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private testService: TestServiceService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private testService: TestServiceService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.extractIds();
@@ -35,28 +39,34 @@ export class ApplicantTestSubmissionsComponent implements OnInit, OnDestroy {
     });
   }
 
+  formId: string = '';
   fetchSubmissionData() {
-    this.testService.getEvalutionOfApplicants(this.submissionId, this.applicantId).subscribe(
-      (data: SubmissionData) => {
-        this.submissionData = data;
-        console.log(this.submissionData)
-        this.submissionData.evaluations.forEach(evaluation => {
-          if (!evaluation.options) {
+    this.testService
+      .getEvalutionOfApplicants(this.submissionId, this.applicantId)
+      .subscribe(
+        (data: SubmissionData) => {
+          this.formId = data.formId;
+
+          this.submissionData = data;
+          console.log(this.submissionData);
+          this.submissionData.evaluations.forEach((evaluation) => {
+            if (!evaluation.options) {
               evaluation.options = []; // Ensure options is an array
-          }
-        });
-        this.isLoading = false; // Data loaded successfully
-      },
-      (error: any) => {
-        console.error('Error fetching submission data', error);
-        this.errorMessage = 'Failed to load submission data. Please try again.';
-        this.isLoading = false; // Loading finished with error
-      }
-    );
+            }
+          });
+          this.isLoading = false; // Data loaded successfully
+        },
+        (error: any) => {
+          console.error('Error fetching submission data', error);
+          this.errorMessage =
+            'Failed to load submission data. Please try again.';
+          this.isLoading = false; // Loading finished with error
+        }
+      );
   }
 
   onClickArrowLeft() {
-    this.router.navigate(['/path-to-previous-component']); // Adjust this path as needed
+    this.router.navigate([`/test-applicants-list/${this.formId}`]); // Adjust this path as needed
   }
 
   ngOnDestroy() {

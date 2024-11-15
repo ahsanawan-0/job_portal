@@ -2,59 +2,71 @@ const mongoose = require("mongoose");
 const Submission = require("../models/definations/submisionSchema");
 const Applicants = require("../models/definations/applicantsSchema");
 const Form = require("../models/definations/TestFormSchema");
-const Evaluation =require("../models/definations/evaluationSchema")
+const Evaluation = require("../models/definations/evaluationSchema");
 const { evaluateAnswersSequentially } = require("../helpers/evaluateAnswers");
-const jobSchema = require("../models/definations/jobSchema"); 
-const Job = mongoose.model("Job", jobSchema); 
+const jobSchema = require("../models/definations/jobSchema");
+const Job = mongoose.model("Job", jobSchema);
 
 const createTest = async (req, res) => {
-  const { job_id, generatedQuestions_id } = req.params;  
-  console.log('Request Parameters:', req.params);
-  
+  const { job_id, generatedQuestions_id } = req.params;
+  console.log("Request Parameters:", req.params);
+
   const { title, questions, duration } = req.body;
 
   // Validate request parameters and body
   if (!job_id || !generatedQuestions_id) {
-      return res.status(400).json({ message: "Job ID and Generated Questions ID are required." });
+    return res
+      .status(400)
+      .json({ message: "Job ID and Generated Questions ID are required." });
   }
 
-  if (!title || !Array.isArray(questions) || questions.length === 0 || typeof duration !== 'number') {
-      return res.status(400).json({ message: "Title, questions (array), and duration (number) are required." });
+  if (
+    !title ||
+    !Array.isArray(questions) ||
+    questions.length === 0 ||
+    typeof duration !== "number"
+  ) {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Title, questions (array), and duration (number) are required.",
+      });
   }
 
   try {
-      // Create the new form
-      const newForm = new Form({
-          title,
-          questions,
-          duration,
-          generatedQuestions_id,
-          job_id,
-      });
+    // Create the new form
+    const newForm = new Form({
+      title,
+      questions,
+      duration,
+      generatedQuestions_id,
+      job_id,
+    });
 
-      // Save the new form
-      await newForm.save();
+    // Save the new form
+    await newForm.save();
 
-      // Update the Job schema with the new form ID
-      const updatedJob = await Job.findByIdAndUpdate(
-          job_id,
-          { $push: { testForms: newForm._id } }, // Add the form ID to the testForms array
-          { new: true } // Return the updated document
-      );
+    // Update the Job schema with the new form ID
+    const updatedJob = await Job.findByIdAndUpdate(
+      job_id,
+      { $push: { testForms: newForm._id } }, // Add the form ID to the testForms array
+      { new: true } // Return the updated document
+    );
 
-      if (!updatedJob) {
-          // If the job was not found, return a 404 response
-          return res.status(404).json({ message: "Job not found." });
-      }
+    if (!updatedJob) {
+      // If the job was not found, return a 404 response
+      return res.status(404).json({ message: "Job not found." });
+    }
 
-      res.status(201).json({
-          message: "Form created successfully",
-          form: newForm,
-          updatedJob 
-      });
+    res.status(201).json({
+      message: "Form created successfully",
+      form: newForm,
+      updatedJob,
+    });
   } catch (error) {
-      console.error('Error creating form:', error); // Log the error to the console
-      res.status(500).json({ message: error.message });
+    console.error("Error creating form:", error); // Log the error to the console
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -81,29 +93,37 @@ const updateForm = async (req, res) => {
   }
 };
 
-const createEvaluationEntry = async (applicantId, formId, submissionId, evaluations, questions) => {
+const createEvaluationEntry = async (
+  applicantId,
+  formId,
+  submissionId,
+  evaluations,
+  questions
+) => {
   try {
-      const evaluationEntry = new Evaluation({
-          applicantId: applicantId,
-          formId: formId,
-          submissionId: submissionId, // Include submissionId
-          answerEvaluations: Object.entries(evaluations).map(([questionKey, evaluation], index) => {
-              const questionObj = questions[index]; // Get the corresponding question from the incoming data
-              const userAnswer = questionObj.answer; // Directly use the answer from the question object
+    const evaluationEntry = new Evaluation({
+      applicantId: applicantId,
+      formId: formId,
+      submissionId: submissionId, // Include submissionId
+      answerEvaluations: Object.entries(evaluations).map(
+        ([questionKey, evaluation], index) => {
+          const questionObj = questions[index]; // Get the corresponding question from the incoming data
+          const userAnswer = questionObj.answer; // Directly use the answer from the question object
 
-              return {
-                  questionId: questionObj.id, // Extract question ID
-                  givenAnswer: userAnswer,      // Use the answer provided by the user
-                  correctnessPercentage: evaluation.correctnessPercentage,
-                  remarks: evaluation.remark,
-              };
-          }),
-      });
+          return {
+            questionId: questionObj.id, // Extract question ID
+            givenAnswer: userAnswer, // Use the answer provided by the user
+            correctnessPercentage: evaluation.correctnessPercentage,
+            remarks: evaluation.remark,
+          };
+        }
+      ),
+    });
 
-      await evaluationEntry.save();
+    await evaluationEntry.save();
   } catch (error) {
-      console.error("Error creating evaluation entry:", error.message);
-      throw new Error("Failed to create evaluation entry.");
+    console.error("Error creating evaluation entry:", error.message);
+    throw new Error("Failed to create evaluation entry.");
   }
 };
 const submitForm = async (req, res) => {
@@ -114,112 +134,131 @@ const submitForm = async (req, res) => {
 
   // Validate inputs
   if (!name || !email || !questions || !Array.isArray(questions)) {
-      return res.status(400).json({ message: "Missing required fields." });
+    return res.status(400).json({ message: "Missing required fields." });
   }
 
   try {
-      // Find the applicant by email
-      let applicant = await Applicants.findOne({ email });
-      if (!applicant) {
-          return res.status(404).json({ message: "Applicant not found" });
-      }
+    // Find the applicant by email
+    let applicant = await Applicants.findOne({ email });
+    if (!applicant) {
+      return res.status(404).json({ message: "Applicant not found" });
+    }
 
-      // Find the form by ID
-      const form = await Form.findById(formId);
-      if (!form) {
-          return res.status(404).json({ message: "Form not found" });
-      }
+    // Find the form by ID
+    const form = await Form.findById(formId);
+    if (!form) {
+      return res.status(404).json({ message: "Form not found" });
+    }
 
-      // Create answers array based on submitted questions
-      const answers = questions.map((question) => ({
-          questionId: question.id,
-          answer: question.answer || null, // Allow null for unattempted questions
-      }));
+    // Create answers array based on submitted questions
+    const answers = questions.map((question) => ({
+      questionId: question.id,
+      answer: question.answer || null, // Allow null for unattempted questions
+    }));
 
-      // Check if all answers are null
-      const allUnattempted = answers.every(answer => answer.answer === null);
+    // Check if all answers are null
+    const allUnattempted = answers.every((answer) => answer.answer === null);
 
-      // Create submission object
-      const submission = new Submission({
-          applicantId: applicant._id,
-          formId: formId,
-          answers: answers,
-      });
+    // Create submission object
+    const submission = new Submission({
+      applicantId: applicant._id,
+      formId: formId,
+      answers: answers,
+    });
 
-      // Save submission
-      await submission.save();
+    // Save submission
+    await submission.save();
 
-      // Update form applicants list
-      if (!form.applicants.includes(applicant._id)) {
-          form.applicants.push(applicant._id);
-          await form.save();
-      }
+    // Update form applicants list
+    if (!form.applicants.includes(applicant._id)) {
+      form.applicants.push(applicant._id);
+      await form.save();
+    }
 
-      // Create evaluations based on answers
-      const evaluations = await evaluateAnswersSequentially(questions, answers);
-      
-      // Pass submission._id to createEvaluationEntry
-      await createEvaluationEntry(applicant._id, formId, submission._id, evaluations, questions);
+    // Create evaluations based on answers
+    const evaluations = await evaluateAnswersSequentially(questions, answers);
 
-      // Provide feedback based on whether questions were attempted
-      if (allUnattempted) {
-          return res.status(200).json({ message: "Submission successful, but no questions were attempted.", submission });
-      }
+    // Pass submission._id to createEvaluationEntry
+    await createEvaluationEntry(
+      applicant._id,
+      formId,
+      submission._id,
+      evaluations,
+      questions
+    );
 
-      return res.status(200).json({ message: "Submission successful", submission });
+    // Provide feedback based on whether questions were attempted
+    if (allUnattempted) {
+      return res
+        .status(200)
+        .json({
+          message: "Submission successful, but no questions were attempted.",
+          submission,
+        });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Submission successful", submission });
   } catch (error) {
-      console.error("Error during form submission:", error.message);
-      return res.status(500).json({ message: "Internal server error" });
+    console.error("Error during form submission:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 const getEvaluationBySubmissionId = async (req, res) => {
-  const { submissionId, applicantId } = req.params; 
-  console.log('Received request for:', req.params);
-  
+  const { submissionId, applicantId } = req.params;
+  console.log("Received request for:", req.params);
+
   try {
-      // Fetch evaluation based on submissionId and applicantId
-      const evaluation = await Evaluation.findOne({ applicantId, submissionId }).exec();
-      
-      if (!evaluation) {
-          return res.status(404).json({ message: "Evaluation not found." });
-      }
+    // Fetch evaluation based on submissionId and applicantId
+    const evaluation = await Evaluation.findOne({
+      applicantId,
+      submissionId,
+    }).exec();
 
-      // Fetch applicant information
-      const applicant = await Applicants.findById(applicantId).exec();
-      if (!applicant) {
-          return res.status(404).json({ message: "Applicant not found." });
-      }
+    if (!evaluation) {
+      return res.status(404).json({ message: "Evaluation not found." });
+    }
 
-      // Fetch the form associated with the evaluation
-      const form = await Form.findById(evaluation.formId).exec();
-      if (!form) {
-          return res.status(404).json({ message: "Form not found." });
-      }
+    // Fetch applicant information
+    const applicant = await Applicants.findById(applicantId).exec();
+    if (!applicant) {
+      return res.status(404).json({ message: "Applicant not found." });
+    }
 
-      const result = evaluation.answerEvaluations.map(evaluation => {
-          const question = form.questions.find(q => q._id.toString() === evaluation.questionId.toString());
-          return {
-              questionId: evaluation.questionId,
-              questionText: question ? question.question : "Question not found", // Safely access the question text
-              options: question ? question.options : [], // Include the options
-              givenAnswer: evaluation.givenAnswer,
-              correctnessPercentage: evaluation.correctnessPercentage,
-              remarks: evaluation.remarks,
-              correctAnswer: question ? question.correctAnswer : null // Safely access the correct answer
-          };
-      });
+    // Fetch the form associated with the evaluation
+    const form = await Form.findById(evaluation.formId).exec();
+    if (!form) {
+      return res.status(404).json({ message: "Form not found." });
+    }
 
-      return res.status(200).json({
-          applicant: {
-              id: applicant._id,
-              name: applicant.name,
-              email: applicant.email,
-          },
-          evaluations: result
-      });
+    const result = evaluation.answerEvaluations.map((evaluation) => {
+      const question = form.questions.find(
+        (q) => q._id.toString() === evaluation.questionId.toString()
+      );
+      return {
+        questionId: evaluation.questionId,
+        questionText: question ? question.question : "Question not found", // Safely access the question text
+        options: question ? question.options : [], // Include the options
+        givenAnswer: evaluation.givenAnswer,
+        correctnessPercentage: evaluation.correctnessPercentage,
+        remarks: evaluation.remarks,
+        correctAnswer: question ? question.correctAnswer : null, // Safely access the correct answer
+      };
+    });
+
+    return res.status(200).json({
+      applicant: {
+        id: applicant._id,
+        name: applicant.name,
+        email: applicant.email,
+      },
+      formId: evaluation.formId,
+      evaluations: result,
+    });
   } catch (error) {
-      console.error("Error retrieving evaluation:", error.message);
-      return res.status(500).json({ message: "Failed to retrieve evaluation." });
+    console.error("Error retrieving evaluation:", error.message);
+    return res.status(500).json({ message: "Failed to retrieve evaluation." });
   }
 };
 const getTestByJobId = async (req, res) => {
@@ -238,13 +277,15 @@ const getTestByJobId = async (req, res) => {
     }
 
     if (!job.testForms || job.testForms.length === 0) {
-      return res.status(404).json({ message: "No test forms associated with this job" });
+      return res
+        .status(404)
+        .json({ message: "No test forms associated with this job" });
     }
 
     res.status(200).json({
       jobId: job._id,
       jobTitle: job.title, // Assuming the job schema includes a title field
-      testForms: job.testForms.map(testForm => ({
+      testForms: job.testForms.map((testForm) => ({
         id: testForm._id,
         title: testForm.title,
       })),
@@ -254,7 +295,6 @@ const getTestByJobId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 const getFormById = async (req, res) => {
   const { test_form_id } = req.params;
@@ -275,7 +315,6 @@ const getFormById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const getAllForms = async (req, res) => {
   try {
@@ -348,10 +387,6 @@ const getApplicantsByFormId = async (req, res) => {
   }
 };
 
-
-
-
-
 // const sendTestInvitesToAll = async (req, res) => {
 //   const { jobId, applicantIds } = req.body;
 
@@ -396,27 +431,23 @@ const getApplicantsByFormId = async (req, res) => {
 //   res.status(200).json({ message: "Test invites sent successfully", invites: testInvites });
 // };
 
-
-
 // // Implement the email sending function
 // const sendTestInviteEmail = async (email, testTitle, link) => {
 //   // Your email sending logic (e.g., using nodemailer)
 //   console.log(`Sending email to: ${email}`);
 //   console.log(`Test Title: ${testTitle}`);
 //   console.log(`Test Link: ${link}`);
- 
+
 // };
-
-
 
 module.exports = {
   createTest,
-  
+
   getFormById,
   updateForm,
   getApplicantsByFormId,
   getAllForms,
   submitForm,
   getTestByJobId,
-  getEvaluationBySubmissionId
+  getEvaluationBySubmissionId,
 };

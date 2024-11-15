@@ -27,36 +27,6 @@
         <p class="font-medium font-sans text-sm text-custom-black">
           All Applications ({{ totalApplicants }})
         </p>
-
-        <!-- <img
-          src="assets/icons/HorizontalDots.svg"
-          (click)="onClickThreeDots(0)"
-          [ngClass]="dropdown[0] ? 'filter-black' : 'filter-gray'"
-          class="cursor-pointer"
-        /> -->
-        <!-- <div
-          *ngIf="dropdown[0]"
-          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
-        >
-          <ul class="list-none">
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Pencil.svg" />
-                <p class="font-sans font-medium text-sm text-[#5E6670]">
-                  Edit Column
-                </p>
-              </div>
-            </li>
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Trash.svg" />
-                <p class="font-sans font-medium text-sm text-[#E05151]">
-                  Delete
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div> -->
       </div>
       <div class="overflow-auto max-h-[320px]">
         <div
@@ -106,7 +76,7 @@
               Click to Short List
             </p>
             <button
-              (click)="createShortListedApplicant(item._id)"
+              (click)="createShortListedApplicant(item._id, item.name)"
               [disabled]="isJobExpired() || isShortListed(item._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
@@ -234,36 +204,6 @@
         <p class="font-medium font-sans text-sm text-custom-black">
           Test Invite ({{ testInvitedCount }})
         </p>
-
-        <!-- <img
-          src="assets/icons/HorizontalDots.svg"
-          (click)="onClickThreeDots(2)"
-          [ngClass]="dropdown[2] ? 'filter-black' : 'filter-gray'"
-          class="cursor-pointer"
-        /> -->
-        <!-- <div
-          *ngIf="dropdown[2]"
-          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
-        >
-          <ul class="list-none">
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Pencil.svg" />
-                <p class="font-sans font-medium text-sm text-[#5E6670]">
-                  Edit Column
-                </p>
-              </div>
-            </li>
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Trash.svg" />
-                <p class="font-sans font-medium text-sm text-[#E05151]">
-                  Delete
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div> -->
       </div>
       <div class="overflow-auto max-h-[320px]">
         <div
@@ -305,7 +245,7 @@
               Click to Hire
             </p>
             <button
-              (click)="createHiredApplicantsForJob(item._id)"
+              (click)="createHiredApplicantsForJob(item._id, item.name)"
               [disabled]="isJobExpired() || isHired(item._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
@@ -337,36 +277,6 @@
         <p class="font-medium font-sans text-sm text-custom-black">
           Hired Candidates ({{ hiredApplicantCount }})
         </p>
-
-        <!-- <img
-          src="assets/icons/HorizontalDots.svg"
-          (click)="onClickThreeDots(3)"
-          [ngClass]="dropdown[3] ? 'filter-black' : 'filter-gray'"
-          class="cursor-pointer"
-        /> -->
-        <!-- <div
-          *ngIf="dropdown[3]"
-          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
-        >
-          <ul class="list-none">
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Pencil.svg" />
-                <p class="font-sans font-medium text-sm text-[#5E6670]">
-                  Edit Column
-                </p>
-              </div>
-            </li>
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Trash.svg" />
-                <p class="font-sans font-medium text-sm text-[#E05151]">
-                  Delete
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div> -->
       </div>
       <div class="overflow-auto max-h-[320px]">
         <div
@@ -403,10 +313,6 @@
 
             <p class="font-medium text-sm text-custom-blue">Download CV</p>
           </div>
-          <!-- <div class="flex justify-center p-2 gap-2 cursor-pointer">
-          <img src="assets/icons/tick.svg" />
-          <img src="assets/icons/Cross.svg" />
-        </div> -->
         </div>
       </div>
     </div>

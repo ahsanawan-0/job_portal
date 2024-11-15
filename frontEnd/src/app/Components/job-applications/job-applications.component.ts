@@ -9,19 +9,23 @@ import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TetsFormsListComponent } from '../../modals/tets-forms-list/tets-forms-list.component';
+import { DeleteConfirmationModalComponent } from '../../modals/delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-job-applications',
   standalone: true,
-  imports: [CommonModule, DatePipe, CapitalizeWordsPipe,TetsFormsListComponent],
+  imports: [
+    CommonModule,
+    DatePipe,
+    CapitalizeWordsPipe,
+    TetsFormsListComponent,
+  ],
   templateUrl: './job-applications.component.html',
   styleUrl: './job-applications.component.css',
 })
 export class JobApplicationsComponent implements OnInit {
   notification = inject(NotificationService);
   route = inject(Router);
-
-
 
   onClickArrowLeft() {
     this.route.navigateByUrl('myjobs');
@@ -51,7 +55,6 @@ export class JobApplicationsComponent implements OnInit {
   jobStatus: string = '';
   resumeLoading: boolean = false; // Add a loading state variable
 
-
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
       this.jobId = params.get('id');
@@ -75,17 +78,26 @@ export class JobApplicationsComponent implements OnInit {
       this.extractApplicantId();
     });
   }
-  
+
   shortListed: any[] = [];
-  createShortListedApplicant(applicantId: string) {
-    this.service
-      .createShortlistedApplicant(this.jobId, applicantId)
-      .subscribe((res: any) => {
-        this.shortListed = res.response;
-        this.notification.showSuccess('Applicant is ShortListed!');
-      });
-    this.getAllShortListedApplicants();
-    this.getApplicantsForJob();
+  createShortListedApplicant(applicantId: string, applicantName: string) {
+    const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
+    modalRef.componentInstance.jobName = applicantName;
+    modalRef.componentInstance.modalTitle = 'Confirm ShortList';
+    modalRef.componentInstance.modalMessage =
+      'Are you sure you want to shortlist this applicant';
+    modalRef.componentInstance.confirmed.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.service
+          .createShortlistedApplicant(this.jobId, applicantId)
+          .subscribe((res: any) => {
+            this.shortListed = res.response;
+            this.notification.showSuccess('Applicant is ShortListed!');
+            this.getAllShortListedApplicants();
+            this.getApplicantsForJob();
+          });
+      }
+    });
   }
   shortListedArray: any[] = [];
   shortListedCount: number = 0;
@@ -128,19 +140,15 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   testInvited: any[] = [];
-  createShortListedApplicantsForJob(applicantId: string ,testId: string) {
+  createShortListedApplicantsForJob(applicantId: string, testId: string) {
     this.service
-    .createTestInvitedApplicantsForJob(this.jobId, applicantId, testId)
+      .createTestInvitedApplicantsForJob(this.jobId, applicantId, testId)
       .subscribe((res: any) => {
         this.testInvited = res.response;
         this.notification.showSuccess('Applicant is Invited For Test!');
+        this.getAllTestInvitedApplicants();
       });
-    this.getApplicantsForJob();
-    this.getAllTestInvitedApplicants();
   }
-
-
-
 
   testInvitedArray: any[] = [];
   testInvitedCount: number = 0;
@@ -167,15 +175,24 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   hiredApplicant: any[] = [];
-  createHiredApplicantsForJob(applicantId: string) {
-    this.service
-      .createHiredApplicantsForJob(this.jobId, applicantId)
-      .subscribe((res: any) => {
-        this.hiredApplicant = res.response;
-        this.notification.showSuccess('Applicant is Hired!');
-      });
-    this.getApplicantsForJob();
-    this.getAllHiredApplicants();
+  createHiredApplicantsForJob(applicantId: string, applicantName: string) {
+    const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
+    modalRef.componentInstance.jobName = applicantName;
+    modalRef.componentInstance.modalTitle = 'Confirm Hire';
+    modalRef.componentInstance.modalMessage =
+      'Are you sure you want to hire this applicant';
+    modalRef.componentInstance.confirmed.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.service
+          .createHiredApplicantsForJob(this.jobId, applicantId)
+          .subscribe((res: any) => {
+            this.hiredApplicant = res.response;
+            this.notification.showSuccess('Applicant is Hired!');
+            this.getApplicantsForJob();
+            this.getAllHiredApplicants();
+          });
+      }
+    });
   }
 
   hiredApplicantArray: any[] = [];
@@ -213,38 +230,38 @@ export class JobApplicationsComponent implements OnInit {
           anchor.download = response.data.name; // Optional: filename if needed
           anchor.click();
           this.resumeLoading = false; // Stop loading
-
         } else {
-          console.error("Download link not available");
+          console.error('Download link not available');
           this.resumeLoading = false; // Stop loading on error
-
         }
       },
-      (error:any) => {
-        console.error("Error fetching file data:", error);
+      (error: any) => {
+        console.error('Error fetching file data:', error);
       }
     );
   }
   private modalService = inject(NgbModal);
   openTestSelectionModal(applicantId: string) {
     // Find the shortlisted applicant's information based on the ID
-    const applicant = this.shortListedArray.find(app => app._id === applicantId);
-  
+    const applicant = this.shortListedArray.find(
+      (app) => app._id === applicantId
+    );
+
     if (!applicant) {
       console.error(`Shortlisted applicant with ID ${applicantId} not found`);
       return; // Early exit if applicant not found
     }
-  
+
     const modalRef = this.modalService.open(TetsFormsListComponent, {
       size: 'lg',
       backdrop: 'static',
     });
-  
+
     // Pass the jobId, applicantId, and applicantName to the modal
     modalRef.componentInstance.jobId = this.jobId; // Pass the job ID
     modalRef.componentInstance.applicantId = applicantId; // Pass the applicant ID
     modalRef.componentInstance.applicantName = applicant.name; // Pass the applicant name
-  
+
     // Handle the test selection within the modal
     modalRef.componentInstance.invitationSent.subscribe(() => {
       this.getAllTestInvitedApplicants(); // Refresh the list of invited applicants
@@ -263,5 +280,4 @@ export class JobApplicationsComponent implements OnInit {
         this.getAllTestInvitedApplicants();
       });
   }
-  
 }
