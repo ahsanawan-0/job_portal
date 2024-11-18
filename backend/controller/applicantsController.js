@@ -1,13 +1,14 @@
-const jobModel = require("../models/jobModel"); 
-const crypto = require('crypto');
-const TestLink = require('../models/definations/TestLinkSchema'); // Ensure you import your TestLink model
-const mongoose = require('mongoose');
-const sendEmail = require("../helpers/sendEmail"); 
+const jobModel = require("../models/jobModel");
+const crypto = require("crypto");
+const TestLink = require("../models/definations/TestLinkSchema"); // Ensure you import your TestLink model
+const mongoose = require("mongoose");
+const sendEmail = require("../helpers/sendEmail");
 const applicantModel = require("../models/applicantsModel");
 const applicantsSchema = require("../models/definations/applicantsSchema");
-const { uploadFile } = require('../helpers/fileHelper'); 
+const { uploadFile } = require("../helpers/fileHelper");
 const { sendTestInviteEmail } = require("../helpers/testInvite");
 const jobSchema = require("../models/definations/jobSchema");
+const sendOnsiteEmail = require("../helpers/sendOnsiteEmail");
 
 const ApplicantsApplyForJob = async (req, res) => {
   try {
@@ -30,10 +31,18 @@ const ApplicantsApplyForJob = async (req, res) => {
 
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-    const resumeId = await uploadFile(req.file.path, req.file.mimetype, folderId);
+    const resumeId = await uploadFile(
+      req.file.path,
+      req.file.mimetype,
+      folderId
+    );
     let profilePhotoId = null;
     if (req.body.profilePhoto) {
-      profilePhotoId = await uploadFile(req.body.profilePhoto.path, req.body.profilePhoto.mimetype, folderId);
+      profilePhotoId = await uploadFile(
+        req.body.profilePhoto.path,
+        req.body.profilePhoto.mimetype,
+        folderId
+      );
     }
 
     const job = await jobModel.getJobById(jobId);
@@ -47,7 +56,9 @@ const ApplicantsApplyForJob = async (req, res) => {
     });
 
     if (existingApplication) {
-      return res.status(400).json({ error: "You have already applied for this job." });
+      return res
+        .status(400)
+        .json({ error: "You have already applied for this job." });
     }
 
     const newApplicant = new applicantsSchema({
@@ -210,62 +221,67 @@ const getAllShortListedApplicants = async (req, res) => {
 };
 
 const createTestInvitedApplicantsForJob = async (req, res) => {
-    try {
-        const { applicantId, testId } = req.body;
-        const jobId= req.params.jobId;
-        
-        console.log("check1")
-        if (!jobId || !applicantId || !testId) {
-          return res.status(400).send({ message: "Job ID, Applicant ID, and Test ID are required." });
-        }
-        console.log("check2")
+  try {
+    const { applicantId, testId } = req.body;
+    const jobId = req.params.jobId;
 
-        const result = await applicantModel.addApplicantToTestInvited(jobId, applicantId);
-        if (result.error) {
-            return res.status(500).send({ message: result.error });
-        }
-
-        const { job, applicantData } = result; 
-
-        // Check if applicant data exists
-        if (!applicantData || !applicantData.email) {
-            return res.status(400).send({ message: "Applicant email not found." });
-        }
- 
-        // Generate a unique token for the test link
-        const token = crypto.randomBytes(16).toString('hex'); // Generate unique token
-        const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // Valid for 24 hours
-          console.log("check1")
-        // Create and save the test link record
-        const testLink = new TestLink({
-            applicantId,
-            testId,
-            token,
-            used: false,
-            expiresAt,
-        });
-
-        await testLink.save();
-
-        // Create the test link
-        const testLinkUrl = `${process.env.FRONTEND_URL}/test/user/${testId}?token=${token}&applicant=${applicantId}`;
-
-        // Fetch the job title using the new function
-        const jobTitle = await jobModel.getJobTitleById(jobId);
-        if (!jobTitle) {
-            return res.status(404).send({ message: "Job not found." });
-        }
-
-        await sendTestInviteEmail(applicantData, jobTitle, testLinkUrl);
-
-        return res.send({
-            message: "Test invitation sent successfully.",
-            response: job, // Return the job object
-        });
-    } catch (error) {
-        console.error("Error inviting applicant for test:", error);
-        return res.status(500).send({ error: error.message });
+    console.log("check1");
+    if (!jobId || !applicantId || !testId) {
+      return res
+        .status(400)
+        .send({ message: "Job ID, Applicant ID, and Test ID are required." });
     }
+    console.log("check2");
+
+    const result = await applicantModel.addApplicantToTestInvited(
+      jobId,
+      applicantId
+    );
+    if (result.error) {
+      return res.status(500).send({ message: result.error });
+    }
+
+    const { job, applicantData } = result;
+
+    // Check if applicant data exists
+    if (!applicantData || !applicantData.email) {
+      return res.status(400).send({ message: "Applicant email not found." });
+    }
+
+    // Generate a unique token for the test link
+    const token = crypto.randomBytes(16).toString("hex"); // Generate unique token
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // Valid for 24 hours
+    console.log("check1");
+    // Create and save the test link record
+    const testLink = new TestLink({
+      applicantId,
+      testId,
+      token,
+      used: false,
+      expiresAt,
+    });
+
+    await testLink.save();
+
+    // Create the test link
+    const testLinkUrl = `${process.env.FRONTEND_URL}/test/user/${testId}?token=${token}&applicant=${applicantId}`;
+
+    // Fetch the job title using the new function
+    const jobTitle = await jobModel.getJobTitleById(jobId);
+    if (!jobTitle) {
+      return res.status(404).send({ message: "Job not found." });
+    }
+
+    await sendTestInviteEmail(applicantData, jobTitle, testLinkUrl);
+
+    return res.send({
+      message: "Test invitation sent successfully.",
+      response: job, // Return the job object
+    });
+  } catch (error) {
+    console.error("Error inviting applicant for test:", error);
+    return res.status(500).send({ error: error.message });
+  }
 };
 
 const getAllTestInvitedApplicants = async (req, res) => {
@@ -359,35 +375,124 @@ const getAllHiredApplicants = async (req, res) => {
 };
 const getApplicantById = async (req, res) => {
   try {
-      // Get applicantId from the query parameters
-      const { applicant } = req.query; // Use req.query to access query parameters
+    // Get applicantId from the query parameters
+    const { applicant } = req.query; // Use req.query to access query parameters
 
-      if (!applicant) {
-          return res.status(400).json({ error: "Applicant ID is required." });
-      }
+    if (!applicant) {
+      return res.status(400).json({ error: "Applicant ID is required." });
+    }
 
-      // Ensure that applicant is a valid ObjectId format
-      if (!mongoose.Types.ObjectId.isValid(applicant)) {
-          return res.status(400).json({ error: "Invalid Applicant ID format." });
-      }
-console.log(applicant)
-      // Find the applicant by ID and select only the name and email fields
-      const applicantData = await applicantsSchema.findById(applicant).select('name email');
+    // Ensure that applicant is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(applicant)) {
+      return res.status(400).json({ error: "Invalid Applicant ID format." });
+    }
+    console.log(applicant);
+    // Find the applicant by ID and select only the name and email fields
+    const applicantData = await applicantsSchema
+      .findById(applicant)
+      .select("name email");
 
-      if (!applicantData) {
-          return res.status(404).json({ error: "Applicant not found." });
-      }
+    if (!applicantData) {
+      return res.status(404).json({ error: "Applicant not found." });
+    }
 
-      // Return the applicant's name and email
-      res.status(200).json({
-          message: "Applicant data retrieved successfully.",
-          data: applicantData,
-      });
+    // Return the applicant's name and email
+    res.status(200).json({
+      message: "Applicant data retrieved successfully.",
+      data: applicantData,
+    });
   } catch (error) {
-      console.error("Error fetching applicant data:", error);
-      res.status(500).json({ error: "An error occurred while fetching applicant data." });
+    console.error("Error fetching applicant data:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching applicant data." });
   }
-}
+};
+
+const createOnSiteInviteApplicants = async (req, res) => {
+  try {
+    const { applicantId } = req.body;
+    const jobId = req.params.jobId;
+
+    if (!jobId || !applicantId) {
+      return res.status(400).send({
+        message: "Job ID and Applicant ID are required",
+      });
+    }
+    const result = await applicantModel.createOnSiteInviteApplicants(
+      jobId,
+      applicantId
+    );
+
+    if (result.error) {
+      return res.status(500).send({
+        message: result.error.message || "Failed to create onsite invite",
+      });
+    }
+
+    const invitedApplicant = result.response.invitedApplicant;
+    console.log("onsite in controller: ", invitedApplicant);
+
+    const job = {
+      title: result.response.jobTitle,
+      company: result.response.jobCompany,
+    };
+
+    try {
+      await sendOnsiteEmail(invitedApplicant, job);
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError.message);
+      return res.status(500).send({
+        message: "Onsite invite created, but email sending failed.",
+      });
+    }
+
+    return res.send({
+      message: "Onsite invite created and email sent successfully.",
+      response: result.response,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message || "An error occurred",
+    });
+  }
+};
+
+const getAllOnSiteInviteApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+
+    if (!jobId) {
+      return res.status(400).send({
+        message: "Job ID is required",
+      });
+    }
+
+    const invitedData = await applicantModel.getAllOnSiteInviteApplicants(
+      jobId
+    );
+
+    if (invitedData.error) {
+      return res.status(500).send({
+        error:
+          invitedData.error.message || "Failed to fetch onsite invite data",
+      });
+    }
+
+    const totalInvitedApplicants =
+      invitedData.response.invitedApplicants.length;
+
+    return res.send({
+      message: "All Onsite Invited Applicants for the Job",
+      response: invitedData.response,
+      totalApplicants: totalInvitedApplicants,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message || "An error occurred",
+    });
+  }
+};
 
 module.exports = {
   ApplicantsApplyForJob,
@@ -400,4 +505,6 @@ module.exports = {
   createHiredApplicantsForJob,
   getAllHiredApplicants,
   getApplicantById,
+  createOnSiteInviteApplicants,
+  getAllOnSiteInviteApplicants,
 };

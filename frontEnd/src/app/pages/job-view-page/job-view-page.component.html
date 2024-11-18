@@ -3,7 +3,7 @@
 >
   <div id="left" class="w-1/2 flex justify-center items-center">
     <div>
-      <img src="assets/images/Rectangle43.png" alt="" />
+      <img src="assets/logo/sdsol_logoRound.svg" alt="" />
     </div>
     <div class="w-full p-3">
       <div class="flex gap-3 items-center mb-3 text-2xl">
@@ -72,7 +72,10 @@
     </div>
     <div id="Responsibilities" class="mt-6">
       <h3 class="font-medium text-xl mb-4">Responsibilities</h3>
-      <div [innerHTML]="job.responsibilities" class="text-[#5E6670] text-base"></div>
+      <div
+        [innerHTML]="job.responsibilities"
+        class="text-[#5E6670] text-base"
+      ></div>
     </div>
     <div class="flex items-center gap-4 mt-10">
       <div>Share this job:</div>
@@ -84,10 +87,7 @@
     </div>
   </div>
   <div id="right_container" class="w-2/5">
-    <div
-      id="Job Overview"
-      class="p-6 border-2 border-[#E7F0FA] rounded-md "
-    >
+    <div id="Job Overview" class="p-6 border-2 border-[#E7F0FA] rounded-md">
       <h2 class="font-medium text-xl">Job Overview</h2>
 
       <div class="grid grid-cols-3 gap-6 py-7">
@@ -127,7 +127,8 @@
             <h4 class="text-textcolor">Salary:</h4>
             <h3 class="font-semibold">
               <span>{{ job.minSalary | salaryWithSuffix }}</span> -
-              <span>{{ job.maxSalary | salaryWithSuffix }}</span>            </h3>
+              <span>{{ job.maxSalary | salaryWithSuffix }}</span>
+            </h3>
           </div>
         </div>
 
@@ -152,7 +153,7 @@
       <div class="flex flex-col items-start py-4">
         <img src="assets/icons/briefcase.svg" alt="" />
         <h4 class="text-textcolor">Experience:</h4>
-        <h3 class="font-semibold">{{ job.experience }} </h3>
+        <h3 class="font-semibold">{{ job.experience }}</h3>
       </div>
     </div>
     <div
@@ -160,7 +161,7 @@
       class="p-6 border-2 border-[#E7F0FA] rounded-md mt-6"
     >
       <div class="flex gap-5 items-center">
-        <div><img src="assets/logo/insta_logo.png" alt="" /></div>
+        <div><img src="assets/logo/LogoSquare.svg" alt="" /></div>
         <div>
           <div class="text-xl font-semibold">Instagram</div>
           <div class="text-textcolor text-lg">Social networking service</div>

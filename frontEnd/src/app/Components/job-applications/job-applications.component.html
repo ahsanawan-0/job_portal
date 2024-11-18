@@ -333,27 +333,27 @@
             </div>
           </div>
           <div class="flex flex-col items-center justify-center p-2 gap-2">
-            <p class="text-sm text-gray-500" *ngIf="!isHired(item._id)">
-              Click to Hire
+            <p class="text-sm text-gray-500" *ngIf="!isOnsite(item._id)">
+              Click to Invite
             </p>
             <button
-              (click)="createHiredApplicantsForJob(item._id, item.name)"
-              [disabled]="isJobExpired() || isHired(item._id)"
+              (click)="createOnsiteApplicantsForJob(item._id, item.name)"
+              [disabled]="isJobExpired() || isOnsite(item._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
                 'bg-custom-green cursor-pointer ':
-                  !isJobExpired() && isHired(item._id),
+                  !isJobExpired() && isOnsite(item._id),
                 'bg-blue-500  text-white cursor-pointer':
-                  !isJobExpired() && !isHired(item._id)
+                  !isJobExpired() && !isOnsite(item._id)
               }"
               class="px-4 py-2 rounded-md"
             >
               {{
                 isJobExpired()
                   ? "Job Expired"
-                  : isHired(item._id)
-                  ? "Hired"
-                  : "Hire"
+                  : isOnsite(item._id)
+                  ? "Invited"
+                  : "Invite"
               }}
             </button>
           </div>
@@ -367,12 +367,12 @@
     >
       <div class="flex justify-between items-center relative mb-3">
         <p class="font-medium font-sans text-sm text-custom-black">
-          Hired Candidates ({{ hiredApplicantCount }})
+          Onsite Candidates ({{ onsiteApplicantCount }})
         </p>
       </div>
       <div class="overflow-auto max-h-[320px]">
         <div
-          *ngFor="let item of hiredApplicantArray"
+          *ngFor="let item of onsiteApplicantArray"
           class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
         >
           <div name class="flex items-center gap-3 p-4">

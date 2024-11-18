@@ -105,25 +105,25 @@ module.exports = {
     }
   },
 
-  addApplicantToTestInvited : async (jobId, applicantId) => {
+  addApplicantToTestInvited: async (jobId, applicantId) => {
     try {
       const updatedJob = await Job.findByIdAndUpdate(
         jobId,
         { $addToSet: { testInvitedApplicants: applicantId } },
         { new: true }
       ).populate("testInvitedApplicants");
-  
+
       if (!updatedJob) {
         return { error: "Failed to update test invited applicants." };
       }
-  
+
       // Use the correct model name here
       const applicantData = await applicant.findById(applicantId); // Ensure proper model is referenced
       if (!applicantData) {
         return { error: "Applicant not found." };
       }
-  
-      return { job: updatedJob, applicantData }; 
+
+      return { job: updatedJob, applicantData };
     } catch (error) {
       return { error: error.message };
     }
@@ -201,6 +201,70 @@ module.exports = {
       return {
         response: {
           hiredApplicants: jobData.hiredApplicants,
+          jobTitle: jobData.jobTitle,
+        },
+      };
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  },
+
+  createOnSiteInviteApplicants: async (jobId, applicantId) => {
+    try {
+      const jobData = await Job.findByIdAndUpdate(
+        jobId,
+        {
+          $addToSet: { onSiteInvite: applicantId },
+        },
+        { new: true }
+      ).populate("onSiteInvite");
+
+      if (!jobData) {
+        return {
+          error: new Error(
+            "Job not found or failed to update onsite invite list"
+          ),
+        };
+      }
+
+      const invitedApplicant = jobData.onSiteInvite.find(
+        (applicant) => applicant._id.toString() === applicantId
+      );
+
+      return {
+        response: {
+          invitedApplicant,
+          jobTitle: jobData.jobTitle,
+          jobCompany: jobData.company,
+        },
+      };
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  },
+
+  getAllOnSiteInviteApplicants: async (jobId) => {
+    try {
+      const jobData = await Job.findById(jobId)
+        .populate({
+          path: "onSiteInvite",
+          options: { sort: { createdAt: -1 } },
+        })
+        .exec();
+
+      if (!jobData) {
+        return {
+          error: new Error("Job not found or failed to fetch data"),
+        };
+      }
+
+      return {
+        response: {
+          invitedApplicants: jobData.onSiteInvite,
           jobTitle: jobData.jobTitle,
         },
       };

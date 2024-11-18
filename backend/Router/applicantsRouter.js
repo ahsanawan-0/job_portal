@@ -12,9 +12,11 @@ const {
   getAllTestInvitedApplicants,
   createHiredApplicantsForJob,
   getAllHiredApplicants,
-  getApplicantById
+  getApplicantById,
+  createOnSiteInviteApplicants,
+  getAllOnSiteInviteApplicants,
 } = require("../controller/applicantsController");
-const { getFileById } = require('../helpers/getApplicantData'); // Adjust the path
+const { getFileById } = require("../helpers/getApplicantData"); // Adjust the path
 
 // POST route to create a user with resume upload
 router.post(
@@ -23,8 +25,7 @@ router.post(
   applicantsController.ApplicantsApplyForJob
 );
 
-
-router.get('/file/:fileId', async (req, res) => {
+router.get("/file/:fileId", async (req, res) => {
   const fileId = req.params.fileId;
 
   try {
@@ -46,6 +47,8 @@ router.post("/jobs/:jobId/testInvite", createTestInvitedApplicantsForJob);
 router.get("/getAllTestInvitedApplicants/:jobId", getAllTestInvitedApplicants);
 router.post("/jobs/:jobId/hiredApplicant", createHiredApplicantsForJob);
 router.get("/getAllHiredApplicants/:jobId", getAllHiredApplicants);
-router.get('/applicant', getApplicantById);
+router.get("/applicant", getApplicantById);
+router.post("/jobs/:jobId/onsiteInvite", createOnSiteInviteApplicants);
+router.get("/getAllOnsiteApplicants/:jobId", getAllOnSiteInviteApplicants);
 
 module.exports = router;

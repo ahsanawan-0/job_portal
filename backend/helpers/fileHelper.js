@@ -1,22 +1,23 @@
-
-const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
+const { google } = require("googleapis");
+const fs = require("fs");
+const path = require("path");
 
 // Load service account credentials
-const SERVICE_ACCOUNT_FILE = path.join(__dirname, 'angular-436922-906394965bb6.json');
+const SERVICE_ACCOUNT_FILE = path.join(
+  __dirname,
+  "angular-436922-d7e725a7be.json"
+);
 const auth = new google.auth.GoogleAuth({
   keyFile: SERVICE_ACCOUNT_FILE,
-  scopes: ['https://www.googleapis.com/auth/drive.file'],
+  scopes: ["https://www.googleapis.com/auth/drive.file"],
 });
-
 
 // Function to upload file to a specific Google Drive folder
 async function uploadFile(filePath, mimeType, folderId) {
-  const drive = google.drive({ version: 'v3', auth });
+  const drive = google.drive({ version: "v3", auth });
   const fileMetadata = {
     name: path.basename(filePath),
-    parents: [folderId], 
+    parents: [folderId],
   };
 
   const media = {
@@ -27,7 +28,7 @@ async function uploadFile(filePath, mimeType, folderId) {
   const response = await drive.files.create({
     resource: fileMetadata,
     media: media,
-    fields: 'id',
+    fields: "id",
   });
 
   return response.data.id; // Returns the file ID

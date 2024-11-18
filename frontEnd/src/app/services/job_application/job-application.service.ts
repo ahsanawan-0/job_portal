@@ -33,7 +33,7 @@ export class JobApplicationService {
   getFileById(resumeId: string) {
     return this.http.get(`${this.apiUrl}/file/${resumeId}`);
   }
-  
+
   getApplicantsForJob(jobId: string | null) {
     return this.http.get(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
   }
@@ -48,13 +48,16 @@ export class JobApplicationService {
     return this.http.get(`${this.apiUrl}/getAllShortListedApplicants/${jobId}`);
   }
 
-  createTestInvitedApplicantsForJob(jobId: string | null, applicantId: string, testId: string) {
+  createTestInvitedApplicantsForJob(
+    jobId: string | null,
+    applicantId: string,
+    testId: string
+  ) {
     return this.http.post(`${this.apiUrl}/jobs/${jobId}/testInvite`, {
       applicantId,
-      testId
+      testId,
     });
   }
-  
 
   getAllTestInvitedApplicants(jobId: string | null) {
     return this.http.get(`${this.apiUrl}/getAllTestInvitedApplicants/${jobId}`);
@@ -95,8 +98,15 @@ export class JobApplicationService {
 
     // Make the GET request with query parameters
     return this.http.get<any>(`${this.apiUrl}/applicant`, { params });
-}
+  }
 
+  createOnSiteInviteForJob(jobId: string | null, applicantId: string) {
+    return this.http.post(`${this.apiUrl}/jobs/${jobId}/onsiteInvite`, {
+      applicantId,
+    });
+  }
 
-
+  getOnsiteInviteApplicants(jobId: string | null) {
+    return this.http.get(`${this.apiUrl}/getAllOnsiteApplicants/${jobId}`);
+  }
 }

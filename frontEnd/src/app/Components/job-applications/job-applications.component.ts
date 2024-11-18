@@ -66,6 +66,7 @@ export class JobApplicationsComponent implements OnInit {
     this.getAllShortListedApplicants();
     this.getAllTestInvitedApplicants();
     this.getAllHiredApplicants();
+    this.getAllOnsiteApplicants();
   }
 
   service = inject(JobApplicationService);
@@ -73,6 +74,9 @@ export class JobApplicationsComponent implements OnInit {
   getApplicantsForJob() {
     this.service.getApplicantsForJob(this.jobId).subscribe((res: any) => {
       this.applicants = res.response.applicants;
+      console.log(res.response);
+      console.log(res.response.applicants);
+      console.log(res.response.applicants.applications);
       this.totalApplicants = res.totalApplicants;
       this.jobTitle = res.response.jobTitle;
       this.jobExpirationDate = res.response.expirationDate;
@@ -218,6 +222,48 @@ export class JobApplicationsComponent implements OnInit {
 
   isHired(applicantId: string): boolean {
     return this.hiredId.includes(applicantId);
+  }
+
+  onsiteApplicants: any[] = [];
+  onsiteApplicantCount: number = 0;
+  createOnsiteApplicantsForJob(applicantId: string, applicantName: string) {
+    const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
+    modalRef.componentInstance.jobName = applicantName;
+    modalRef.componentInstance.modalTitle = 'Confirm Onsite Invite';
+    modalRef.componentInstance.modalMessage =
+      'Are you sure you want to invite this applicant for Onsite Interview';
+    modalRef.componentInstance.confirmed.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.service
+          .createOnSiteInviteForJob(this.jobId, applicantId)
+          .subscribe((res: any) => {
+            console.log(res);
+            this.onsiteApplicants = res.response;
+            this.notification.showSuccess('Applicant is Invited!');
+            this.getApplicantsForJob();
+            this.getAllOnsiteApplicants();
+          });
+      }
+    });
+  }
+  onsiteApplicantArray: any[] = [];
+  getAllOnsiteApplicants() {
+    this.service.getOnsiteInviteApplicants(this.jobId).subscribe((res: any) => {
+      this.onsiteApplicantArray = res.response.invitedApplicants;
+      console.log('onsite', this.onsiteApplicantArray);
+      this.onsiteApplicantCount = res.totalApplicants;
+      this.extractOnsiteId();
+    });
+  }
+
+  onsiteId: any[] = [];
+  extractOnsiteId() {
+    this.onsiteId = this.onsiteApplicantArray.map((id) => id._id);
+    console.log(this.onsiteId);
+  }
+
+  isOnsite(applicantId: string): boolean {
+    return this.onsiteId.includes(applicantId);
   }
 
   downloadResume(resumeId: string) {
