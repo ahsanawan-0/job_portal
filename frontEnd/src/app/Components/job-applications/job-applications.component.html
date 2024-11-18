@@ -28,11 +28,12 @@
           All Applications ({{ totalApplicants }})
         </p>
       </div>
+
       <div class="overflow-auto max-h-[320px]">
-        <div
-          *ngFor="let item of applicants"
-          class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
-        >
+        <div *ngFor="let applicant of applicants">
+
+        <div *ngFor="let item of applicant.applications" class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
+
           <div name class="flex items-center gap-3 p-4">
             <img src="assets/images/Image.png" />
 
@@ -42,7 +43,7 @@
               </p>
 
               <p class="font-normal text-sm text-custom-gray">
-                {{ item.jobTitle }}
+                {{ applicant.jobTitle }}
               </p>
             </div>
           </div>
@@ -97,24 +98,24 @@
           </div>
 
           <div class="flex flex-col items-center justify-center p-2 gap-2">
-            <p class="text-sm text-gray-500" *ngIf="!isShortListed(item._id)">
+            <p class="text-sm text-gray-500" *ngIf="!isShortListed(applicant._id)">
               Click to Short List
             </p>
             <button
-              (click)="createShortListedApplicant(item._id, item.name)"
-              [disabled]="isJobExpired() || isShortListed(item._id)"
+              (click)="createShortListedApplicant(applicant._id, item.name)"
+              [disabled]="isJobExpired() || isShortListed(applicant._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
-                'bg-custom-green ': !isJobExpired() && isShortListed(item._id),
+                'bg-custom-green ': !isJobExpired() && isShortListed(applicant._id),
                 'bg-blue-500 text-white cursor-pointer':
-                  !isJobExpired() && !isShortListed(item._id)
+                  !isJobExpired() && !isShortListed(applicant._id)
               }"
               class="px-4 py-2 rounded-md cursor-pointer"
             >
               {{
                 isJobExpired()
                   ? "Job Expired"
-                  : isShortListed(item._id)
+                  : isShortListed(applicant._id)
                   ? "ShortListed"
                   : "Short List"
               }}
@@ -122,8 +123,9 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
-
+<!--  -->
     <div
       cards
       class="border border-[#E4E5E8] w-1/4 h-3/4 py-4 px-4 rounded-md bg-[#F1F2F4]"
@@ -133,41 +135,12 @@
           Shortlisted ({{ shortListedCount }})
         </p>
 
-        <!-- <img
-          src="assets/icons/HorizontalDots.svg"
-          (click)="onClickThreeDots(1)"
-          [ngClass]="dropdown[1] ? 'filter-black' : 'filter-gray'"
-          class="cursor-pointer"
-        /> -->
-        <!-- <div
-          *ngIf="dropdown[1]"
-          class="absolute top-full right-0 mt-1 p-3 bg-white rounded-md border border-[#E9EAED] shadow-[0px_12px_32px_0px_rgba(24,25,28,0.08)]"
-        >
-          <ul class="list-none">
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Pencil.svg" />
-                <p class="font-sans font-medium text-sm text-[#5E6670]">
-                  Edit Column
-                </p>
-              </div>
-            </li>
-            <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-              <div class="flex gap-2">
-                <img src="assets/icons/Trash.svg" />
-                <p class="font-sans font-medium text-sm text-[#E05151]">
-                  Delete
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div> -->
       </div>
       <div class="overflow-auto max-h-[320px]">
-        <div
-          *ngFor="let item of shortListedArray"
-          class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
-        >
+        <div *ngFor="let applicant of shortListedArray">
+
+          <div *ngFor="let item of applicant.applications" class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
+
           <div name class="flex items-center gap-3 p-4">
             <img src="assets/images/Image.png" />
 
@@ -230,31 +203,34 @@
           </div>
 
           <div class="flex flex-col justify-center items-center p-2 gap-2">
-            <p class="text-sm text-gray-500" *ngIf="!isTestInvited(item._id)">
+            <p class="text-sm text-gray-500" *ngIf="!isTestInvited(applicant._id)">
               Click to select tests
             </p>
             <button
-              [disabled]="isJobExpired() || isTestInvited(item._id)"
+              [disabled]="isJobExpired() || isTestInvited(applicant._id)"
               [ngClass]="{
                 'bg-gray-400 text-white': isJobExpired(),
                 'bg-custom-green text-white cursor-pointer':
-                  !isJobExpired() && isTestInvited(item._id),
+                  !isJobExpired() && isTestInvited(applicant._id),
                 'bg-blue-500 text-white cursor-pointer':
-                  !isJobExpired() && !isTestInvited(item._id)
+                  !isJobExpired() && !isTestInvited(applicant._id)
               }"
               class="px-4 py-2 rounded-md cursor-pointer"
-              (click)="openTestSelectionModal(item._id)"
+              (click)="openTestSelectionModal(applicant._id)"
             >
               {{
                 isJobExpired()
                   ? "Job Expired"
-                  : isTestInvited(item._id)
+                  : isTestInvited(applicant._id)
                   ? "Invited"
                   : "Select Test"
               }}
             </button>
           </div>
         </div>
+     
+      </div>
+      
       </div>
     </div>
 
@@ -267,11 +243,12 @@
           Test Invite ({{ testInvitedCount }})
         </p>
       </div>
+      
       <div class="overflow-auto max-h-[320px]">
-        <div
-          *ngFor="let item of testInvitedArray"
-          class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
-        >
+        <div *ngFor="let applicant of testInvitedArray">
+
+          <div *ngFor="let item of applicant.applications" class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
+
           <div name class="flex items-center gap-3 p-4">
             <img src="assets/images/Image.png" />
 
@@ -359,6 +336,7 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
 
     <div
@@ -438,5 +416,6 @@
         </div>
       </div>
     </div>
+    
   </div>
 </div>

@@ -7,8 +7,7 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./dbConnection");
 const cors = require("cors");
 const cron = require("node-cron");
-const mongoose = require("mongoose");
-const jobSchema = require("./models/definations/jobSchema");
+const Job = require("./models/definations/jobSchema");
 const User = require("./models/definations/userSchema");
 const bcrypt = require("bcrypt");
 
@@ -22,9 +21,6 @@ const corsOptions = {
   credentials: true, // Allow credentials (cookies) to be sent
 };
 app.use(cors(corsOptions));
-
-const Job = mongoose.model("Job", jobSchema);
-
 const port = process.env.PORT;
 const { readdirSync } = require("fs");
 readdirSync("./Router").map((route) => {
@@ -54,7 +50,10 @@ const updateExpiredJobs = async () => {
       { expirationDate: { $lt: currentDate }, status: "Active" },
       { status: "Expired" }
     );
-  } catch (error) {
+    console.log("cron running")
+
+  } 
+  catch (error) {
     console.error("Error updating initial expired job statuses:", error);
   }
 };

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Applicant, ApplicantsResponse, ShortApplicantsResponse, TestInvitedApplicants } from '../../models/jobModel';
 
 @Injectable({
   providedIn: 'root', // Ensures the service is available application-wide
@@ -33,20 +34,27 @@ export class JobApplicationService {
   getFileById(resumeId: string) {
     return this.http.get(`${this.apiUrl}/file/${resumeId}`);
   }
-
-  getApplicantsForJob(jobId: string | null) {
-    return this.http.get(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
+  
+  getApplicantsForJob(jobId: string | null): Observable<ApplicantsResponse> {
+    // Make sure to adjust the endpoint according to your API
+    return this.http.get<ApplicantsResponse>(`${this.apiUrl}/getApplicantsForJob/${jobId}`);
   }
+
 
   createShortlistedApplicant(jobId: string | null, applicantId: string) {
     return this.http.post(`${this.apiUrl}/jobs/${jobId}/shortlist`, {
       applicantId,
     });
   }
-
-  getAllShortListedApplicants(jobId: string | null) {
-    return this.http.get(`${this.apiUrl}/getAllShortListedApplicants/${jobId}`);
+  
+  getAllTestInvitedApplicants(jobId: string | null): Observable<TestInvitedApplicants> {
+    return this.http.get<TestInvitedApplicants>(`${this.apiUrl}/getAllTestInvitedApplicants/${jobId}`);
   }
+  
+  getAllShortListedApplicants(jobId: string | null): Observable<ShortApplicantsResponse> {
+    return this.http.get<ShortApplicantsResponse>(`${this.apiUrl}/getAllShortListedApplicants/${jobId}`);
+  }
+
 
   createTestInvitedApplicantsForJob(
     jobId: string | null,
@@ -59,9 +67,6 @@ export class JobApplicationService {
     });
   }
 
-  getAllTestInvitedApplicants(jobId: string | null) {
-    return this.http.get(`${this.apiUrl}/getAllTestInvitedApplicants/${jobId}`);
-  }
 
   createHiredApplicantsForJob(jobId: string | null, applicantId: string) {
     return this.http.post(`${this.apiUrl}/jobs/${jobId}/hiredApplicant`, {

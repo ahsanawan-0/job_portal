@@ -1,4 +1,3 @@
-// models/definitions/jobDefinition.js
 const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema(
@@ -104,4 +103,4 @@ const jobSchema = new mongoose.Schema(
   { timestamps: true } // Automatically manage createdAt and updatedAt fields
 );
 
-module.exports = jobSchema; // Export only the schema
+module.exports = mongoose.model("Job", jobSchema);

@@ -10,6 +10,7 @@ import '@pnotify/core/dist/BrightTheme.css';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TetsFormsListComponent } from '../../modals/tets-forms-list/tets-forms-list.component';
 import { DeleteConfirmationModalComponent } from '../../modals/delete-confirmation-modal/delete-confirmation-modal.component';
+import { ApplicantsResponse, ShortApplicantsResponse, TestInvitedApplicants } from '../../models/jobModel';
 
 @Component({
   selector: 'app-job-applications',
@@ -70,23 +71,35 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   service = inject(JobApplicationService);
-
+  
   getApplicantsForJob() {
-    this.service.getApplicantsForJob(this.jobId).subscribe((res: any) => {
-      this.applicants = res.response.applicants;
-      console.log(res.response);
-      console.log(res.response.applicants);
-      console.log(res.response.applicants.applications);
-      this.totalApplicants = res.totalApplicants;
-      this.jobTitle = res.response.jobTitle;
-      this.jobExpirationDate = res.response.expirationDate;
-      this.jobStatus = res.response.status;
-
-      this.extractApplicantId();
+    this.service.getApplicantsForJob(this.jobId).subscribe((res: ApplicantsResponse) => {
+        if (res && res.response) {
+            this.applicants = res.response.applicants.map(applicant => ({
+                _id: applicant._id,
+                email: applicant.email,
+                jobTitle: res.response.jobTitle,
+                applications: applicant.applications.map(application => ({
+                    name: application.name,
+                    experience: application.experience,
+                    resume: application.resume,
+                    createdAt: application.appliedAt
+                }))
+            }));
+            console.log("applicants",this.applicants)
+            this.totalApplicants = res.totalApplicants;
+           this.extractShortListedId()
+            this.jobTitle = res.response.jobTitle;
+        } else {
+            console.error("Invalid response structure:", res);
+        }
+    }, (error) => {
+        console.error("Error fetching applicants:", error);
     });
-  }
+}
 
-  shortListed: any[] = [];
+  
+
   createShortListedApplicant(applicantId: string, applicantName: string) {
     const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
     modalRef.componentInstance.jobName = applicantName;
@@ -98,7 +111,6 @@ export class JobApplicationsComponent implements OnInit {
         this.service
           .createShortlistedApplicant(this.jobId, applicantId)
           .subscribe((res: any) => {
-            this.shortListed = res.response;
             this.notification.showSuccess('Applicant is ShortListed!');
             this.getAllShortListedApplicants();
             this.getApplicantsForJob();
@@ -109,16 +121,40 @@ export class JobApplicationsComponent implements OnInit {
   shortListedArray: any[] = [];
   shortListedCount: number = 0;
 
+  // getAllShortListedApplicants() {
+  //   this.service
+  //     .getAllShortListedApplicants(this.jobId)
+  //     .subscribe((res: any) => {
+  //       this.shortListedArray = res.response.shortListedApplicants;
+  //       console.log('shortListed', this.shortListedArray);
+  //       this.shortListedCount = res.totalApplicants;
+  //       this.extractShortListedId();
+  //     });
+  // }
   getAllShortListedApplicants() {
-    this.service
-      .getAllShortListedApplicants(this.jobId)
-      .subscribe((res: any) => {
-        this.shortListedArray = res.response.shortListedApplicants;
-        console.log('shortListed', this.shortListedArray);
-        this.shortListedCount = res.totalApplicants;
-        this.extractShortListedId();
-      });
-  }
+    this.service.getAllShortListedApplicants(this.jobId).subscribe((res: ShortApplicantsResponse) => {
+        if (res && res.response) {
+            this.shortListedArray = res.response.shortListedApplicants.map(applicant => ({
+                _id: applicant._id,
+                email: applicant.email,
+                jobTitle: res.response.jobTitle,
+                applications: applicant.applications.map(application => ({
+                    name: application.name,
+                    experience: application.experience,
+                    resume: application.resume,
+                    createdAt: application.appliedAt
+                }))
+            }));
+            console.log("shortlistedApplicants",this.shortListedArray)
+            this.shortListedCount = res.totalApplicants;
+           this.extractShortListedId()
+        } else {
+            console.error("Invalid response structure:", res);
+        }
+    }, (error) => {
+        console.error("Error fetching applicants:", error);
+    });
+}
 
   shortListedId: any[] = [];
   extractShortListedId() {
@@ -144,6 +180,7 @@ export class JobApplicationsComponent implements OnInit {
 
   isShortListed(applicantId: string): boolean {
     return this.shortListedId.includes(applicantId);
+    console.log(this.applicantId)
   }
 
   testInvited: any[] = [];
@@ -160,17 +197,40 @@ export class JobApplicationsComponent implements OnInit {
   testInvitedArray: any[] = [];
   testInvitedCount: number = 0;
 
+  // getAllTestInvitedApplicants() {
+  //   this.service
+  //     .getAllTestInvitedApplicants(this.jobId)
+  //     .subscribe((res: any) => {
+  //       this.testInvitedArray = res.response.testInvitedApplicants;
+  //       console.log('testInvited', this.shortListedArray);
+  //       this.testInvitedCount = res.totalApplicants;
+  //       this.extractTestInvitedId();
+  //     });
+  // }
   getAllTestInvitedApplicants() {
-    this.service
-      .getAllTestInvitedApplicants(this.jobId)
-      .subscribe((res: any) => {
-        this.testInvitedArray = res.response.testInvitedApplicants;
-        console.log('testInvited', this.shortListedArray);
-        this.testInvitedCount = res.totalApplicants;
-        this.extractTestInvitedId();
-      });
-  }
-
+    this.service.getAllTestInvitedApplicants(this.jobId).subscribe((res: TestInvitedApplicants) => {
+        if (res && res.response) {
+            this.testInvitedArray = res.response.testInvitedApplicants.map(applicant => ({
+                _id: applicant._id,
+                email: applicant.email,
+                jobTitle: res.response.jobTitle,
+                applications: applicant.applications.map(application => ({
+                    name: application.name,
+                    experience: application.experience,
+                    resume: application.resume,
+                    createdAt: application.appliedAt
+                }))
+            }));
+            console.log("testInvitedArray",this.testInvitedArray)
+            this.testInvitedCount = res.totalApplicants;
+           this.extractTestInvitedId()
+        } else {
+            console.error("Invalid response structure:", res);
+        }
+    }, (error) => {
+        console.error("Error fetching applicants:", error);
+    });
+}
   testInvitedId: any[] = [];
   extractTestInvitedId() {
     this.testInvitedId = this.testInvitedArray.map((id) => id._id);
