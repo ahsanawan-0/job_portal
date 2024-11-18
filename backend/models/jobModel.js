@@ -1,10 +1,7 @@
-const mongoose = require("mongoose");
-const jobSchema = require("./definations/jobSchema"); // Correct path and filename
+ const Job = require("./definations/jobSchema"); // Correct path and filename
 const Applicant = require("./definations/applicantsSchema");
 
-const Job = mongoose.model("Job", jobSchema);
 
-// Create a new job
 const createJob = async (jobData) => {
   try {
     const job = new Job(jobData);

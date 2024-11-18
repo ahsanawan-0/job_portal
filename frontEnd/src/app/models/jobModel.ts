@@ -70,6 +70,50 @@ export interface SubmissionData {
   formId: string;
   evaluations: Evaluation[];
 }
+// Define the structure of an application
+export interface Application {
+  _id: string;
+  name: string;
+  experience: string;
+  resume: string;
+  jobId: string; // If needed
+  appliedAt: string; // Date string
+}
+
+// Define the structure of an applicant
+export interface Applicant {
+  _id: string;
+  email: string;
+  applications: Application[];
+}
+
+// Define the response structure
+export interface ApplicantsResponse {
+  message: string;
+  response: {
+      applicants: Applicant[];
+      jobTitle: string;
+      expirationDate: string;
+      status: string;
+  };
+  totalApplicants: number;
+}
+export interface TestInvitedApplicants {
+  message: string;
+  response: {
+    testInvitedApplicants: Applicant[];
+      jobTitle: string;
+  };
+  totalApplicants: number;
+}
+export interface ShortApplicantsResponse {
+  message: string;
+  response: {
+    shortListedApplicants: Applicant[];
+      jobTitle: string;
+  };
+  totalApplicants: number;
+}
 export interface QuestionCard {
   _id: string;
   num_questions: number;

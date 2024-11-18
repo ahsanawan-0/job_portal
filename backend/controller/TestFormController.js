@@ -4,8 +4,7 @@ const Applicants = require("../models/definations/applicantsSchema");
 const Form = require("../models/definations/TestFormSchema");
 const Evaluation = require("../models/definations/evaluationSchema");
 const { evaluateAnswersSequentially } = require("../helpers/evaluateAnswers");
-const jobSchema = require("../models/definations/jobSchema");
-const Job = mongoose.model("Job", jobSchema);
+const Job = require("../models/definations/jobSchema");
 
 const createTest = async (req, res) => {
   const { job_id, generatedQuestions_id } = req.params;
@@ -13,7 +12,6 @@ const createTest = async (req, res) => {
 
   const { title, questions, duration } = req.body;
 
-  // Validate request parameters and body
   if (!job_id || !generatedQuestions_id) {
     return res
       .status(400)
@@ -26,12 +24,9 @@ const createTest = async (req, res) => {
     questions.length === 0 ||
     typeof duration !== "number"
   ) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Title, questions (array), and duration (number) are required.",
-      });
+    return res.status(400).json({
+      message: "Title, questions (array), and duration (number) are required.",
+    });
   }
 
   try {
@@ -44,18 +39,15 @@ const createTest = async (req, res) => {
       job_id,
     });
 
-    // Save the new form
     await newForm.save();
 
-    // Update the Job schema with the new form ID
     const updatedJob = await Job.findByIdAndUpdate(
       job_id,
-      { $push: { testForms: newForm._id } }, // Add the form ID to the testForms array
-      { new: true } // Return the updated document
+      { $push: { testForms: newForm._id } },
+      { new: true }
     );
 
     if (!updatedJob) {
-      // If the job was not found, return a 404 response
       return res.status(404).json({ message: "Job not found." });
     }
 
@@ -104,15 +96,15 @@ const createEvaluationEntry = async (
     const evaluationEntry = new Evaluation({
       applicantId: applicantId,
       formId: formId,
-      submissionId: submissionId, // Include submissionId
+      submissionId: submissionId,
       answerEvaluations: Object.entries(evaluations).map(
         ([questionKey, evaluation], index) => {
-          const questionObj = questions[index]; // Get the corresponding question from the incoming data
-          const userAnswer = questionObj.answer; // Directly use the answer from the question object
+          const questionObj = questions[index];
+          const userAnswer = questionObj.answer;
 
           return {
-            questionId: questionObj.id, // Extract question ID
-            givenAnswer: userAnswer, // Use the answer provided by the user
+            questionId: questionObj.id,
+            givenAnswer: userAnswer,
             correctnessPercentage: evaluation.correctnessPercentage,
             remarks: evaluation.remark,
           };
@@ -132,39 +124,37 @@ const submitForm = async (req, res) => {
 
   console.log("Incoming Form Data:", req.body);
 
-  // Validate inputs
   if (!name || !email || !questions || !Array.isArray(questions)) {
     return res.status(400).json({ message: "Missing required fields." });
   }
 
   try {
-    // Find the applicant by email
     let applicant = await Applicants.findOne({ email });
     if (!applicant) {
       return res.status(404).json({ message: "Applicant not found" });
     }
 
-    // Find the form by ID
     const form = await Form.findById(formId);
     if (!form) {
       return res.status(404).json({ message: "Form not found" });
     }
 
-      // Check if the applicant has already submitted this form
-      const existingSubmission = await Submission.findOne({
-          applicantId: applicant._id,
-          formId: formId
-      });
+    const existingSubmission = await Submission.findOne({
+      applicantId: applicant._id,
+      formId: formId,
+    });
 
-      if (existingSubmission) {
-          return res.status(400).json({ message: "You have already submitted this test." });
-      }
+    if (existingSubmission) {
+      return res
+        .status(400)
+        .json({ message: "You have already submitted this test." });
+    }
 
-      // Create answers array based on submitted questions
-      const answers = questions.map((question) => ({
-          questionId: question.id,
-          answer: question.answer || null, // Allow null for unattempted questions
-      }));
+    // Create answers array based on submitted questions
+    const answers = questions.map((question) => ({
+      questionId: question.id,
+      answer: question.answer || null, // Allow null for unattempted questions
+    }));
 
     // Check if all answers are null
     const allUnattempted = answers.every((answer) => answer.answer === null);
@@ -199,12 +189,10 @@ const submitForm = async (req, res) => {
 
     // Provide feedback based on whether questions were attempted
     if (allUnattempted) {
-      return res
-        .status(200)
-        .json({
-          message: "Submission successful, but no questions were attempted.",
-          submission,
-        });
+      return res.status(200).json({
+        message: "Submission successful, but no questions were attempted.",
+        submission,
+      });
     }
 
     return res

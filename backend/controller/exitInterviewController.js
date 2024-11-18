@@ -10,7 +10,6 @@ module.exports = {
     try {
       const { title, questions } = req.body;
 
-      // Call the model function to create the form
       const form = await exitInterviewModel.createExitInterviewForm({
         title,
         questions,
