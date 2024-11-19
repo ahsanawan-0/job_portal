@@ -26,12 +26,12 @@ export class TestEditPageComponent implements OnInit {
   selectedQuestions: any[] = [];
   isDurationDropdownOpen: boolean = false;
   durations: number[] = [1, 30, 60, 90, 120]; // Available durations in minutes
-  selectedDuration: number | null = null; 
+  selectedDuration: number | null = null;
 
   isLoading: boolean = false;
   errorMessage: string | null = null;
   isDropdownOpen: boolean = false;
-  testId: string | null = null; 
+  testId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -77,7 +77,11 @@ export class TestEditPageComponent implements OnInit {
     if (this.selectedDuration === null) return 'Select Duration';
     const hours = Math.floor(this.selectedDuration / 60);
     const minutes = this.selectedDuration % 60;
-    return `${hours > 0 ? hours + ' hour' + (hours > 1 ? 's' : '') : ''} ${minutes > 0 ? minutes + ' minute' + (minutes > 1 ? 's' : '') : ''}`.trim() || '0 minutes';
+    return (
+      `${hours > 0 ? hours + ' hour' + (hours > 1 ? 's' : '') : ''} ${
+        minutes > 0 ? minutes + ' minute' + (minutes > 1 ? 's' : '') : ''
+      }`.trim() || '0 minutes'
+    );
   }
 
   populateQuestions(questions: any[]): void {
@@ -91,7 +95,10 @@ export class TestEditPageComponent implements OnInit {
 
   toggleSelectAll(): void {
     this.selectedQuestions = this.areAllSelected() ? [] : [...this.formData];
-    console.log('Toggled Select All. Selected Questions:', this.selectedQuestions); // Debugging statement
+    console.log(
+      'Toggled Select All. Selected Questions:',
+      this.selectedQuestions
+    ); // Debugging statement
   }
 
   setDuration(event: Event): void {
@@ -117,7 +124,11 @@ export class TestEditPageComponent implements OnInit {
   }
 
   selectQuestion(question: any): void {
-    if (!this.questions.controls.some(control => control.get('question')?.value === question.question)) {
+    if (
+      !this.questions.controls.some(
+        (control) => control.get('question')?.value === question.question
+      )
+    ) {
       this.addQuestionToForm(question);
       this.toggleQuestionSelection(question);
     } else {
@@ -151,12 +162,13 @@ export class TestEditPageComponent implements OnInit {
   }
 
   addDynamicQuestions(): void {
-    const dynamicFormValues = this.dynamicQuestionComponent.form.value.questions;
+    const dynamicFormValues =
+      this.dynamicQuestionComponent.form.value.questions;
     dynamicFormValues.forEach((question: any) => {
       this.addQuestionToForm({
         question: question.label,
         correctAnswer: question.correctAnswer || null,
-        options: question.options || []
+        options: question.options || [],
       });
     });
   }
@@ -164,8 +176,8 @@ export class TestEditPageComponent implements OnInit {
   updateTest(): void {
     // Check for form validity and selected duration
     if (this.form.invalid || this.selectedDuration === null) {
-        this.errorMessage = 'Please fill in all required fields.';
-        return;
+      this.errorMessage = 'Please fill in all required fields.';
+      return;
     }
 
     const title = this.form.get('title')?.value;
@@ -175,8 +187,8 @@ export class TestEditPageComponent implements OnInit {
     console.log('All Questions:', allQuestions); // Debugging statement
 
     // Filter to get only selected questions
-    const selectedQuestionsData = allQuestions.filter((question: any) => 
-        this.selectedQuestions.includes(question)
+    const selectedQuestionsData = allQuestions.filter((question: any) =>
+      this.selectedQuestions.includes(question)
     );
 
     console.log('Selected Questions Data:', selectedQuestionsData); // Debugging statement
@@ -184,7 +196,7 @@ export class TestEditPageComponent implements OnInit {
     // Combine selected questions and newly added dynamic questions
     const finalQuestions = [
       ...selectedQuestionsData,
-      ...this.dynamicQuestionComponent.form.value.questions
+      ...this.dynamicQuestionComponent.form.value.questions,
     ];
 
     // Log the final data structure
@@ -192,16 +204,21 @@ export class TestEditPageComponent implements OnInit {
 
     // Send the data to the backend
     this.testService
-        .updateTest(this.testId!, { title, questions: finalQuestions, duration: this.selectedDuration })
-        .subscribe({
-            next: () => {
-                alert('Test updated successfully!');
-                this.router.navigateByUrl('technicalinterview'); // Navigate after update
-            },
-            error: (error) => {
-                this.errorMessage = error.message || 'An error occurred while updating the test.';
-            },
-        });
+      .updateTest(this.testId!, {
+        title,
+        questions: finalQuestions,
+        duration: this.selectedDuration,
+      })
+      .subscribe({
+        next: () => {
+          alert('Test updated successfully!');
+          this.router.navigateByUrl('technicalinterview'); // Navigate after update
+        },
+        error: (error) => {
+          this.errorMessage =
+            error.message || 'An error occurred while updating the test.';
+        },
+      });
   }
 
   onClickArrowLeft() {
