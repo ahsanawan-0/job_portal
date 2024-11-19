@@ -44,7 +44,9 @@
           type="text"
           formControlName="employeeId"
           class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-          placeholder="Your ID"
+          placeholder="Your Employee ID"
+          maxlength="9"
+          (keypress)="validateInput($event)"
         />
         <div
           *ngIf="

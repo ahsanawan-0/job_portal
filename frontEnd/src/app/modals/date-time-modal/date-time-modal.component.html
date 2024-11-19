@@ -1,0 +1,62 @@
+<div
+  class="flex items-center min-h-screen bg-gray-500 bg-opacity-55 fixed inset-0 z-50"
+>
+  <div class="rounded-lg shadow-lg max-w-md mx-auto bg-white">
+    <div
+      class="flex justify-between items-center gap-8 px-6 py-4 border-b border-gray-200"
+    >
+      <h2 class="text-lg font-semibold">Schedule OnSite Interview</h2>
+      <button
+        type="button"
+        class="text-gray-400 hover:text-gray-600"
+        aria-label="Close"
+        (click)="dismiss()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="p-6 space-y-4">
+      <div>
+        <label for="date" class="block text-sm font-medium text-gray-700 mb-1">
+          Select Date
+        </label>
+        <input
+          type="date"
+          id="date"
+          class="w-full border rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
+          [(ngModel)]="selectedDate"
+        />
+      </div>
+
+      <div>
+        <label for="time" class="block text-sm font-medium text-gray-700 mb-1">
+          Select Time
+        </label>
+        <input
+          type="time"
+          id="time"
+          class="w-full border rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
+          [(ngModel)]="selectedTime"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-4 px-6 py-4 border-t border-gray-200">
+      <button
+        type="button"
+        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+        (click)="dismiss()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="px-4 py-2 bg-custom-blue text-white rounded-lg hover:bg-blue-700"
+        (click)="save()"
+      >
+        Send Mail
+      </button>
+    </div>
+  </div>
+</div>

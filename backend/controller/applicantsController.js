@@ -1,11 +1,12 @@
 const jobModel = require("../models/jobModel");
 const crypto = require("crypto");
-const TestLink = require("../models/definations/TestLinkSchema"); 
+const TestLink = require("../models/definations/TestLinkSchema");
 const sendEmail = require("../helpers/sendEmail");
 const applicantModel = require("../models/applicantsModel");
 const Applicants = require("../models/definations/applicantsSchema");
 const { uploadFile } = require("../helpers/fileHelper");
 const { sendTestInviteEmail } = require("../helpers/testInvite");
+const sendOnsiteEmail = require("../helpers/sendOnsiteEmail");
 
 const ApplicantsApplyForJob = async (req, res) => {
   try {
@@ -16,7 +17,6 @@ const ApplicantsApplyForJob = async (req, res) => {
       return res.status(400).json({ error: "Job ID is required" });
     }
 
-    
     const job = await jobModel.getJobById(jobId);
     if (!job) {
       return res.status(404).json({ error: "Job not found" });
@@ -27,12 +27,14 @@ const ApplicantsApplyForJob = async (req, res) => {
     }
 
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-    const resumeId = await uploadFile(req.file.path, req.file.mimetype, folderId);
+    const resumeId = await uploadFile(
+      req.file.path,
+      req.file.mimetype,
+      folderId
+    );
 
-    
     let applicant = await Applicants.findOne({ email });
 
-    
     const applicationData = {
       name,
       experience,
@@ -41,27 +43,28 @@ const ApplicantsApplyForJob = async (req, res) => {
       jobId,
     };
 
-    
-    if (applicant && applicant.applications.some(app => app.jobId.toString() === jobId)) {
-      return res.status(400).json({ error: "You have already applied for this job" });
+    if (
+      applicant &&
+      applicant.applications.some((app) => app.jobId.toString() === jobId)
+    ) {
+      return res
+        .status(400)
+        .json({ error: "You have already applied for this job" });
     }
 
     if (applicant) {
-    
       applicant.applications.push(applicationData);
       await applicant.save();
     } else {
-          const newApplicant = new Applicants({
+      const newApplicant = new Applicants({
         email,
         applications: [applicationData],
       });
       await newApplicant.save();
 
-    
-      applicant = newApplicant; 
+      applicant = newApplicant;
     }
 
-    
     await jobModel.applyForJob(jobId, applicant._id);
 
     // Prepare job details for email
@@ -77,7 +80,9 @@ const ApplicantsApplyForJob = async (req, res) => {
       await sendEmail(applicant, jobDetails);
     } catch (emailError) {
       console.error("Error sending email:", emailError);
-      return res.status(500).json({ error: "User applied, but email sending failed" });
+      return res
+        .status(500)
+        .json({ error: "User applied, but email sending failed" });
     }
 
     res.status(201).json({
@@ -90,10 +95,6 @@ const ApplicantsApplyForJob = async (req, res) => {
     res.status(500).json({ error: "Error applying for job" });
   }
 };
-
-
-
-
 
 const getAllApplications = async (req, res) => {
   try {
@@ -126,7 +127,7 @@ const getApplicantsForJob = async (req, res) => {
     }
 
     const applicantsData = await applicantModel.getApplicantsForJob(jobId);
-    
+
     if (applicantsData.error) {
       return res.status(500).send({
         error: applicantsData.error,
@@ -187,15 +188,18 @@ const getAllShortListedApplicants = async (req, res) => {
       });
     }
 
-    const shortListedData = await applicantModel.getAllShortListedApplicants(jobId);
-    
+    const shortListedData = await applicantModel.getAllShortListedApplicants(
+      jobId
+    );
+
     if (shortListedData.error) {
       return res.status(500).send({
         error: shortListedData.error,
       });
     }
 
-    const totalShortListedApplicants = shortListedData.response.shortListedApplicants.length;
+    const totalShortListedApplicants =
+      shortListedData.response.shortListedApplicants.length;
 
     return res.status(200).send({
       message: "All Short Listed Applicants for the Job",
@@ -232,16 +236,14 @@ const createTestInvitedApplicantsForJob = async (req, res) => {
 
     const { job, applicantData } = result;
 
-    
     if (!applicantData || !applicantData.email) {
       return res.status(400).send({ message: "Applicant email not found." });
     }
 
-    
-    const token = crypto.randomBytes(16).toString("hex"); 
-    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; 
+    const token = crypto.randomBytes(16).toString("hex");
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
     console.log("check1");
-    
+
     const testLink = new TestLink({
       applicantId,
       testId,
@@ -252,10 +254,8 @@ const createTestInvitedApplicantsForJob = async (req, res) => {
 
     await testLink.save();
 
-    
     const testLinkUrl = `${process.env.FRONTEND_URL}/test/user/${testId}?token=${token}&applicant=${applicantId}`;
 
-    
     const jobTitle = await jobModel.getJobTitleById(jobId);
     if (!jobTitle) {
       return res.status(404).send({ message: "Job not found." });
@@ -282,15 +282,18 @@ const getAllTestInvitedApplicants = async (req, res) => {
       });
     }
 
-    const testInvitedData = await applicantModel.getAllTestInvitedApplicants(jobId);
-    
+    const testInvitedData = await applicantModel.getAllTestInvitedApplicants(
+      jobId
+    );
+
     if (testInvitedData.error) {
       return res.status(500).send({
         error: testInvitedData.error,
       });
     }
 
-    const totalTestInvitedApplicants = testInvitedData.response.testInvitedApplicants.length;
+    const totalTestInvitedApplicants =
+      testInvitedData.response.testInvitedApplicants.length;
 
     return res.status(200).send({
       message: "All Test Invited Applicants for the Job",
@@ -400,10 +403,13 @@ const getApplicantById = async (req, res) => {
 
 const createOnSiteInviteApplicants = async (req, res) => {
   try {
-    const { applicantId } = req.body;
+    const { applicantId, date, time } = req.body.body;
+    // console.log("in controller res", req.body);
+    // console.log("applicantId", applicantId);
+    // console.log("in controller on site", applicantId, date, time);
     const jobId = req.params.jobId;
 
-    if (!jobId || !applicantId) {
+    if (!jobId || !applicantId || !date || !time) {
       return res.status(400).send({
         message: "Job ID and Applicant ID are required",
       });
@@ -420,15 +426,32 @@ const createOnSiteInviteApplicants = async (req, res) => {
     }
 
     const invitedApplicant = result.response.invitedApplicant;
-    console.log("onsite in controller: ", invitedApplicant);
+    // console.log("onsite in controller: ", invitedApplicant);
+    const application = invitedApplicant.applications.find(
+      (app) => app.jobId.toString() === jobId
+    );
+
+    if (!application) {
+      return res.status(404).send({
+        message:
+          "Applicant does not have an application for the specified job.",
+      });
+    }
 
     const job = {
       title: result.response.jobTitle,
       company: result.response.jobCompany,
     };
 
+    const applicant = {
+      email: invitedApplicant.email,
+      name: application.name,
+    };
+
+    // console.log("applicant onsite data: ", applicant);
+
     try {
-      await sendOnsiteEmail(invitedApplicant, job);
+      await sendOnsiteEmail(applicant, job, { date, time });
     } catch (emailError) {
       console.error("Email sending failed:", emailError.message);
       return res.status(500).send({
@@ -471,7 +494,7 @@ const getAllOnSiteInviteApplicants = async (req, res) => {
     const totalInvitedApplicants =
       invitedData.response.invitedApplicants.length;
 
-    return res.send({
+    return res.status(200).send({
       message: "All Onsite Invited Applicants for the Job",
       response: invitedData.response,
       totalApplicants: totalInvitedApplicants,

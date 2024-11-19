@@ -7,7 +7,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendOnsiteEmail = async (applicant, job) => {
+const sendOnsiteEmail = async (applicant, job, interviewDetails) => {
+  const { date, time } = interviewDetails;
   console.log("in send onsite file", applicant.email);
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
@@ -15,25 +16,25 @@ const sendOnsiteEmail = async (applicant, job) => {
     subject: `Interview Invitation: ${job.title}`,
     html: `
       <div style="font-family: Arial, sans-serif; margin: 20px;">
-        <h2 style="color: #333;">Thank you for applying!</h2>
+        <h2 style="color: #333;">You have been Invited for OnSite Interview!</h2>
         <p style="font-size: 16px; color: #555;">Dear ${applicant.name},</p>
-        <p style="font-size: 16px; color: #555;"> Congratulations! We are excited to invite you for an onsite interview for the position of <strong>${job.title}</strong> at <strong>${job.company}</strong>.</p>
+        <p style="font-size: 16px; color: #555;"> Congratulations! We are excited to invite you for an onsite interview for the position of <strong>${job.title}</strong> at <strong>SDSol Technologies</strong> .</p>
         
         <h3 style="color: #007BFF;">Interview Details</h3>
         <ul style="font-size: 16px; color: #555;">
-          <li><strong>Position:</strong>02-12-24</li>
-          <li><strong>Company:</strong>SDSOL</li>
-          <li><strong>Location:</strong> Shaheen Complex، Office # 08, 08th Floor, Egerton Rd, Garhi Shahu, Lahore, Punjab 54000</li>
-         <li><strong>Contact:</strong> Mehak (042) 36376227</li>
+          <li><strong>Date: </strong>${date}</li>
+          <li><strong>Time: </strong>${time}</li>
+          <li><strong>Location: </strong> Shaheen Complex، Office # 08, 08th Floor, Egerton Rd, Garhi Shahu, Lahore, Punjab 54000</li>
+          <li><strong>Contact: </strong>(042) 36376227</li>
         </ul>
 
-        <p style="font-size: 16px; color: #555;"> Please bring a copy of your resume, portfolio (if applicable), and a valid ID for verification. 
-          Let us know if you have any questions.</p>
+        <p style="font-size: 16px; color: #555;"> Please bring a copy of your resume, and a valid ID for verification. 
+        </p>
         
         <p style="font-size: 16px; color: #555;">If you have any questions, feel free to contact us at <a href="mailto:${process.env.EMAIL_USERNAME}">${process.env.EMAIL_USERNAME}</a>.</p>
 
         <hr style="margin: 20px 0; border: 1px solid #e0e0e0;">
-        <p style="font-size: 14px; color: #888;">Best Regards,<br>SDSOL Recruitment Team</p>
+        <p style="font-size: 14px; color: #888;">Best Regards,<br>SDSol Technologies Recruitment Team</p>
       </div>
     `,
   };

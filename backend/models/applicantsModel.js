@@ -6,7 +6,7 @@ module.exports = {
   getAllApplications: async () => {
     try {
       const applicants = await applicant.find({});
-   
+
       if (applicants.error) {
         return {
           error: applicants.error,
@@ -21,44 +21,46 @@ module.exports = {
       };
     }
   },
-getApplicantsForJob: async (jobId) => {
-  try {
-    const jobData = await Job.findById(jobId)
-      .populate({
-        path: "applicants",
-        options: { sort: { createdAt: -1 } },
-      })
-      .exec();
+  getApplicantsForJob: async (jobId) => {
+    try {
+      const jobData = await Job.findById(jobId)
+        .populate({
+          path: "applicants",
+          options: { sort: { createdAt: -1 } },
+        })
+        .exec();
 
-    if (!jobData) {
+      if (!jobData) {
+        return {
+          error: "Job not found",
+        };
+      }
+
+      // Map applicants and filter their applications
+      const applicants = jobData.applicants
+        .map((applicant) => ({
+          _id: applicant._id,
+          email: applicant.email,
+          applications: applicant.applications.filter(
+            (application) => application.jobId.toString() === jobId
+          ),
+        }))
+        .filter((applicant) => applicant.applications.length > 0); // Only include applicants with matching applications
+
       return {
-        error: "Job not found",
+        response: {
+          applicants: applicants,
+          jobTitle: jobData.jobTitle,
+          expirationDate: jobData.expirationDate,
+          status: jobData.status,
+        },
+      };
+    } catch (error) {
+      return {
+        error: error.message,
       };
     }
-
-    // Map applicants and filter their applications
-    const applicants = jobData.applicants.map(applicant => ({
-      _id: applicant._id,
-      email: applicant.email,
-      applications: applicant.applications.filter(application => 
-        application.jobId.toString() === jobId
-      ),
-    })).filter(applicant => applicant.applications.length > 0); // Only include applicants with matching applications
-
-    return {
-      response: {
-        applicants: applicants,
-        jobTitle: jobData.jobTitle,
-        expirationDate: jobData.expirationDate,
-        status: jobData.status,
-      },
-    };
-  } catch (error) {
-    return {
-      error: error.message,
-    };
-  }
-},
+  },
 
   createShortListedApplicantsForJob: async (jobId, applicantId) => {
     try {
@@ -94,22 +96,24 @@ getApplicantsForJob: async (jobId) => {
           options: { sort: { createdAt: -1 } },
         })
         .exec();
-  
+
       if (!jobData) {
         return {
           error: "Job not found",
         };
       }
-  
+
       // Map shortlisted applicants and filter their applications
-      const shortListedApplicants = jobData.shortListedApplicants.map(applicant => ({
-        _id: applicant._id,
-        email: applicant.email,
-        applications: applicant.applications.filter(application => 
-          application.jobId.toString() === jobId
-        ),
-      })).filter(applicant => applicant.applications.length > 0); // Only include applicants with matching applications
-  
+      const shortListedApplicants = jobData.shortListedApplicants
+        .map((applicant) => ({
+          _id: applicant._id,
+          email: applicant.email,
+          applications: applicant.applications.filter(
+            (application) => application.jobId.toString() === jobId
+          ),
+        }))
+        .filter((applicant) => applicant.applications.length > 0); // Only include applicants with matching applications
+
       return {
         response: {
           shortListedApplicants: shortListedApplicants,
@@ -155,22 +159,24 @@ getApplicantsForJob: async (jobId) => {
           options: { sort: { createdAt: -1 } },
         })
         .exec();
-  
+
       if (!jobData) {
         return {
           error: "Job not found",
         };
       }
-  
+
       // Map test invited applicants and filter their applications
-      const testInvitedApplicants = jobData.testInvitedApplicants.map(applicant => ({
-        _id: applicant._id,
-        email: applicant.email,
-        applications: applicant.applications.filter(application => 
-          application.jobId.toString() === jobId
-        ),
-      })).filter(applicant => applicant.applications.length > 0); // Only include applicants with matching applications
-  
+      const testInvitedApplicants = jobData.testInvitedApplicants
+        .map((applicant) => ({
+          _id: applicant._id,
+          email: applicant.email,
+          applications: applicant.applications.filter(
+            (application) => application.jobId.toString() === jobId
+          ),
+        }))
+        .filter((applicant) => applicant.applications.length > 0); // Only include applicants with matching applications
+
       return {
         response: {
           testInvitedApplicants: testInvitedApplicants,
@@ -289,15 +295,25 @@ getApplicantsForJob: async (jobId) => {
         };
       }
 
+      const invitedApplicants = jobData.onSiteInvite
+        .map((applicant) => ({
+          _id: applicant._id,
+          email: applicant.email,
+          applications: applicant.applications.filter(
+            (application) => application.jobId.toString() === jobId
+          ),
+        }))
+        .filter((applicant) => applicant.applications.length > 0);
+
       return {
         response: {
-          invitedApplicants: jobData.onSiteInvite,
+          invitedApplicants: invitedApplicants,
           jobTitle: jobData.jobTitle,
         },
       };
     } catch (error) {
       return {
-        error: error,
+        error: error.message,
       };
     }
   },

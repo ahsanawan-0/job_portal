@@ -58,6 +58,13 @@ export class ExitInterviewFormViewerComponent implements OnInit {
     });
   }
 
+  validateInput(event: KeyboardEvent) {
+    const charCode = event.key.charCodeAt(0);
+    // Allow only numeric characters
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
   fetchForm(uniqueLinkId: string): void {
     this.exitInterviewService.getForm(uniqueLinkId).subscribe({
       next: (data: any) => {
