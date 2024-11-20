@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createTest,getFormById,getTestByJobId,updateForm,submitForm ,getAllForms, getApplicantsByFormId, getEvaluationBySubmissionId} = require('../controller/TestFormController');
+const { createTest,deleteTestForm,getFormById,getTestByJobId,updateForm,submitForm ,getAllForms, getApplicantsByFormId, getEvaluationBySubmissionId} = require('../controller/TestFormController');
 const validateTestLink = require('../middleweres/Checkauth');
 
 
@@ -14,6 +14,7 @@ router.get('/applied-test-applicants-list/:formId', getApplicantsByFormId);
 router.put('/update_test_form/:test_id',updateForm ); 
 router.get('/view/answers/:submissionId/:applicantId', getEvaluationBySubmissionId);
 router.get('/tests/:jobId', getTestByJobId);
+router.delete('/test-forms/:formId', deleteTestForm);
 
 
 

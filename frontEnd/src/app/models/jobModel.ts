@@ -79,12 +79,18 @@ export interface Application {
   jobId: string; // If needed
   appliedAt: string; // Date string
 }
+export interface Duplicate {
+  jobId: string;
+  jobTitle: string;
+}
 
 // Define the structure of an applicant
 export interface Applicant {
   _id: string;
   email: string;
   applications: Application[];
+  duplicates: Duplicate[];
+
 }
 
 // Define the response structure

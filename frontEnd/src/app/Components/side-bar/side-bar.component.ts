@@ -28,7 +28,6 @@ export class SideBarComponent implements OnInit {
       }
     );
   }
-
   selectedRoute: string = '';
   sideBarItems = [
     {

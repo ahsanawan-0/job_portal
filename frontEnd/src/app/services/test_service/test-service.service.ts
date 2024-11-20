@@ -28,9 +28,10 @@ export class TestServiceService {
     return this.http.get(`${this.apiUrl}/jobs/active`);
   }
 
-  deleteGeneratedForms(formsId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/generated_forms/${formsId}`);
+  deleteGeneratedForm(formsId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/test-forms/${formsId}`);
   }
+
   getAllGeneratedForms(): Observable<any> {
     return this.http.get(`${this.apiUrl}/generated/forms/getAllforms`);
   }

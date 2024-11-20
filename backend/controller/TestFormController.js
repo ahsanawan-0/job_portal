@@ -342,7 +342,6 @@ const getApplicantsByFormId = async (req, res) => {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
-    // Fetch the form title using formId
     const form = await Form.findById(formId).select("title"); // Adjust according to your Form schema
 
     if (!form) {
@@ -368,16 +367,16 @@ const getApplicantsByFormId = async (req, res) => {
 
     // Construct response data
     const response = submissions.map((submission) => ({
-      submissionId: submission._id, // Include submission ID
-      applicant: submission.applicantId, // Applicant details
-      submittedAt: submission.createdAt, // Use createdAt for submission date
+      submissionId: submission._id, 
+      applicant: submission.applicantId, 
+      submittedAt: submission.createdAt, 
     }));
 
     return res.status(200).json({
-      total: submissions.length, // Total number of submissions returned
-      submissions: response, // Include the array of submissions
-      formId: formId, // Include the form ID in the response if needed
-      title: form.title, // Include the form title in the response
+      total: submissions.length,
+      submissions: response, 
+      formId: formId, 
+      title: form.title, 
     });
   } catch (error) {
     console.error("Error fetching submissions:", error);
@@ -437,10 +436,36 @@ const getApplicantsByFormId = async (req, res) => {
 //   console.log(`Test Link: ${link}`);
 
 // };
+const deleteTestForm = async (req, res) => {
+  const { formId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(formId)) {
+    return res.status(400).json({ message: "Invalid form ID format." });
+  }
+
+  try {
+    // Find the test form to be deleted
+    const form = await Form.findById(formId).populate('job_id'); // Populate job_id to access the job document
+
+    if (!form) {
+      return res.status(404).json({ message: "Form not found." });
+    }
+
+    await Form.findByIdAndDelete(formId);
+    // Optionally, you can also clear references in other collections if required
+    await Submission.deleteMany({ formId }); // Remove any submissions for this form
+    await Evaluation.deleteMany({ formId }); // Remove any evaluations for this form
+
+    res.status(200).json({ message: "Test form deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting test form:", error.message);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 module.exports = {
   createTest,
-
+  deleteTestForm,
   getFormById,
   updateForm,
   getApplicantsByFormId,

@@ -20,6 +20,7 @@ const jobSchema = new mongoose.Schema(
     location: {
       type: String,
       required: true,
+      enum: ["On-Site", "Remote", "Lahore"],
     },
     minSalary: {
       type: Number,
@@ -29,7 +30,7 @@ const jobSchema = new mongoose.Schema(
     maxSalary: {
       type: Number,
       required: true,
-      min: 0, // Salary must be a positive number
+      min: 0,
     },
     education: {
       type: String,
@@ -42,13 +43,13 @@ const jobSchema = new mongoose.Schema(
         "Ph.D.",
         "Diploma",
         "High School",
-      ], // Added "Bachelor's Degree" and "Master's Degree"
+      ],
       required: true,
     },
     experience: {
-      type: String, // Ensure this is a string to match frontend values like "5+ Years"
+      type: String,
       required: true,
-      enum: ["1-2 Years", "3-5 Years", "5+ Years"], // Allowed experience levels
+      enum: ["1-2 Years", "3-5 Years", "5+ Years"],
     },
     jobType: {
       type: String,
@@ -56,15 +57,13 @@ const jobSchema = new mongoose.Schema(
       required: false,
     },
     vacancies: {
-      // Ensure the field name matches between frontend and backend
       type: Number,
       required: true,
-      min: 1, // At least one vacancy is required
+      min: 1,
     },
     jobRole: {
-      // Added 'jobRole'
       type: String,
-      enum: ["Junior", "Mid", "Senior", "Lead"], // Define allowed job roles
+      enum: ["Junior", "Mid", "Senior", "Lead"],
       required: false,
     },
     expirationDate: {
@@ -86,7 +85,7 @@ const jobSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }], // Array of applicant IDs
+    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }],
 
     shortListedApplicants: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Applicants" },
@@ -100,7 +99,7 @@ const jobSchema = new mongoose.Schema(
     testForms: [{ type: mongoose.Schema.Types.ObjectId, ref: "testForm" }],
     onSiteInvite: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }],
   },
-  { timestamps: true } // Automatically manage createdAt and updatedAt fields
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Job", jobSchema);

@@ -27,6 +27,7 @@ import { ApplicantsResponse, ShortApplicantsResponse, TestInvitedApplicants } fr
 export class JobApplicationsComponent implements OnInit {
   notification = inject(NotificationService);
   route = inject(Router);
+  showTooltip: boolean = false;
 
   onClickArrowLeft() {
     this.route.navigateByUrl('myjobs');
@@ -84,11 +85,18 @@ export class JobApplicationsComponent implements OnInit {
                     experience: application.experience,
                     resume: application.resume,
                     createdAt: application.appliedAt
-                }))
+                })),
+                duplicates: applicant.duplicates.map(duplicate => ({
+                    jobId: duplicate.jobId,
+                    jobTitle: duplicate.jobTitle
+                })),
+                hasDuplicates: applicant.duplicates.length > 0, // Boolean to check if duplicates exist
+              showTooltip: false // Initialize tooltip visibility
+
             }));
-            console.log("applicants",this.applicants)
+            console.log("applicants", this.applicants);
             this.totalApplicants = res.totalApplicants;
-           this.extractShortListedId()
+            this.extractShortListedId();
             this.jobTitle = res.response.jobTitle;
         } else {
             console.error("Invalid response structure:", res);
@@ -431,7 +439,6 @@ export class JobApplicationsComponent implements OnInit {
     this.service
       .createTestInvitedApplicantsForJob(this.jobId, applicantId, testId)
       .subscribe((res: any) => {
-        // Refresh or update as needed
         success({
           text: 'Applicant invited for the selected test!',
           delay: 3000,

@@ -78,6 +78,82 @@ module.exports = {
     }
   },
 
+  // updateJobPost: async (req, res) => {
+  //   try {
+  //     const { jobId } = req.params; // Get job ID from request parameters
+  //     const {
+  //       jobTitle,
+  //       tags,
+  //       location,
+  //       minSalary,
+  //       maxSalary,
+  //       education,
+  //       experience,
+  //       jobType,
+  //       vacancies,
+  //       expirationDate,
+  //       description,
+  //       responsibilities,
+  //     } = req.body;
+  
+  //     // Validate required fields
+  //     if (
+  //       !jobTitle ||
+  //       maxSalary === undefined ||
+  //       minSalary === undefined ||
+  //       !tags ||
+  //       !education ||
+  //       experience === undefined ||
+  //       !jobType ||
+  //       !expirationDate ||
+  //       vacancies === undefined ||
+  //       !description ||
+  //       !responsibilities
+  //     ) {
+  //       return res.status(400).json({ message: "Please fill all required fields." });
+  //     }
+  
+  //     if (minSalary > maxSalary) {
+  //       return res.status(400).json({ message: "Min Salary cannot be greater than Max Salary." });
+  //     }
+  
+  //     const status = new Date(expirationDate).getTime() > new Date().getTime() ? "Active" : "Expired";
+  
+  //     const jobData = {
+  //       jobTitle,
+  //       tags,
+  //       location,
+  //       minSalary,
+  //       maxSalary,
+  //       education,
+  //       experience,
+  //       jobType,
+  //       vacancies,
+  //       expirationDate,
+  //       description,
+  //       responsibilities,
+  //       status,
+  //     };
+  
+  //     // Update the job in the database using the jobModel
+  //     // const updatedJob = await jobMode0.updateJob(jobId, jobData);
+  
+  //     if (!updatedJob) {
+  //       return res.status(404).json({ message: "Job not found." });
+  //     }
+  
+  //     res.status(200).json({
+  //       message: "Job post updated successfully.",
+  //       job: updatedJob,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating job post:", error.message);
+  //     res.status(500).json({
+  //       message: "Failed to update job post.",
+  //       error: error.message,
+  //     });
+  //   }
+  // },
   getJobsforPagination: async (req, res) => {
     const { page = 1, limit = 4 } = req.query;
     const skip = (page - 1) * limit;

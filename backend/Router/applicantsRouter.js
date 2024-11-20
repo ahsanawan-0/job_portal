@@ -51,4 +51,7 @@ router.get("/applicant", getApplicantById);
 router.post("/jobs/:jobId/onsiteInvite", createOnSiteInviteApplicants);
 router.get("/getAllOnsiteApplicants/:jobId", getAllOnSiteInviteApplicants);
 
+// router.get("/checkDuplicates", checkDuplicateApplications);
+
+
 module.exports = router;

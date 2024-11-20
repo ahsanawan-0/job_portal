@@ -38,6 +38,7 @@ export class TestViewPageComponent implements OnInit, OnDestroy {
     submissionSuccess: boolean = false;
     title: string = '';
     formId: string = '';
+    jobId: string|null = '';
     remainingTime: number = 0; // Remaining time in seconds
     formattedTime: string = ''; // Format for displaying time
     private timer: any; // Timer ID for interval
@@ -61,6 +62,7 @@ token:string="";
     ngOnInit(): void {
         this.formId = this.route.snapshot.paramMap.get('testId')!; 
         this.applicantId = this.route.snapshot.queryParamMap.get('applicant'); 
+        this.jobId = this.route.snapshot.queryParamMap.get('jobId'); 
         this.token = this.route.snapshot.queryParamMap.get('token')!; 
         this.isAdminView = this.route.snapshot.url[0].path === 'test' && this.route.snapshot.url[1].path === 'admin';
 
@@ -80,16 +82,16 @@ token:string="";
           }
     }
     fetchApplicantData(): void {
-        if (this.applicantId) {
-            this.jobService.getApplicantById(this.applicantId).subscribe({
+        if (this.applicantId && this.jobId) {
+            this.jobService.getApplicantById(this.applicantId,this.jobId).subscribe({
                 next: (response: { message: string; data: Applicant }) => {
                     // Check if the response contains data
                     if (response.data) {
                         this.applicantName = response.data.name; // Store applicant's name
                         this.applicantEmail = response.data.email; // Store applicant's email
                         this.candidateForm.patchValue({
-                            name: response.data.name,
-                            email: response.data.email
+                            name: this.applicantName,
+                            email: this.applicantEmail
                         });
                     } else {
                         this.errorMessage = 'No applicant data found.';
@@ -197,7 +199,7 @@ token:string="";
             name: this.applicantName, // Use the stored applicant's name
             email: this.applicantEmail, // Use the stored applicant's email
             questions: this.questions.map((question) => ({
-                id: question._id, // Include question ID
+                id: question._id, 
                 question: question.question,
                 options: question.options,
                 correctAnswer: question.correctAnswer,

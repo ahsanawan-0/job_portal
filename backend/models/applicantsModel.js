@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const applicant = require("../models/definations/applicantsSchema");
+const Applicant = require("../models/definations/applicantsSchema");
 const Job = require("../models/definations/jobSchema");
 // const Job = mongoose.model("Job", jobSchema);
 module.exports = {
   getAllApplications: async () => {
     try {
-      const applicants = await applicant.find({});
+      const applicants = await Applicant.find({});
    
       if (applicants.error) {
         return {
@@ -21,6 +21,77 @@ module.exports = {
       };
     }
   },
+// getApplicantsForJob: async (jobId) => {
+//   try {
+//     const jobData = await Job.findById(jobId)
+//       .populate({
+//         path: "applicants",
+//         options: { sort: { createdAt: -1 } },
+//       })
+//       .exec();
+
+//     if (!jobData) {
+//       return {
+//         error: "Job not found",
+//       };
+//     }
+
+//     // Map applicants and filter their applications
+//     const applicants = jobData.applicants.map(applicant => ({
+//       _id: applicant._id,
+//       email: applicant.email,
+//       applications: applicant.applications.filter(application => 
+//         application.jobId.toString() === jobId
+//       ),
+//     })).filter(applicant => applicant.applications.length > 0); // Only include applicants with matching applications
+
+//     return {
+//       response: {
+//         applicants: applicants,
+//         jobTitle: jobData.jobTitle,
+//         expirationDate: jobData.expirationDate,
+//         status: jobData.status,
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       error: error.message,
+//     };
+//   }
+// },
+
+// const getApplicantsForJob = async (req, res) => {
+//   try {
+//     const jobId = req.params.jobId;
+//     if (!jobId) {
+//       return res.status(400).send({
+//         message: "Job ID is required",
+//       });
+//     }
+
+//     const applicantsData = await applicantModel.getApplicantsForJob(jobId);
+
+//     if (applicantsData.error) {
+//       return res.status(500).send({
+//         error: applicantsData.error,
+//       });
+//     }
+
+//     const totalApplicants = applicantsData.response.applicants.length;
+
+//     return res.status(200).send({
+//       message: "All Applicants for the Job",
+//       response: applicantsData.response,
+//       totalApplicants: totalApplicants,
+//     });
+//   } catch (error) {
+//     return res.status(500).send({
+//       error: error.message,
+//     });
+//   }
+// };
+
+
 getApplicantsForJob: async (jobId) => {
   try {
     const jobData = await Job.findById(jobId)
@@ -37,17 +108,43 @@ getApplicantsForJob: async (jobId) => {
     }
 
     // Map applicants and filter their applications
-    const applicants = jobData.applicants.map(applicant => ({
-      _id: applicant._id,
-      email: applicant.email,
-      applications: applicant.applications.filter(application => 
-        application.jobId.toString() === jobId
-      ),
-    })).filter(applicant => applicant.applications.length > 0); // Only include applicants with matching applications
+    const applicants = await Promise.all(
+      jobData.applicants.map(async (applicant) => {
+        // Separate applications into the current job and duplicates
+        const jobApplications = applicant.applications.filter(application => 
+          application.jobId.toString() === jobId
+        );
+
+        const duplicates = applicant.applications.filter(application => 
+          application.jobId.toString() !== jobId
+        );
+
+        // Format duplicates to include jobId and jobTitle
+        const formattedDuplicates = await Promise.all(
+          duplicates.map(async (dupApp) => {
+            const job = await Job.findById(dupApp.jobId).select('jobTitle');
+            return {
+              jobId: dupApp.jobId,
+              jobTitle: job ? job.jobTitle : 'Unknown Job'
+            };
+          })
+        );
+
+        return {
+          _id: applicant._id,
+          email: applicant.email,
+          applications: jobApplications, // This will have the application for the specific job
+          duplicates: formattedDuplicates, // Include formatted duplicates
+        };
+      })
+    );
+
+    // Filter out applicants without matching applications
+    const filteredApplicants = applicants.filter(applicant => applicant.applications.length > 0);
 
     return {
       response: {
-        applicants: applicants,
+        applicants: filteredApplicants,
         jobTitle: jobData.jobTitle,
         expirationDate: jobData.expirationDate,
         status: jobData.status,
@@ -59,6 +156,9 @@ getApplicantsForJob: async (jobId) => {
     };
   }
 },
+
+
+// Helper function to get job title by jobId
 
   createShortListedApplicantsForJob: async (jobId, applicantId) => {
     try {
@@ -130,18 +230,18 @@ getApplicantsForJob: async (jobId) => {
         { $addToSet: { testInvitedApplicants: applicantId } },
         { new: true }
       ).populate("testInvitedApplicants");
-
+  
       if (!updatedJob) {
         return { error: "Failed to update test invited applicants." };
       }
-
-      // Use the correct model name here
-      const applicantData = await applicant.findById(applicantId); // Ensure proper model is referenced
+  
+    
+      const applicantData = await Applicant.findById(applicantId); 
       if (!applicantData) {
         return { error: "Applicant not found." };
       }
-
-      return { job: updatedJob, applicantData };
+  
+      return { job: updatedJob, applicantData }; 
     } catch (error) {
       return { error: error.message };
     }
@@ -162,14 +262,14 @@ getApplicantsForJob: async (jobId) => {
         };
       }
   
-      // Map test invited applicants and filter their applications
+      
       const testInvitedApplicants = jobData.testInvitedApplicants.map(applicant => ({
         _id: applicant._id,
         email: applicant.email,
         applications: applicant.applications.filter(application => 
           application.jobId.toString() === jobId
         ),
-      })).filter(applicant => applicant.applications.length > 0); // Only include applicants with matching applications
+      })).filter(applicant => applicant.applications.length > 0); 
   
       return {
         response: {
@@ -195,7 +295,7 @@ getApplicantsForJob: async (jobId) => {
         { new: true }
       ).populate("hiredApplicants");
 
-      //   console.log("in model", applicants);
+      
       if (!addToHired) {
         return {
           error: addToHired.error,

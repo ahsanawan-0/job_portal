@@ -29,101 +29,84 @@
         </p>
       </div>
 
-      <div class="overflow-auto max-h-[320px]">
+      <div class="overflow-auto max-h-[320px] relative">
         <div *ngFor="let applicant of applicants">
-
-        <div *ngFor="let item of applicant.applications" class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
-
-          <div name class="flex items-center gap-3 p-4">
-            <img src="assets/images/Image.png" />
-
-            <div class="flex flex-col gap-1">
-              <p class="font-semibold text-sm text-custom-black">
-                {{ item.name | capitalizeWords }}
-              </p>
-
-              <p class="font-normal text-sm text-custom-gray">
-                {{ applicant.jobTitle }}
-              </p>
+            <div *ngFor="let item of applicant.applications" class="border  border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
+                <div class="flex items-center justify-between gap-3 p-4">
+                    <div class="flex flex-col gap-1">
+                        <p class="font-semibold text-sm text-custom-black">
+                            {{ item.name | capitalizeWords }}
+                        </p>
+                        <p class="font-normal text-sm text-custom-gray">
+                            {{ applicant.jobTitle }}
+                        </p>
+                    </div>
+    
+                    <!-- Duplicates Icon with Tooltip -->
+                    <div class="">
+                        <div *ngIf="applicant.hasDuplicates">
+                            <img src="assets/icons/Group 2.svg" class="cursor-pointer" alt="Duplicates Icon"
+                                 (mouseenter)="applicant.showTooltip = true" 
+                                 (mouseleave)="applicant.showTooltip = false">
+                        </div>
+    
+                        <!-- Tooltip Div -->
+                        <div *ngIf="applicant.showTooltip" class="absolute z-50 w-auto right-10 ">
+                            <ul class="bg-white border border-gray-300 shadow-lg rounded-md p-2 list-none">
+                                <li *ngFor="let duplicate of applicant.duplicates" class="text-sm text-gray-700 list-none">
+                                    {{ duplicate.jobTitle }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <hr class="border border-[#E4E5E8] mx-4" />
+    
+                <div class="my-4">
+                    <ul class="list-disc list-inside">
+                        <li class="font-normal text-sm text-[#5E6670]">
+                            Experience: {{ item.experience }}
+                        </li>
+                        <li class="font-normal text-sm text-[#5E6670]">
+                            Applied: {{ item.createdAt | date }}
+                        </li>
+                    </ul>
+                </div>
+    
+                <div class="flex gap-[35px] pl-4 py-3">
+                    <div class="cursor-pointer flex justify-between" (click)="downloadResume(item.resume)" [class.loading]="resumeLoading[item.resumeId]">
+                        <div class="flex gap-[6px]">
+                            <img *ngIf="!resumeLoading[item.resume]" src="assets/icons/DownloadSimple.svg" />
+                            <p class="font-medium text-sm text-custom-blue">
+                                {{ resumeLoading[item.resume] ? "Downloading..." : "Download CV" }}
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <img *ngIf="!resumeViewLoading[item.resume]" src="assets/icons/Eye.svg" alt="" (click)="viewResume(item.resume)" class="cursor-pointer" [class.loading]="resumeViewLoading[item.resume]" />
+                        <p>{{ resumeViewLoading[item.resume] ? "..." : "" }}</p>
+                    </div>
+                </div>
+    
+                <div class="flex flex-col items-center justify-center p-2 gap-2">
+                    <p class="text-sm text-gray-500" *ngIf="!isShortListed(applicant._id)">
+                        Click to Short List
+                    </p>
+                    <button (click)="createShortListedApplicant(applicant._id, item.name)"
+                            [disabled]="isJobExpired() || isShortListed(applicant._id)"
+                            [ngClass]="{
+                                'bg-gray-400 text-white': isJobExpired(),
+                                'bg-custom-green': !isJobExpired() && isShortListed(applicant._id),
+                                'bg-blue-500 text-white cursor-pointer': !isJobExpired() && !isShortListed(applicant._id)
+                            }"
+                            class="px-4 py-2 rounded-md cursor-pointer">
+                        {{ isJobExpired() ? "Job Expired" : isShortListed(applicant._id) ? "ShortListed" : "Short List" }}
+                    </button>
+                </div>
             </div>
-          </div>
-
-          <hr class="border border-[#E4E5E8] mx-4" />
-
-          <div info class="my-4">
-            <ul class="list-disc list-inside">
-              <li class="font-normal text-sm text-[#5E6670]">
-                Experience {{ item.experience }}
-              </li>
-              <li class="font-normal text-sm text-[#5E6670]">
-                Applied: {{ item.createdAt | date }}
-              </li>
-            </ul>
-          </div>
-
-          <div class="flex gap-[35px] pl-4 py-3">
-            <div
-              class="cursor-pointer flex justify-between"
-              (click)="downloadResume(item.resume)"
-              [class.loading]="resumeLoading[item.resumeId]"
-            >
-              <div class="flex gap-[6px]">
-                <img
-                  *ngIf="!resumeLoading[item.resume]"
-                  src="assets/icons/DownloadSimple.svg"
-                />
-
-                <p class="font-medium text-sm text-custom-blue">
-                  {{
-                    resumeLoading[item.resume]
-                      ? "Downloading..."
-                      : "Download CV"
-                  }}
-                </p>
-              </div>
-            </div>
-            <div>
-              <img
-                *ngIf="!resumeViewLoading[item.resume]"
-                src="assets/icons/Eye.svg"
-                alt=""
-                (click)="viewResume(item.resume)"
-                class="cursor-pointer"
-                [class.loading]="resumeViewLoading[item.resume]"
-              />
-              <p>
-                {{ resumeViewLoading[item.resume] ? "..." : "" }}
-              </p>
-            </div>
-          </div>
-
-          <div class="flex flex-col items-center justify-center p-2 gap-2">
-            <p class="text-sm text-gray-500" *ngIf="!isShortListed(applicant._id)">
-              Click to Short List
-            </p>
-            <button
-              (click)="createShortListedApplicant(applicant._id, item.name)"
-              [disabled]="isJobExpired() || isShortListed(applicant._id)"
-              [ngClass]="{
-                'bg-gray-400 text-white': isJobExpired(),
-                'bg-custom-green ': !isJobExpired() && isShortListed(applicant._id),
-                'bg-blue-500 text-white cursor-pointer':
-                  !isJobExpired() && !isShortListed(applicant._id)
-              }"
-              class="px-4 py-2 rounded-md cursor-pointer"
-            >
-              {{
-                isJobExpired()
-                  ? "Job Expired"
-                  : isShortListed(applicant._id)
-                  ? "ShortListed"
-                  : "Short List"
-              }}
-            </button>
-          </div>
         </div>
-      </div>
-      </div>
+    </div>
     </div>
 <!--  -->
     <div
@@ -142,7 +125,7 @@
           <div *ngFor="let item of applicant.applications" class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
 
           <div name class="flex items-center gap-3 p-4">
-            <img src="assets/images/Image.png" />
+            
 
             <div class="flex flex-col gap-1">
               <p class="font-semibold text-sm text-custom-black">
@@ -250,7 +233,7 @@
           <div *ngFor="let item of applicant.applications" class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
 
           <div name class="flex items-center gap-3 p-4">
-            <img src="assets/images/Image.png" />
+            
 
             <div class="flex flex-col gap-1">
               <p class="font-semibold text-sm text-custom-black">
@@ -354,7 +337,7 @@
           class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
         >
           <div name class="flex items-center gap-3 p-4">
-            <img src="assets/images/Image.png" />
+            
 
             <div class="flex flex-col gap-1">
               <p class="font-semibold text-sm text-custom-black">

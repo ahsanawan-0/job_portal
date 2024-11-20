@@ -97,14 +97,14 @@ export class JobApplicationService {
   getTestsForJob(jobId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/tests/${jobId}`);
   }
-  getApplicantById(applicantId: string): Observable<any> {
-    // Set the query parameters
-    const params = new HttpParams().set('applicant', applicantId);
-
-    // Make the GET request with query parameters
+  getApplicantById(applicantId: string, jobId: string): Observable<any> {
+    const params = new HttpParams()
+      .set('applicantId', applicantId)
+      .set('jobId', jobId);
+    
     return this.http.get<any>(`${this.apiUrl}/applicant`, { params });
   }
-
+  
   createOnSiteInviteForJob(jobId: string | null, applicantId: string) {
     return this.http.post(`${this.apiUrl}/jobs/${jobId}/onsiteInvite`, {
       applicantId,
