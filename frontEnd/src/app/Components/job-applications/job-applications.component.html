@@ -110,7 +110,7 @@
                 [disabled]="isJobExpired() || isShortListed(applicant._id)"
                 [ngClass]="{
                   'bg-gray-400 text-white': isJobExpired(),
-                  'bg-custom-green ':
+                  'bg-custom-green text-[#FFF] ':
                     !isJobExpired() && isShortListed(applicant._id),
                   'bg-blue-500 text-white cursor-pointer':
                     !isJobExpired() && !isShortListed(applicant._id)
@@ -220,7 +220,7 @@
                 [disabled]="isJobExpired() || isTestInvited(applicant._id)"
                 [ngClass]="{
                   'bg-gray-400 text-white': isJobExpired(),
-                  'bg-custom-green text-white cursor-pointer':
+                  'bg-custom-green text-[#FFF]  cursor-pointer':
                     !isJobExpired() && isTestInvited(applicant._id),
                   'bg-blue-500 text-white cursor-pointer':
                     !isJobExpired() && !isTestInvited(applicant._id)
@@ -321,7 +321,7 @@
               </div>
             </div>
             <div class="flex flex-col items-center justify-center p-2 gap-2">
-              <p class="text-sm text-gray-500" *ngIf="!isOnsite(item._id)">
+              <p class="text-sm text-gray-500" *ngIf="!isOnsite(applicant._id)">
                 Click to Invite
               </p>
               <button
@@ -329,7 +329,7 @@
                 [disabled]="isJobExpired() || isOnsite(applicant._id)"
                 [ngClass]="{
                   'bg-gray-400 text-white': isJobExpired(),
-                  'bg-custom-green cursor-pointer ':
+                  'bg-custom-green text-[#FFF]  cursor-pointer ':
                     !isJobExpired() && isOnsite(applicant._id),
                   'bg-blue-500  text-white cursor-pointer':
                     !isJobExpired() && !isOnsite(applicant._id)
@@ -387,7 +387,7 @@
                   Experience {{ item.experience }}
                 </li>
                 <li class="font-normal text-sm text-[#5E6670]">
-                  Applied: {{ item.createdAt | date }}
+                  Applied: {{ item.appliedAt | date }}
                 </li>
               </ul>
             </div>
@@ -426,6 +426,36 @@
                   {{ resumeViewLoading[item.resume] ? "..." : "" }}
                 </p>
               </div>
+            </div>
+            <div class="flex flex-col items-center justify-center p-2 gap-2">
+              <p
+                class="text-sm text-gray-500"
+                *ngIf="!isReInvited(applicant._id)"
+              >
+                Click to Re-Invite
+              </p>
+              <button
+                (click)="
+                  createOnsiteReInviteApplicantsForJob(applicant._id, item.name)
+                "
+                [disabled]="isJobExpired() || isReInvited(applicant._id)"
+                [ngClass]="{
+                  'bg-gray-400 text-white': isJobExpired(),
+                  'bg-custom-green text-[#FFF]  cursor-pointer ':
+                    !isJobExpired() && isReInvited(applicant._id),
+                  'bg-blue-500  text-white cursor-pointer':
+                    !isJobExpired() && !isReInvited(applicant._id)
+                }"
+                class="px-4 py-2 rounded-md"
+              >
+                {{
+                  isJobExpired()
+                    ? "Job Expired"
+                    : isReInvited(applicant._id)
+                    ? "Invited"
+                    : "Invite"
+                }}
+              </button>
             </div>
           </div>
         </div>

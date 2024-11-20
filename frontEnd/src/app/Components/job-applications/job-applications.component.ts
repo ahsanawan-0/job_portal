@@ -73,6 +73,7 @@ export class JobApplicationsComponent implements OnInit {
     this.getAllTestInvitedApplicants();
     this.getAllHiredApplicants();
     this.getAllOnsiteApplicants();
+    this.getAllReInviteApplicants();
   }
 
   service = inject(JobApplicationService);
@@ -85,6 +86,7 @@ export class JobApplicationsComponent implements OnInit {
             _id: applicant._id,
             email: applicant.email,
             jobTitle: res.response.jobTitle,
+
             applications: applicant.applications.map((application) => ({
               name: application.name,
               experience: application.experience,
@@ -96,6 +98,12 @@ export class JobApplicationsComponent implements OnInit {
           this.totalApplicants = res.totalApplicants;
           this.extractShortListedId();
           this.jobTitle = res.response.jobTitle;
+          this.jobStatus = res.response.status;
+          console.log(
+            'job title in get applicants for job: ',
+            this.jobTitle,
+            this.jobStatus
+          );
         } else {
           console.error('Invalid response structure:', res);
         }
@@ -317,7 +325,7 @@ export class JobApplicationsComponent implements OnInit {
         confirmationModalRef.componentInstance.modalTitle =
           'Confirm Invitation';
         confirmationModalRef.componentInstance.modalMessage =
-          'Are you sure you want to invite this applicant for OnSite Interview';
+          'Are you sure you want to invite this applicant for Interview';
         confirmationModalRef.componentInstance.confirmed.subscribe(
           (confirmed: boolean) => {
             if (confirmed) {
@@ -347,30 +355,6 @@ export class JobApplicationsComponent implements OnInit {
     });
   }
 
-  //         this.service
-  //           .createOnSiteInviteForJob(this.jobId, applicantId, { date, time })
-  //           .subscribe(
-  //             (res: any) => {
-  //               if (res) {
-  //                 console.log(res);
-  //                 this.onsiteApplicants = res.response;
-  //                 this.notification.showSuccess('Applicant is Invited!');
-  //                 this.getApplicantsForJob();
-  //                 this.getAllOnsiteApplicants();
-  //               }
-  //             },
-  //             (error) => {
-  //               this.notification.showError(
-  //                 error?.message || 'Failed to invite applicant.'
-  //               );
-  //             }
-  //           );
-  //       }
-  //     })
-  //     .catch(() => {
-  //       console.log('Modal dismissed');
-  //     });
-  // }
   onsiteApplicantArray: any[] = [];
   getAllOnsiteApplicants() {
     this.service.getOnsiteInviteApplicants(this.jobId).subscribe((res: any) => {
@@ -389,6 +373,74 @@ export class JobApplicationsComponent implements OnInit {
 
   isOnsite(applicantId: string): boolean {
     return this.onsiteId.includes(applicantId);
+  }
+
+  createOnsiteReInviteApplicantsForJob(
+    applicantId: string,
+    applicantName: string
+  ) {
+    const modalRef = this.modalService.open(DateTimeModalComponent);
+    modalRef.result.then((result) => {
+      if (result) {
+        const { date, time } = result;
+        console.log('in job application: ', result);
+
+        const confirmationModalRef = this.modalService.open(
+          DeleteConfirmationModalComponent
+        );
+
+        confirmationModalRef.componentInstance.jobName = applicantName;
+        confirmationModalRef.componentInstance.modalTitle =
+          'Confirm Re-Invitation';
+        confirmationModalRef.componentInstance.modalMessage =
+          'Are you sure you want to Re-invite this applicant for Interview';
+        confirmationModalRef.componentInstance.confirmed.subscribe(
+          (confirmed: boolean) => {
+            if (confirmed) {
+              this.service
+                .createOnSiteReInviteForJob(this.jobId, applicantId, {
+                  date,
+                  time,
+                })
+                .subscribe(
+                  (res: any) => {
+                    this.notification.showSuccess(
+                      `${applicantName} is Invited!`
+                    );
+                    this.getApplicantsForJob();
+                    this.getAllReInviteApplicants();
+                  },
+                  (error) => {
+                    this.notification.showError(
+                      error?.message || 'Failed to invite applicant.'
+                    );
+                  }
+                );
+            }
+          }
+        );
+      }
+    });
+  }
+
+  ReInviteApplicantArray: any[] = [];
+  getAllReInviteApplicants() {
+    this.service
+      .getOnsiteReInviteApplicants(this.jobId)
+      .subscribe((res: any) => {
+        this.ReInviteApplicantArray = res.response.invitedApplicants;
+
+        this.extractReInviteId();
+      });
+  }
+
+  ReinviteId: any[] = [];
+  extractReInviteId() {
+    this.ReinviteId = this.ReInviteApplicantArray.map((id) => id._id);
+  }
+
+  isReInvited(applicantId: string): boolean {
+    return this.ReinviteId.includes(applicantId);
   }
 
   downloadResume(resumeId: string) {

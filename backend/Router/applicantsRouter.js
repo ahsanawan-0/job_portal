@@ -15,6 +15,8 @@ const {
   getApplicantById,
   createOnSiteInviteApplicants,
   getAllOnSiteInviteApplicants,
+  createOnSiteReInviteApplicants,
+  getAllOnSiteReInviteApplicants,
 } = require("../controller/applicantsController");
 const { getFileById } = require("../helpers/getApplicantData"); // Adjust the path
 
@@ -50,5 +52,10 @@ router.get("/getAllHiredApplicants/:jobId", getAllHiredApplicants);
 router.get("/applicant", getApplicantById);
 router.post("/jobs/:jobId/onsiteInvite", createOnSiteInviteApplicants);
 router.get("/getAllOnsiteApplicants/:jobId", getAllOnSiteInviteApplicants);
+router.post("/jobs/:jobId/onsiteReInvite", createOnSiteReInviteApplicants);
+router.get(
+  "/getAllOnsiteReInviteApplicants/:jobId",
+  getAllOnSiteReInviteApplicants
+);
 
 module.exports = router;

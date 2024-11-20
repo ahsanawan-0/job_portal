@@ -99,6 +99,9 @@ const jobSchema = new mongoose.Schema(
     ],
     testForms: [{ type: mongoose.Schema.Types.ObjectId, ref: "testForm" }],
     onSiteInvite: [{ type: mongoose.Schema.Types.ObjectId, ref: "Applicants" }],
+    onSiteReInvite: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Applicants" },
+    ],
   },
   { timestamps: true } // Automatically manage createdAt and updatedAt fields
 );

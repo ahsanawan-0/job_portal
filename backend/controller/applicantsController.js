@@ -506,6 +506,111 @@ const getAllOnSiteInviteApplicants = async (req, res) => {
   }
 };
 
+const createOnSiteReInviteApplicants = async (req, res) => {
+  try {
+    const { applicantId, date, time } = req.body.body;
+    // console.log("in controller res", req.body);
+    // console.log("applicantId", applicantId);
+    // console.log("in controller on site", applicantId, date, time);
+    const jobId = req.params.jobId;
+
+    if (!jobId || !applicantId || !date || !time) {
+      return res.status(400).send({
+        message: "Job ID and Applicant ID are required",
+      });
+    }
+    const result = await applicantModel.createOnSiteReInviteApplicants(
+      jobId,
+      applicantId
+    );
+
+    if (result.error) {
+      return res.status(500).send({
+        message: result.error.message || "Failed to create onsite invite",
+      });
+    }
+
+    const invitedApplicant = result.response.invitedApplicant;
+    // console.log("onsite in controller: ", invitedApplicant);
+    const application = invitedApplicant.applications.find(
+      (app) => app.jobId.toString() === jobId
+    );
+
+    if (!application) {
+      return res.status(404).send({
+        message:
+          "Applicant does not have an application for the specified job.",
+      });
+    }
+
+    const job = {
+      title: result.response.jobTitle,
+      company: result.response.jobCompany,
+    };
+
+    const applicant = {
+      email: invitedApplicant.email,
+      name: application.name,
+    };
+
+    // console.log("applicant onsite data: ", applicant);
+
+    try {
+      await sendOnsiteEmail(applicant, job, { date, time });
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError.message);
+      return res.status(500).send({
+        message: "Onsite invite created, but email sending failed.",
+      });
+    }
+
+    return res.send({
+      message: "Onsite invite created and email sent successfully.",
+      response: result.response,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message || "An error occurred",
+    });
+  }
+};
+
+const getAllOnSiteReInviteApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+
+    if (!jobId) {
+      return res.status(400).send({
+        message: "Job ID is required",
+      });
+    }
+
+    const invitedData = await applicantModel.getAllOnSiteReInviteApplicants(
+      jobId
+    );
+
+    if (invitedData.error) {
+      return res.status(500).send({
+        error:
+          invitedData.error.message || "Failed to fetch onsite invite data",
+      });
+    }
+
+    const totalInvitedApplicants =
+      invitedData.response.invitedApplicants.length;
+
+    return res.status(200).send({
+      message: "All Re Invited Applicants for the Job",
+      response: invitedData.response,
+      totalApplicants: totalInvitedApplicants,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message || "An error occurred",
+    });
+  }
+};
+
 module.exports = {
   ApplicantsApplyForJob,
   getAllApplications,
@@ -519,4 +624,6 @@ module.exports = {
   getApplicantById,
   createOnSiteInviteApplicants,
   getAllOnSiteInviteApplicants,
+  createOnSiteReInviteApplicants,
+  getAllOnSiteReInviteApplicants,
 };

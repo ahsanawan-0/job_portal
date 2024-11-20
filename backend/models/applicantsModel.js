@@ -317,4 +317,78 @@ module.exports = {
       };
     }
   },
+
+  createOnSiteReInviteApplicants: async (jobId, applicantId) => {
+    try {
+      const jobData = await Job.findByIdAndUpdate(
+        jobId,
+        {
+          $addToSet: { onSiteReInvite: applicantId },
+        },
+        { new: true }
+      ).populate("onSiteReInvite");
+
+      if (!jobData) {
+        return {
+          error: new Error(
+            "Job not found or failed to update onsite invite list"
+          ),
+        };
+      }
+
+      const invitedApplicant = jobData.onSiteReInvite.find(
+        (applicant) => applicant._id.toString() === applicantId
+      );
+
+      return {
+        response: {
+          invitedApplicant,
+          jobTitle: jobData.jobTitle,
+          jobCompany: jobData.company,
+        },
+      };
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  },
+
+  getAllOnSiteReInviteApplicants: async (jobId) => {
+    try {
+      const jobData = await Job.findById(jobId)
+        .populate({
+          path: "onSiteReInvite",
+          options: { sort: { createdAt: -1 } },
+        })
+        .exec();
+
+      if (!jobData) {
+        return {
+          error: new Error("Job not found or failed to fetch data"),
+        };
+      }
+
+      const invitedApplicants = jobData.onSiteReInvite
+        .map((applicant) => ({
+          _id: applicant._id,
+          email: applicant.email,
+          applications: applicant.applications.filter(
+            (application) => application.jobId.toString() === jobId
+          ),
+        }))
+        .filter((applicant) => applicant.applications.length > 0);
+
+      return {
+        response: {
+          invitedApplicants: invitedApplicants,
+          jobTitle: jobData.jobTitle,
+        },
+      };
+    } catch (error) {
+      return {
+        error: error.message,
+      };
+    }
+  },
 };

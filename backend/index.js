@@ -30,19 +30,6 @@ app.listen(port, () => {
   console.log(`"server  is listening on a ${port}`);
 });
 
-// cron.schedule("0 0 * * *", async () => {
-//   try {
-//     const currentDate = new Date();
-//     await Job.updateMany(
-//       { expirationDate: { $lt: currentDate }, status: "Active" },
-//       { status: "Expired" }
-//     );
-//     console.log("Expired job statuses updated successfully.");
-//   } catch (error) {
-//     console.error("Error updating job statuses:", error);
-//   }
-// });
-
 const updateExpiredJobs = async () => {
   try {
     const currentDate = new Date();
@@ -50,40 +37,30 @@ const updateExpiredJobs = async () => {
       { expirationDate: { $lt: currentDate }, status: "Active" },
       { status: "Expired" }
     );
-    console.log("cron running")
-
-  } 
-  catch (error) {
+    console.log("cron running");
+  } catch (error) {
     console.error("Error updating initial expired job statuses:", error);
   }
 };
 
-updateExpiredJobs(); // Run this once at startup
-
-// Schedule the job expiration check daily
+updateExpiredJobs();
 cron.schedule("0 0 * * *", updateExpiredJobs);
 
 const initializeAdminAccount = async () => {
   try {
-    // Check if the admin account already exists
     const existingAdmin = await User.findOne({ email: "admin@sdsol.com" });
-
     if (!existingAdmin) {
-      // Hash the password
       const hashedPassword = await bcrypt.hash("admin12345", 10);
 
-      // Create a new admin account
       const newAdmin = new User({
         name: "Admin",
-        designation: "admin", // Set designation as 'admin'
+        designation: "admin",
         email: "admin@sdsol.com",
         password: hashedPassword,
       });
-
-      // Save the admin account to the database
       await newAdmin.save();
       console.log("Admin account created successfully.");
-    } 
+    }
   } catch (error) {
     console.error("Error initializing admin account:", error);
   }

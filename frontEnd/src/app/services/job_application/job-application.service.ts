@@ -132,4 +132,22 @@ export class JobApplicationService {
   getOnsiteInviteApplicants(jobId: string | null) {
     return this.http.get(`${this.apiUrl}/getAllOnsiteApplicants/${jobId}`);
   }
+
+  createOnSiteReInviteForJob(
+    jobId: string | null,
+    applicantId: string,
+    interviewDetails: { date: string; time: string }
+  ) {
+    const body = { applicantId, ...interviewDetails };
+    console.log('in service', body);
+    return this.http.post(`${this.apiUrl}/jobs/${jobId}/onsiteReInvite`, {
+      body,
+    });
+  }
+
+  getOnsiteReInviteApplicants(jobId: string | null) {
+    return this.http.get(
+      `${this.apiUrl}/getAllOnsiteReInviteApplicants/${jobId}`
+    );
+  }
 }
