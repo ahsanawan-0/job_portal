@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 /bazel-out
+/angular-436922-d7e725a7bed5.json
 
 # Node
 /node_modules

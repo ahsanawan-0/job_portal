@@ -32,6 +32,7 @@ import { DateTimeModalComponent } from '../../modals/date-time-modal/date-time-m
 export class JobApplicationsComponent implements OnInit {
   notification = inject(NotificationService);
   route = inject(Router);
+  showTooltip: boolean = false;
 
   onClickArrowLeft() {
     this.route.navigateByUrl('myjobs');
@@ -76,42 +77,75 @@ export class JobApplicationsComponent implements OnInit {
   }
 
   service = inject(JobApplicationService);
-
+  
   getApplicantsForJob() {
-    this.service.getApplicantsForJob(this.jobId).subscribe(
-      (res: ApplicantsResponse) => {
+    this.service.getApplicantsForJob(this.jobId).subscribe((res: ApplicantsResponse) => {
         if (res && res.response) {
-          this.applicants = res.response.applicants.map((applicant) => ({
-            _id: applicant._id,
-            email: applicant.email,
-            jobTitle: res.response.jobTitle,
+            this.applicants = res.response.applicants.map(applicant => ({
+                _id: applicant._id,
+                email: applicant.email,
+                jobTitle: res.response.jobTitle,
+                applications: applicant.applications.map(application => ({
+                    name: application.name,
+                    experience: application.experience,
+                    resume: application.resume,
+                    createdAt: application.appliedAt
+                })),
+                duplicates: applicant.duplicates.map(duplicate => ({
+                    jobId: duplicate.jobId,
+                    jobTitle: duplicate.jobTitle
+                })),
+                hasDuplicates: applicant.duplicates.length > 0, // Boolean to check if duplicates exist
+              showTooltip: false // Initialize tooltip visibility
 
-            applications: applicant.applications.map((application) => ({
-              name: application.name,
-              experience: application.experience,
-              resume: application.resume,
-              createdAt: application.appliedAt,
-            })),
-          }));
-          console.log('applicants', this.applicants);
-          this.totalApplicants = res.totalApplicants;
-          this.extractShortListedId();
-          this.jobTitle = res.response.jobTitle;
-          this.jobStatus = res.response.status;
-          console.log(
-            'job title in get applicants for job: ',
-            this.jobTitle,
-            this.jobStatus
-          );
+            }));
+            console.log("applicants", this.applicants);
+            this.totalApplicants = res.totalApplicants;
+            this.extractShortListedId();
+            this.jobTitle = res.response.jobTitle;
         } else {
-          console.error('Invalid response structure:', res);
+            console.error("Invalid response structure:", res);
         }
-      },
-      (error) => {
-        console.error('Error fetching applicants:', error);
-      }
-    );
-  }
+    }, (error) => {
+        console.error("Error fetching applicants:", error);
+    });
+}
+
+  // getApplicantsForJob() {
+  //   this.service.getApplicantsForJob(this.jobId).subscribe(
+  //     (res: ApplicantsResponse) => {
+  //       if (res && res.response) {
+  //         this.applicants = res.response.applicants.map((applicant) => ({
+  //           _id: applicant._id,
+  //           email: applicant.email,
+  //           jobTitle: res.response.jobTitle,
+
+  //           applications: applicant.applications.map((application) => ({
+  //             name: application.name,
+  //             experience: application.experience,
+  //             resume: application.resume,
+  //             createdAt: application.appliedAt,
+  //           })),
+  //         }));
+  //         console.log('applicants', this.applicants);
+  //         this.totalApplicants = res.totalApplicants;
+  //         this.extractShortListedId();
+  //         this.jobTitle = res.response.jobTitle;
+  //         this.jobStatus = res.response.status;
+  //         console.log(
+  //           'job title in get applicants for job: ',
+  //           this.jobTitle,
+  //           this.jobStatus
+  //         );
+  //       } else {
+  //         console.error('Invalid response structure:', res);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching applicants:', error);
+  //     }
+  //   );
+  // }
 
   createShortListedApplicant(applicantId: string, applicantName: string) {
     const modalRef = this.modalService.open(DeleteConfirmationModalComponent);
@@ -547,7 +581,6 @@ export class JobApplicationsComponent implements OnInit {
     this.service
       .createTestInvitedApplicantsForJob(this.jobId, applicantId, testId)
       .subscribe((res: any) => {
-        // Refresh or update as needed
         success({
           text: 'Applicant invited for the selected test!',
           delay: 3000,

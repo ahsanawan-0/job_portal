@@ -3,6 +3,7 @@ import { JobApplicationService } from '../../services/job_application/job-applic
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { success } from '@pnotify/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tets-forms-list',
@@ -13,18 +14,18 @@ import { success } from '@pnotify/core';
 })
 export class TetsFormsListComponent implements OnInit {
   @Output() selectedTest = new EventEmitter<string>();
-  @Output() invitationSent = new EventEmitter<void>(); // Emit an event when invitation is sent
+  @Output() invitationSent = new EventEmitter<void>(); 
 
-  @Input() jobId!: string; // Non-null assertion operator
-  testList: any[] = []; // Array of available tests
-  @Input() applicantId!: string; // Input for applicant ID
-  @Input() applicantName!: string; // Ensure this is defined
+  @Input() jobId!: string; 
+  testList: any[] = []; 
+  @Input() applicantId!: string; 
+  @Input() applicantName!: string; 
 
-  public modal = inject(NgbActiveModal); // Inject NgbActiveModal here
+  public modal = inject(NgbActiveModal); 
 
-  selectedTestId!: string; // Property to hold the selected test ID
+  selectedTestId!: string; 
 
-  constructor(private service: JobApplicationService) {}
+  constructor(private service: JobApplicationService, private router: Router) {}
 
   ngOnInit() {
     this.fetchTests();
@@ -32,7 +33,7 @@ export class TetsFormsListComponent implements OnInit {
 
   fetchTests() {
     this.service.getTestsForJob(this.jobId).subscribe((res: any) => {
-      this.testList = res.testForms; // Assuming API response contains a list of tests
+      this.testList = res.testForms;
     });
   }
 
@@ -44,20 +45,31 @@ export class TetsFormsListComponent implements OnInit {
         width: '300px',
       });
 
-      this.invitationSent.emit(); // Emit event to notify parent
-      this.closeModal(); // Optional: Close modal after sending invitation
+      this.invitationSent.emit(); 
+      this.closeModal(); 
     });
   }
 
   toggleSelection(testId: string) {
-    this.selectedTestId = testId; // Update selected test ID
+    // If the selected test is the same, deselect it
+    if (this.selectedTestId === testId) {
+      this.selectedTestId = ''; // Deselect if already selected
+    } else {
+      this.selectedTestId = testId; // Select the new test
+    }
   }
 
   openTestPreview(testId: string) {
-    console.log(`Previewing test with ID: ${testId}`);
+    const url = `http://localhost:4200/test/admin/${testId}`;
+    window.open(url, '_blank');
   }
 
   closeModal() {
-    this.modal.dismiss(); // Close the modal
+    this.modal.dismiss(); 
+  }
+
+  redirectToTestPage() {
+    this.router.navigate(['/technicalinterview']);
+    this.modal.dismiss(); 
   }
 }

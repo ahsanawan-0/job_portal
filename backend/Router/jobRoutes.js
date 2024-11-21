@@ -12,10 +12,9 @@ const {
   getHiredCandidates,
   getAllActiveJobs,
 } = require("../controller/jobController");
-const verifyToken = require("../middleweres/verifyToken");
 
 router.post("/create-job", createJobPost);
-
+router.put("/update-job/:jobId", updateJobPost);
 router.get("/jobs/alljobs", getJobsforPagination);
 
 router.get("/jobs/recentJobs", getRecentJobPosts);

@@ -51,7 +51,7 @@ export class CreateJobService {
   }
 
   // Method to get a job by ID
-  getJobById(jobId: string): Observable<ApiPostModel> {
+  getJobById(jobId: string|null): Observable<ApiPostModel> {
     return this.http
       .get<ApiPostModel>(`${this.apiUrl}/getSignleJob/${jobId}`)
       .pipe(catchError(this.handleError));
@@ -66,9 +66,9 @@ export class CreateJobService {
   }
 
   // Method to update a job
-  updateJob(jobId: string, jobData: PostJob): Observable<any> {
+  updateJob(jobId: string |null, jobData: PostJob): Observable<any> {
     return this.http
-      .put<any>(`${this.apiUrl}/jobs/${jobId}`, jobData)
+      .put<any>(`${this.apiUrl}/update-job/${jobId}`,jobData)
       .pipe(catchError(this.handleError));
   }
 

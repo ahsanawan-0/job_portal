@@ -27,42 +27,36 @@ const ApplicantsApplyForJob = async (req, res) => {
     }
 
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-    const resumeId = await uploadFile(
-      req.file.path,
-      req.file.mimetype,
-      folderId
-    );
+    const resumeId = await uploadFile(req.file.path, req.file.mimetype, folderId);
 
+    // Check if applicant already exists
     let applicant = await Applicants.findOne({ email });
 
     const applicationData = {
-      name,
+      name, // Include name in application data
       experience,
       coverLetter,
       resume: resumeId,
       jobId,
     };
 
-    if (
-      applicant &&
-      applicant.applications.some((app) => app.jobId.toString() === jobId)
-    ) {
-      return res
-        .status(400)
-        .json({ error: "You have already applied for this job" });
+    // Check if applicant has already applied for this job
+    if (applicant && applicant.applications.some(app => app.jobId.toString() === jobId)) {
+      return res.status(400).json({ error: "You have already applied for this job" });
     }
 
     if (applicant) {
+      // Update existing applicant's applications
       applicant.applications.push(applicationData);
       await applicant.save();
     } else {
+      // Create a new applicant
       const newApplicant = new Applicants({
         email,
         applications: [applicationData],
       });
       await newApplicant.save();
-
-      applicant = newApplicant;
+      applicant = newApplicant; 
     }
 
     await jobModel.applyForJob(jobId, applicant._id);
@@ -75,9 +69,9 @@ const ApplicantsApplyForJob = async (req, res) => {
       experienceRequired: experience,
     };
 
-    // Send an email notification
     try {
-      await sendEmail(applicant, jobDetails);
+  
+      await sendEmail({ name, email }, jobDetails);
     } catch (emailError) {
       console.error("Error sending email:", emailError);
       return res
@@ -147,6 +141,10 @@ const getApplicantsForJob = async (req, res) => {
     });
   }
 };
+
+
+
+
 
 const createShortListedApplicantsForJob = async (req, res) => {
   try {
@@ -218,18 +216,12 @@ const createTestInvitedApplicantsForJob = async (req, res) => {
     const { applicantId, testId } = req.body;
     const jobId = req.params.jobId;
 
-    console.log("check1");
     if (!jobId || !applicantId || !testId) {
-      return res
-        .status(400)
-        .send({ message: "Job ID, Applicant ID, and Test ID are required." });
+      return res.status(400).send({ message: "Job ID, Applicant ID, and Test ID are required." });
     }
-    console.log("check2");
 
-    const result = await applicantModel.addApplicantToTestInvited(
-      jobId,
-      applicantId
-    );
+    // Add applicant to the invited list
+    const result = await applicantModel.addApplicantToTestInvited(jobId, applicantId);
     if (result.error) {
       return res.status(500).send({ message: result.error });
     }
@@ -240,10 +232,18 @@ const createTestInvitedApplicantsForJob = async (req, res) => {
       return res.status(400).send({ message: "Applicant email not found." });
     }
 
-    const token = crypto.randomBytes(16).toString("hex");
-    const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
-    console.log("check1");
+    
+    const applicantName = applicantData.applications.find(app => app.jobId.toString() === jobId)?.name;
 
+    if (!applicantName) {
+      return res.status(400).send({ message: "Applicant name not found." });
+    }
+
+    
+    const token = crypto.randomBytes(16).toString("hex");
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 1 day expiration
+
+    
     const testLink = new TestLink({
       applicantId,
       testId,
@@ -254,14 +254,17 @@ const createTestInvitedApplicantsForJob = async (req, res) => {
 
     await testLink.save();
 
-    const testLinkUrl = `${process.env.FRONTEND_URL}/test/user/${testId}?token=${token}&applicant=${applicantId}`;
+    
+    const testLinkUrl = `${process.env.FRONTEND_URL}/test/user/${testId}?token=${token}&applicant=${applicantId}&jobId=${jobId}`;
 
+    // Get job title
     const jobTitle = await jobModel.getJobTitleById(jobId);
     if (!jobTitle) {
       return res.status(404).send({ message: "Job not found." });
     }
 
-    await sendTestInviteEmail(applicantData, jobTitle, testLinkUrl);
+    // Send the test invite email
+    await sendTestInviteEmail({ name: applicantName, email: applicantData.email }, jobTitle, testLinkUrl);
 
     return res.send({
       message: "Test invitation sent successfully.",
@@ -365,41 +368,44 @@ const getAllHiredApplicants = async (req, res) => {
     });
   }
 };
+
+
+
 const getApplicantById = async (req, res) => {
   try {
-    // Get applicantId from the query parameters
-    const { applicant } = req.query; // Use req.query to access query parameters
+    const { jobId } = req.query;
+    const { applicantId } = req.query;
 
-    if (!applicant) {
-      return res.status(400).json({ error: "Applicant ID is required." });
+    if (!applicantId || !jobId) {
+      return res.status(400).json({ error: "Applicant ID and Job ID are required." });
     }
 
-    // Ensure that applicant is a valid ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(applicant)) {
-      return res.status(400).json({ error: "Invalid Applicant ID format." });
-    }
-    console.log(applicant);
-    // Find the applicant by ID and select only the name and email fields
-    const applicantData = await applicantsSchema
-      .findById(applicant)
-      .select("name email");
+    const applicantData = await Applicants.findById(applicantId).select("email applications.jobId applications.name");
 
     if (!applicantData) {
       return res.status(404).json({ error: "Applicant not found." });
     }
 
-    // Return the applicant's name and email
+    const application = applicantData.applications.find(app => app.jobId.toString() === jobId);
+
+    if (!application) {
+      return res.status(404).json({ error: "No application found for the specified job." });
+    }
+
     res.status(200).json({
-      message: "Applicant data retrieved successfully.",
-      data: applicantData,
+      message: "Applicant name retrieved successfully.",
+      data: {
+        name: application.name,
+        email: applicantData.email,
+
+      },
     });
   } catch (error) {
     console.error("Error fetching applicant data:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching applicant data." });
+    res.status(500).json({ error: "An error occurred while fetching applicant data." });
   }
 };
+
 
 const createOnSiteInviteApplicants = async (req, res) => {
   try {
@@ -469,6 +475,7 @@ const createOnSiteInviteApplicants = async (req, res) => {
     });
   }
 };
+
 
 const getAllOnSiteInviteApplicants = async (req, res) => {
   try {

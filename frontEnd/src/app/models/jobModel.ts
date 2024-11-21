@@ -2,7 +2,7 @@
 
 export interface PostJob {
   jobTitle: string;
-  tags: string[]; // Changed to array of strings
+  tags: string[];
   location: string;
   minSalary: number;
   maxSalary: number;
@@ -10,7 +10,7 @@ export interface PostJob {
   experience: string;
   jobType: string;
   vacancies: number;
-  expirationDate: string; // Can also be Date if preferred
+  expirationDate: string; 
   description: string;
   responsibilities: string;
 }
@@ -79,12 +79,18 @@ export interface Application {
   jobId: string; // If needed
   appliedAt: string; // Date string
 }
+export interface Duplicate {
+  jobId: string;
+  jobTitle: string;
+}
 
 // Define the structure of an applicant
 export interface Applicant {
   _id: string;
   email: string;
   applications: Application[];
+  duplicates: Duplicate[];
+
 }
 
 // Define the response structure

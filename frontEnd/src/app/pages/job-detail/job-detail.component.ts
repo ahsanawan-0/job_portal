@@ -17,16 +17,15 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./job-detail.component.css'],
 })
 export class JobDetailComponent implements OnInit {
-  private modalService = inject(NgbModal);
   private createJobService = inject(CreateJobService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  job: any; // To store job details
-  jobId: string = ''; // Initialize without hardcoding
+  job: any; 
+    jobId: string = ''; // Initialize without hardcoding
   searchQuery: string = ''; // For search input binding
   showDropdown: boolean = false; // To toggle the predictive search results
-  searchResults: Job[] = []; // Store search results using the Job interface
+  searchResults: Job[] = [];
   loading: boolean = false; // To show the loading spinner
   searchSubject = new Subject<string>(); // To handle debounced search
 
@@ -66,11 +65,18 @@ export class JobDetailComponent implements OnInit {
       );
   }
 
-  openApplyModal() {
-    const modalRef = this.modalService.open(ApplyJobModalComponent);
+  updateJob() {
+    // Logic to navigate to the update job page or open an update modal
+    console.log("Navigating to update job for job ID:", this.jobId);
+    this.router.navigate(['/update-job', this.jobId])
   }
+  
+  repostJob() {
+    
+    this.router.navigate(['/repost-job', this.jobId])
+    // You can call a service to repost the job here
+ }
 
-  // Triggered on input change in search bar
   onSearch() {
     // Emit value to trigger debounced search
     this.searchSubject.next(this.searchQuery);

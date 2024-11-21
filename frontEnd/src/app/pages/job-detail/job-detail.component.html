@@ -170,16 +170,25 @@
       </div>
       <div class="">
         <button
+          *ngIf="job.status === 'Active'"
           class="px-8 py-3 bg-[#0A65CC] flex gap-2 text-white"
-          (click)="openApplyModal()"
+          (click)="updateJob()"
         >
           Update Now <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
         </button>
+  
+        <button
+          *ngIf="job.status === 'Expired'"
+          class="px-8 py-3 bg-[#E05151] flex gap-2 text-white"
+          (click)="repostJob()"
+        >
+          Repost Job <img src="assets/icons/fi_arrow-right-white.svg" alt="" />
+        </button>
       </div>
     </div>
-    <div class=""></div>
+    <div></div>
     <div>
-      Job expire in: {{ job.expirationDate | date : "mediumDate" }}
+     {{ job.status === 'Expired' ? 'Expired' : ' Job expires on: ' + (job.expirationDate | date: 'mediumDate') }}
       <span class="text-[#E05151]"></span>
     </div>
   </div>
@@ -229,7 +238,7 @@
           <div>
             <h4 class="text-textcolor">Job Expiry:</h4>
             <h3 class="font-semibold">
-              {{ job.expirationDate | date : "mediumDate" }}
+              {{ job.status === 'Expired' ? 'Expired' : (job.expirationDate | date: 'mediumDate') }}
             </h3>
           </div>
         </div>
@@ -258,7 +267,7 @@
           <img src="assets/icons/MapPinLine.svg" alt="" />
           <div>
             <h4 class="text-textcolor">Location:</h4>
-            <h3 class="font-semibold">New York, USA</h3>
+            <h3 class="font-semibold">{{job.location}}</h3>
           </div>
         </div>
 

@@ -85,17 +85,17 @@ const updateJobStatus = async (jobId) => {
   }
 };
 
-// const updateJob = async (jobId, updateData) => {
-//   try {
-//     return await Job.findByIdAndUpdate(jobId, updateData, {
-//       new: true,
-//       runValidators: true,
-//     });
-//   } catch (error) {
-//     console.error(`Error updating job: ${error.message}`);
-//     throw error;
-//   }
-// };
+const updateJob = async (jobId, updateData) => {
+  try {
+    return await Job.findByIdAndUpdate(jobId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+  } catch (error) {
+    console.error(`Error updating job: ${error.message}`);
+    throw error;
+  }
+};
 
 // Delete a job
 const deleteJob = async (jobId) => {
@@ -212,13 +212,27 @@ const getAllActiveJobs = async () => {
     throw error;
   }
 };
+// const updateJob = async (jobId, jobData) => {
+//   try {
+//     const updatedJob = await Job.findByIdAndUpdate(jobId, jobData, {
+//       new: true, // Return the updated document
+//       runValidators: true, // Ensure that validation rules are applied
+//     });
+
+//     return updatedJob; // Return the updated job document
+//   } catch (error) {
+//     console.error("Error updating job:", error);
+//     throw new Error('Could not update job'); // Handle error appropriately
+//   }
+// };
+
 
 module.exports = {
   createJob,
   getAllActiveJobs,
   getAllJobs,
+  updateJob,
   getJobById,
-
   deleteJob,
   getJobTitleById,
   searchJobPosts,

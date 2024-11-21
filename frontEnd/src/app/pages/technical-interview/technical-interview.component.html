@@ -24,6 +24,6 @@
     </p>
   </div>
 
-  <app-form-card *ngIf="displayForms"  [forms]="forms"></app-form-card>
+  <app-form-card *ngIf="displayForms"  [forms]="forms" (formDeleted)="loadAllForms()"></app-form-card>
   <app-question-card *ngIf="displayQuestions"[questions]="tests" class="mt-16"></app-question-card>
 </div>

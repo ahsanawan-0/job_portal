@@ -18,7 +18,7 @@ export class ExitInterviewModalComponent {
 
   public activeModal = inject(NgbActiveModal);
 
-  @Input() link: string = ''; // Property to hold the link
+  @Input() link: string = ''; 
   @Input() title: string = '';
   @Input() name: string = '';
 

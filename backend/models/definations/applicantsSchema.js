@@ -26,7 +26,7 @@ const applicantsSchema = new mongoose.Schema(
           ],
         },
         coverLetter: { type: String, required: true },
-        resume: { type: String, required: true }, // Store resume ID or path
+        resume: { type: String, required: true },
         jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
         appliedAt: { type: Date, default: Date.now },
       }
