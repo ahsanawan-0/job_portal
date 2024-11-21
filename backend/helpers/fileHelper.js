@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Load service account credentials
-const SERVICE_ACCOUNT_FILE = path.join(__dirname, 'angular-436922-d7e725a7bed5.json');
+const SERVICE_ACCOUNT_FILE = path.join(__dirname, process.env.GOOGLE_DRIVE_FILE);
 const auth = new google.auth.GoogleAuth({
   keyFile: SERVICE_ACCOUNT_FILE,
   scopes: ["https://www.googleapis.com/auth/drive.file"],

@@ -170,7 +170,10 @@ export const routes: Routes = [
         path: 'reviewFormAnswers/:applicantId',
         component: ReviewFormAnswersComponent,
       },
+      { path: 'update-job/:jodId', component: FormComponent },
+      { path: 'repost-job/:jodId', component: FormComponent },
     ],
+    
   },
   {
     path: 'test',
@@ -188,6 +191,7 @@ export const routes: Routes = [
     component: JobDetailComponent,
     canActivate: [authGuard],
   },
+
   {
     path: 'loader',
     component: LoaderComponent,

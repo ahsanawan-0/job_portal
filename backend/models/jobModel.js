@@ -85,17 +85,17 @@ const updateJobStatus = async (jobId) => {
   }
 };
 
-// const updateJob = async (jobId, updateData) => {
-//   try {
-//     return await Job.findByIdAndUpdate(jobId, updateData, {
-//       new: true,
-//       runValidators: true,
-//     });
-//   } catch (error) {
-//     console.error(`Error updating job: ${error.message}`);
-//     throw error;
-//   }
-// };
+const updateJob = async (jobId, updateData) => {
+  try {
+    return await Job.findByIdAndUpdate(jobId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+  } catch (error) {
+    console.error(`Error updating job: ${error.message}`);
+    throw error;
+  }
+};
 
 // Delete a job
 const deleteJob = async (jobId) => {
@@ -231,7 +231,7 @@ module.exports = {
   createJob,
   getAllActiveJobs,
   getAllJobs,
-  // updateJob,
+  updateJob,
   getJobById,
   deleteJob,
   getJobTitleById,

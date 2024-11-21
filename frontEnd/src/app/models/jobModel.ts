@@ -2,7 +2,7 @@
 
 export interface PostJob {
   jobTitle: string;
-  tags: string[]; // Changed to array of strings
+  tags: string[];
   location: string;
   minSalary: number;
   maxSalary: number;
@@ -10,7 +10,7 @@ export interface PostJob {
   experience: string;
   jobType: string;
   vacancies: number;
-  expirationDate: string; // Can also be Date if preferred
+  expirationDate: string; 
   description: string;
   responsibilities: string;
 }

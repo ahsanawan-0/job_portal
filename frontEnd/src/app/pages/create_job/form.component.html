@@ -7,8 +7,9 @@
     <main class="flex-1 p-5">
       <div class="max-w-4xl">
         <!-- Header -->
-        <h2 class="text-2xl font-semibold mb-6">POST A JOB</h2>
-
+        <h2 class="text-2xl font-semibold mb-6">
+          {{ mode === 'create' ? 'POST A JOB' : mode === 'update' ? 'UPDATE A JOB' : 'REPOST A JOB' }}
+        </h2>
         <!-- Success and Error Messages -->
         <div
           *ngIf="successMessage"
@@ -24,78 +25,46 @@
         </div>
 
         <!-- Job Details Form -->
-        <form
-          (ngSubmit)="submitForm(form)"
-          #form="ngForm"
-          class="grid grid-cols-1 gap-6"
-        >
-          <!-- Job Title -->
+        <form [formGroup]="jobForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 gap-6">
           <!-- Job Title -->
           <div>
-            <label
-              for="job_title"
-              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-            >
-              Job Title
-            </label>
-            <input
-              type="text"
-              id="job_title"
-              [(ngModel)]="jobTitle"
-              name="jobTitle"
-              class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-              placeholder="Add job title, role, vacancies etc"
-              required
-              #jobTitleCtrl="ngModel"
+            <label for="job_title" class="block text-sm font-medium text-gray-900 mb-2">Job Title</label>
+            <input 
+              type="text" 
+              id="job_title" 
+              formControlName="jobTitle"
+              class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5"
+              placeholder="Add job title, role, vacancies etc" 
+              required 
             />
-            <!-- Validation Feedback -->
-            <div
-              *ngIf="
-                jobTitleCtrl.invalid &&
-                (jobTitleCtrl.dirty || jobTitleCtrl.touched)
-              "
-              class="text-red-500 text-sm"
-            >
+            <div *ngIf="jobForm.get('jobTitle')?.invalid && (jobForm.get('jobTitle')?.touched)" class="text-red-500 text-sm">
               Job Title is required.
             </div>
           </div>
-
+        
           <div class="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-4">
             <!-- Tags -->
             <div>
-              <label
-                for="tags"
-                class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-              >
-                Tags
-              </label>
-              <input
-                type="text"
-                id="tags"
-                [(ngModel)]="tags"
-                name="tags"
-                class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Job keyword, tags etc..."
-                required
+              <label for="tags" class="block text-sm font-medium text-gray-900 mb-2">Tags</label>
+              <input 
+                type="text" 
+                id="tags" 
+                formControlName="tags"
+                class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-0 focus:border-blue-400 block w-full p-2.5" 
+                placeholder="Job keyword, tags etc..." 
+                required 
               />
             </div>
-
+        
             <!-- Location -->
             <div>
-              <label
-                for="location"
-                class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-              >
-                Location
-              </label>
-              <select
-                id="location"
-                [(ngModel)]="location"
-                name="location"
-                class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              <label for="location" class="block text-sm font-medium text-gray-900 mb-2">Location</label>
+              <select 
+                id="location" 
+                formControlName="location"
+                class="border border-gray-300 text-sm rounded-md w-full p-2.5" 
                 required
               >
-              
                 <option value="">Select</option>
                 <option value="On-Site">On-Site</option>
                 <option value="Remote">Remote</option>
@@ -103,68 +72,50 @@
               </select>
             </div>
           </div>
-
+        
           <!-- Salary Section -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Salary</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- Min Salary -->
               <div>
-                <label
-                  for="min_salary"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  Min Salary
-                </label>
-                <input
-                  type="number"
-                  id="min_salary"
-                  [(ngModel)]="minSalary"
-                  name="minSalary"
-                  class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 transition-all duration-300 hover:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                  placeholder="Minimum salary..."
-                  required
+                <label for="min_salary" class="block text-sm font-medium text-gray-900 mb-2">Min Salary</label>
+                <input 
+                  type="number" 
+                  id="min_salary" 
+                  formControlName="minSalary"
+                  class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8]" 
+                  placeholder="Minimum salary..." 
+                  required 
                 />
               </div>
-
+        
               <!-- Max Salary -->
               <div>
-                <label
-                  for="max_salary"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  Max Salary
-                </label>
-                <input
-                  type="number"
-                  id="max_salary"
-                  [(ngModel)]="maxSalary"
-                  name="maxSalary"
-                  class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8] focus:border-gray-500 transition-all duration-300 hover:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                  placeholder="Maximum salary..."
-                  required
+                <label for="max_salary" class="block text-sm font-medium text-gray-900 mb-2">Max Salary</label>
+                <input 
+                  type="number" 
+                  id="max_salary" 
+                  formControlName="maxSalary"
+                  class="block w-full rounded-md text-gray-900 placeholder:text-[#767F8C] p-2.5 border border-[#E4E5E8]" 
+                  placeholder="Maximum salary..." 
+                  required 
                 />
               </div>
             </div>
           </div>
-
+        
           <!-- Advanced Information -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Advanced Information</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- Education -->
               <div>
-                <label
-                  for="education"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  Education
-                </label>
-                <select
-                  id="education"
-                  [(ngModel)]="education"
-                  name="education"
-                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                <label for="education" class="block text-sm font-medium text-gray-900 mb-2">Education</label>
+                <select 
+                  id="education" 
+                  formControlName="education"
+                  class="border border-gray-300 text-sm rounded-md w-full p-2.5" 
                   required
                 >
                   <option value="">Select</option>
@@ -173,20 +124,14 @@
                   <option value="Ph.D.">Ph.D.</option>
                 </select>
               </div>
-
+        
               <!-- Experience -->
               <div>
-                <label
-                  for="experience"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  Experience
-                </label>
-                <select
-                  id="experience"
-                  [(ngModel)]="experience"
-                  name="experience"
-                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                <label for="experience" class="block text-sm font-medium text-gray-900 mb-2">Experience</label>
+                <select 
+                  id="experience" 
+                  formControlName="experience"
+                  class="border border-gray-300 text-sm rounded-md w-full p-2.5" 
                   required
                 >
                   <option value="">Select</option>
@@ -195,20 +140,14 @@
                   <option value="5+ Years">5+ Years</option>
                 </select>
               </div>
-
+        
               <!-- Job Type -->
               <div>
-                <label
-                  for="job_type"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  Job Type
-                </label>
-                <select
-                  id="job_type"
-                  [(ngModel)]="jobType"
-                  name="jobType"
-                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                <label for="job_type" class="block text-sm font-medium text-gray-900 mb-2">Job Type</label>
+                <select 
+                  id="job_type" 
+                  formControlName="jobType"
+                  class="border border-gray-300 text-sm rounded-md w-full p-2.5" 
                   required
                 >
                   <option value="">Select</option>
@@ -218,21 +157,15 @@
                 </select>
               </div>
             </div>
-
+        
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
               <!-- No of Vacancies -->
               <div>
-                <label
-                  for="vacancies"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  No of Vacancies
-                </label>
-                <select
-                  id="vacancies"
-                  [(ngModel)]="vacancies"
-                  name="vacancies"
-                  class="border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                <label for="vacancies" class="block text-sm font-medium text-gray-900 mb-2">No of Vacancies</label>
+                <select 
+                  id="vacancies" 
+                  formControlName="vacancies"
+                  class="border border-gray-300 text-sm rounded-md w-full p-2.5" 
                   required
                 >
                   <option value="">Select</option>
@@ -242,82 +175,64 @@
                   <option value="4">4</option>
                 </select>
               </div>
-
+        
               <!-- Expiration Date -->
               <div>
-                <label
-                  for="expiration_date"
-                  class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-                >
-                  Expiration Date
-                </label>
-                <input
-                  type="date"
-                  id="expiration_date"
-                  [(ngModel)]="expirationDate"
-                  name="expirationDate"
+                <label for="expiration_date" class="block text-sm font-medium text-gray-900 mb-2">Expiration Date</label>
+                <input 
+                  type="date" 
+                  id="expiration_date" 
+                  formControlName="expirationDate"
                   min="{{ today }}"
-                  class="date-time-input border border-gray-300 text-[#767F8C] text-sm rounded-md w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                  required
+                  class="border border-gray-300 text-sm rounded-md w-full p-2.5" 
+                  required 
                 />
               </div>
-              
+            </div>
+            <div>
+              <label for="description" class="block text-sm font-medium text-gray-900 mb-2">Job Description</label>
+              <div class="editor">
+                <ngx-editor 
+                  [editor]="descriptionEditor" 
+                  formControlName="description"
+                  [placeholder]="'Enter job description'">
+                </ngx-editor>
+                <ngx-editor-menu [editor]="descriptionEditor" [toolbar]="toolbar"></ngx-editor-menu>
+              </div>
+            </div>
+          
+            <div>
+              <label for="responsibilities" class="block text-sm font-medium text-gray-900 mb-2">Responsibilities</label>
+              <div class="editor">
+                <ngx-editor 
+                  [editor]="responsibilitiesEditor" 
+                  formControlName="responsibilities" 
+                  [placeholder]="'List the job responsibilities'">
+                </ngx-editor>
+                <ngx-editor-menu [editor]="responsibilitiesEditor" [toolbar]="toolbar"></ngx-editor-menu>
+              </div>
             </div>
           </div>
-
-          <!-- Description using app-textarea Component -->
-          <div>
-            <label
-              for="description"
-              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-            >
-              Job Description
-            </label>
-            <app-textarea
-              id="description"
-              [(content)]="description"
-              name="description"
-              placeholder="Describe the job in detail"
-              required
-            ></app-textarea>
-          </div>
-
-          <!-- Responsibilities using app-textarea Component -->
-          <div>
-            <label
-              for="responsibilities"
-              class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
-            >
-              Responsibilities
-            </label>
-            <app-textarea
-              id="responsibilities"
-              [(content)]="responsibilities"
-              name="responsibilities"
-              placeholder="List the job responsibilities"
-              required
-            ></app-textarea>
-          </div>
-
+        
+        
           <!-- Submit Button -->
-      <!-- Submit Button -->
-<div class="flex justify-start">
-  <button
-    type="submit"
-    [disabled]="form.invalid || isPosting"
-    class="py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
-  >
-    <span *ngIf="isPosting">Posting...</span>
-    <span *ngIf="!isPosting">Post a Job</span>
-    <img
-      *ngIf="!isPosting"
-      src="assets/icons/fi_arrow-right-white.svg"
-      alt="Arrow Right Icon"
-      class="w-5 h-5"
-    />
-    <div *ngIf="isPosting" class="loader w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin"></div>
-  </button>
-</div>
+          <div class="flex justify-start">
+            <button
+              type="submit"
+              [disabled]="isPosting"
+              class="py-3 px-7 bg-blue-600 rounded-md text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors"
+            >
+              <span *ngIf="isPosting">{{ mode === 'create' ? 'Posting...' : mode === 'update' ? 'Updating...' : 'Reposting...' }}...</span>
+              <span *ngIf="!isPosting">{{ mode === 'create' ? 'Post a Job' : mode === 'update' ? 'Update Job' : 'Repost Job' }}</span>
+              <img
+                *ngIf="!isPosting"
+                src="assets/icons/fi_arrow-right-white.svg"
+                alt="Arrow Right Icon"
+                class="w-5 h-5"
+              />
+              <div *ngIf="isPosting" class="loader w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin"></div>
+            </button>
+          </div>
         </form>
       </div>
     </main>
