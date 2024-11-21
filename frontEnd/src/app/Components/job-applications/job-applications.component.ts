@@ -71,7 +71,6 @@ export class JobApplicationsComponent implements OnInit {
     this.getApplicantsForJob();
     this.getAllShortListedApplicants();
     this.getAllTestInvitedApplicants();
-    this.getAllHiredApplicants();
     this.getAllOnsiteApplicants();
     this.getAllReInviteApplicants();
   }
