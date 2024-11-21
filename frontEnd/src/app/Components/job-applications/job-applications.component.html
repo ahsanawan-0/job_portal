@@ -29,26 +29,37 @@
         </p>
       </div>
 
-      <div class="overflow-auto max-h-[320px]">
+      <div class="overflow-auto max-h-[320px] relative">
         <div *ngFor="let applicant of applicants">
-          <div
-            *ngFor="let item of applicant.applications"
-            class="border border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]"
-          >
-            <div name class="flex items-center gap-3 p-4">
-              <img src="assets/images/Image.png" />
-
-              <div class="flex flex-col gap-1">
-                <p class="font-semibold text-sm text-custom-black">
-                  {{ item.name | capitalizeWords }}
-                </p>
-
-                <p class="font-normal text-sm text-custom-gray">
-                  {{ applicant.jobTitle }}
-                </p>
-              </div>
-            </div>
-
+            <div *ngFor="let item of applicant.applications" class="border  border-[#E4E5E8] mb-3 rounded-md bg-white shadow-[0px_3px_16px_0px_rgba(24,25,28,0.04)]">
+                <div class="flex items-center justify-between gap-3 p-4">
+                    <div class="flex flex-col gap-1">
+                        <p class="font-semibold text-sm text-custom-black">
+                            {{ item.name | capitalizeWords }}
+                        </p>
+                        <p class="font-normal text-sm text-custom-gray">
+                            {{ applicant.jobTitle }}
+                        </p>
+                    </div>
+    
+                    <!-- Duplicates Icon with Tooltip -->
+                    <div class="">
+                        <div *ngIf="applicant.hasDuplicates">
+                            <img src="assets/icons/Group 2.svg" class="cursor-pointer" alt="Duplicates Icon"
+                                 (mouseenter)="applicant.showTooltip = true" 
+                                 (mouseleave)="applicant.showTooltip = false">
+                        </div>
+    
+                        <!-- Tooltip Div -->
+                        <div *ngIf="applicant.showTooltip" class="absolute z-50 w-auto right-10 ">
+                            <ul class="bg-white border border-gray-300 shadow-lg rounded-md p-2 list-none">
+                                <li *ngFor="let duplicate of applicant.duplicates" class="text-sm text-gray-700 list-none">
+                                    {{ duplicate.jobTitle }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             <hr class="border border-[#E4E5E8] mx-4" />
 
             <div info class="my-4">

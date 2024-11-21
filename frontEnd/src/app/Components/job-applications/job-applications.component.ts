@@ -101,6 +101,7 @@ export class JobApplicationsComponent implements OnInit {
             }));
             console.log("applicants", this.applicants);
             this.totalApplicants = res.totalApplicants;
+            this.jobStatus= res.response.status
             this.extractShortListedId();
             this.jobTitle = res.response.jobTitle;
         } else {
@@ -179,34 +180,29 @@ export class JobApplicationsComponent implements OnInit {
   //     });
   // }
   getAllShortListedApplicants() {
-    this.service.getAllShortListedApplicants(this.jobId).subscribe(
-      (res: ShortApplicantsResponse) => {
+    this.service.getAllShortListedApplicants(this.jobId).subscribe((res: ShortApplicantsResponse) => {
         if (res && res.response) {
-          this.shortListedArray = res.response.shortListedApplicants.map(
-            (applicant) => ({
-              _id: applicant._id,
-              email: applicant.email,
-              jobTitle: res.response.jobTitle,
-              applications: applicant.applications.map((application) => ({
-                name: application.name,
-                experience: application.experience,
-                resume: application.resume,
-                createdAt: application.appliedAt,
-              })),
-            })
-          );
-          console.log('shortlistedApplicants', this.shortListedArray);
-          this.shortListedCount = res.totalApplicants;
-          this.extractShortListedId();
+            this.shortListedArray = res.response.shortListedApplicants.map(applicant => ({
+                _id: applicant._id,
+                email: applicant.email,
+                jobTitle: res.response.jobTitle,
+                applications: applicant.applications.map(application => ({
+                    name: application.name,
+                    experience: application.experience,
+                    resume: application.resume,
+                    createdAt: application.appliedAt
+                }))
+            }));
+            console.log("shortlistedApplicants",this.shortListedArray)
+            this.shortListedCount = res.totalApplicants;
+           this.extractShortListedId()
         } else {
-          console.error('Invalid response structure:', res);
+            console.error("Invalid response structure:", res);
         }
-      },
-      (error) => {
-        console.error('Error fetching applicants:', error);
-      }
-    );
-  }
+    }, (error) => {
+        console.error("Error fetching applicants:", error);
+    });
+}
 
   shortListedId: any[] = [];
   extractShortListedId() {
