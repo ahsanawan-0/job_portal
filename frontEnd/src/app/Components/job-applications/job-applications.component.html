@@ -109,7 +109,7 @@
                 (click)="createShortListedApplicant(applicant._id, item.name)"
                 [disabled]="isJobExpired() || isShortListed(applicant._id)"
                 [ngClass]="{
-                  'bg-gray-400 text-white': isJobExpired(),
+                  'bg-gray-400 ': isJobExpired(),
                   'bg-custom-green text-[#FFF] ':
                     !isJobExpired() && isShortListed(applicant._id),
                   'bg-blue-500 text-white cursor-pointer':
@@ -219,7 +219,7 @@
               <button
                 [disabled]="isJobExpired() || isTestInvited(applicant._id)"
                 [ngClass]="{
-                  'bg-gray-400 text-white': isJobExpired(),
+                  'bg-gray-400 ': isJobExpired(),
                   'bg-custom-green text-[#FFF]  cursor-pointer':
                     !isJobExpired() && isTestInvited(applicant._id),
                   'bg-blue-500 text-white cursor-pointer':
@@ -328,7 +328,7 @@
                 (click)="createOnsiteApplicantsForJob(applicant._id, item.name)"
                 [disabled]="isJobExpired() || isOnsite(applicant._id)"
                 [ngClass]="{
-                  'bg-gray-400 text-white': isJobExpired(),
+                  'bg-gray-400 ': isJobExpired(),
                   'bg-custom-green text-[#FFF]  cursor-pointer ':
                     !isJobExpired() && isOnsite(applicant._id),
                   'bg-blue-500  text-white cursor-pointer':
@@ -356,7 +356,7 @@
     >
       <div class="flex justify-between items-center relative mb-3">
         <p class="font-medium font-sans text-sm text-custom-black">
-          Onsite Candidates ({{ onsiteApplicantCount }})
+          Interview Candidates ({{ onsiteApplicantCount }})
         </p>
       </div>
       <div class="overflow-auto max-h-[320px]">
@@ -440,7 +440,7 @@
                 "
                 [disabled]="isJobExpired() || isReInvited(applicant._id)"
                 [ngClass]="{
-                  'bg-gray-400 text-white': isJobExpired(),
+                  'bg-gray-400 ': isJobExpired(),
                   'bg-custom-green text-[#FFF]  cursor-pointer ':
                     !isJobExpired() && isReInvited(applicant._id),
                   'bg-blue-500  text-white cursor-pointer':
