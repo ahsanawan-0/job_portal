@@ -44,21 +44,26 @@
     
                     <!-- Duplicates Icon with Tooltip -->
                     <div class="">
-                        <div *ngIf="applicant.hasDuplicates">
-                            <img src="assets/icons/Group 2.svg" class="cursor-pointer" alt="Duplicates Icon"
-                                 (mouseenter)="applicant.showTooltip = true" 
-                                 (mouseleave)="applicant.showTooltip = false">
-                        </div>
-    
-                        <!-- Tooltip Div -->
-                        <div *ngIf="applicant.showTooltip" class="absolute z-50 w-auto right-10 ">
-                            <ul class="bg-white border border-gray-300 shadow-lg rounded-md p-2 list-none">
-                                <li *ngFor="let duplicate of applicant.duplicates" class="text-sm text-gray-700 list-none">
+                      <div *ngIf="applicant.hasDuplicates">
+                          <img src="assets/icons/Group 2.svg" class="cursor-pointer" alt="Duplicates Icon"
+                               (mouseenter)="applicant.showTooltip = true" 
+                               (mouseleave)="applicant.showTooltip = false">
+                      </div>
+                  
+                      <!-- Tooltip Div -->
+                      <div *ngIf="applicant.showTooltip" class="absolute z-50 w-auto right-10 ">
+                          <ul class="bg-white border border-gray-300 shadow-lg rounded-md p-2 list-none">
+                              <li class="text-sm text-gray-700">
+                                  <span class="text-red-500 font-semibold">Also applied in</span>
+                                  <br *ngIf="applicant.duplicates.length > 0"/> <!-- Line break before the job titles -->
+                                  <span *ngFor="let duplicate of applicant.duplicates" class="block mt-2">
+                            
                                     {{ duplicate.jobTitle }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                                  </span>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
                 </div>
             <hr class="border border-[#E4E5E8] mx-4" />
 

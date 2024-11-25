@@ -12,7 +12,9 @@ const Question = new mongoose.Schema(
   {
     job_id: { 
       type: mongoose.Schema.Types.ObjectId, 
-      required: true
+      required: true,
+      ref: 'Job', 
+
     },
     num_questions: { type: Number, required: true },
     interview_type: { type: String, required: true },

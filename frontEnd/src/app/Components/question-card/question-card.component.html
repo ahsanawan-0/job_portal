@@ -6,7 +6,7 @@
   
 <div class="grid grid-cols-6 bg-[#F1F2F4] pl-5 py-3 mt-5 items-center text-[#474C54]">
   <div class="col-span-2">
-    <p class="font-sans font-normal text-[12px] leading-[18px]">QUESTIONS</p>
+    <p class="font-sans font-normal text-[12px] leading-[18px]">No of Questions</p>
   </div>
   <div class="font-sans font-normal text-[12px] leading-[18px]">DATE</div>
   <div class="font-sans font-normal text-[12px] leading-[18px]">TYPE</div>
@@ -16,7 +16,7 @@
 <div *ngFor="let question of questions; let i = index" class="grid grid-cols-6 pr-2 bg-[#fcfcfc] hover:shadow-[0px_12px_48px_0px_#002C6D1A] transition duration-200 border border-transparent hover:border-custom-blue hover:bg-white hover:rounded-lg shadow-[inset_0_-1px_0_0_#E4E5E8]">
   <div class="flex flex-col gap-[8px] col-span-2 pl-5 py-5">
     <p class="font-sans font-medium text-[16px] leading-[24px] text-[#18191C]">
-      {{ question.interview_type }} - {{ question.num_questions }} Questions
+     {{ question.num_questions }} Questions
     </p>
     <div class="text-custom-gray font-sans font-normal text-[12px] leading-[20px] flex gap-[10px] items-center">
       <p>{{ question.experience_level }}</p>

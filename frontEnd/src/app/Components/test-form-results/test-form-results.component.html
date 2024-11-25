@@ -25,7 +25,7 @@
           <p>Name</p>
         </div>
         <div>
-          <p>Email</p> <!-- Changed from EMPLOYEE ID to Email -->
+          <p>Email</p> 
         </div>
         <div>
           <p>ACTIONS</p>
@@ -36,7 +36,7 @@
         *ngFor="let item of submissions; let i = index" 
       >
         <div class="col-span-2">
-          <p class="font-medium text-base">{{ item.applicant.name }}</p> <!-- Accessing applicant name -->
+          <p class="font-medium text-base">{{ item.applicant.applicationName }}</p> <!-- Accessing applicant name -->
         </div>
         <div class="flex gap-2 items-center">
           <p

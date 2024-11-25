@@ -1,19 +1,18 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro"});
 
 const generateQuestions = async (request) => {
     console.log("Generating questions with request:", request); // Log the request object for clarity
 
     let prompt;
-
-    // Log the construction of the prompt based on interview type
     if (request.interview_type === 'MCQs') {
 
-   prompt = `
+        prompt = `
         Generate exactly ${request.num_questions} technical MCQ interview questions tailored for a ${request.experience_level}-level position in ${request.field}. 
         Each question should be followed by 4 answer options (labeled a, b, c, and d) with a clear indication of which option is correct.
+        The total interview time for these questions is ${request.interview_time} minutes. 
         Use the following format:
         
         1. Question text?
@@ -28,9 +27,9 @@ const generateQuestions = async (request) => {
         - Options are clear and concise.
         - The correct answer is indicated clearly at the end of each question.
         - There should be no additional headings or content, just the questions and answers as shown in the format.
-    `;
- } else {
-        prompt = `Generate exactly ${request.num_questions} technical ${request.interview_type} interview questions tailored for a ${request.experience_level}-level position in ${request.field}. Format the output as a numbered list with no additional headings, and include only the requested number of questions.`;
+        `;
+    } else {
+        prompt = `Generate exactly ${request.num_questions} technical ${request.interview_type} interview questions tailored for a ${request.experience_level}-level position in ${request.field}. The total interview time for these questions is ${request.interview_time} minutes. Format the output as a numbered list with no additional headings, and include only the requested number of questions.`;
     }
 
     try {

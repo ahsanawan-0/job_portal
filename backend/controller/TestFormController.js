@@ -334,56 +334,78 @@ const getAllForms = async (req, res) => {
   }
 };
 const getApplicantsByFormId = async (req, res) => {
-  const { formId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+    const { formId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
 
-  try {
-    // Convert page and limit to numbers
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
+    try {
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
 
-    const form = await Form.findById(formId).select("title"); // Adjust according to your Form schema
+        const form = await Form.findById(formId)
+            .select("title job_id")
+            .populate("job_id");
 
-    if (!form) {
-      return res.status(404).json({ message: "Form not found" });
+        if (!form) {
+            return res.status(404).json({ message: "Form not found" });
+        }
+
+        const submissions = await Submission.find({ formId })
+            .populate({
+                path: "applicantId",
+                select: "email applications",
+            })
+            .limit(limitNumber)
+            .skip((pageNumber - 1) * limitNumber)
+            .exec();
+
+        if (!submissions.length) {
+            return res.status(404).json({ message: "No submissions found for this form" });
+        }
+
+        const jobId = form.job_id._id; // Correct access to the job ID
+        const response = submissions.map((submission) => {
+            const applicant = submission.applicantId;
+
+            if (!applicant) {
+                console.warn(`No applicant found for submission ID: ${submission._id}`);
+                return {
+                    submissionId: submission._id,
+                    submittedAt: submission.createdAt,
+                };
+            }
+
+            console.log(applicant, "Applicant Data");
+
+            // Use the correct comparison for jobId
+            const application = applicant.applications.find(application => {
+                console.log("Comparing jobId:", jobId.toString(), "with application.jobId:", application.jobId.toString());
+                return application.jobId && application.jobId.toString() === jobId.toString();
+            });
+
+            console.log(application, "aj");
+
+            return {
+                submissionId: submission._id,
+                applicant: {
+                    _id: applicant._id,
+                    email: applicant.email,
+                    applicationName: application ? application.name : null,
+                },
+                submittedAt: submission.createdAt,
+            };
+        });
+
+        return res.status(200).json({
+            total: submissions.length,
+            submissions: response,
+            formId: formId,
+            title: form.title,
+        });
+    } catch (error) {
+        console.error("Error fetching submissions:", error);
+        return res.status(500).json({ message: "Internal server error" });
     }
-
-    // Fetch submissions for the specific form
-    const submissions = await Submission.find({ formId }) // Use formId directly
-      .populate({
-        path: "applicantId", // Populate the applicantId field
-        select: "name email", // Select only the fields you need
-      })
-      .limit(limitNumber)
-      .skip((pageNumber - 1) * limitNumber)
-      .exec();
-
-    // If no submissions found
-    if (!submissions.length) {
-      return res
-        .status(404)
-        .json({ message: "No submissions found for this form" });
-    }
-
-    // Construct response data
-    const response = submissions.map((submission) => ({
-      submissionId: submission._id, 
-      applicant: submission.applicantId, 
-      submittedAt: submission.createdAt, 
-    }));
-
-    return res.status(200).json({
-      total: submissions.length,
-      submissions: response, 
-      formId: formId, 
-      title: form.title, 
-    });
-  } catch (error) {
-    console.error("Error fetching submissions:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
 };
-
 // const sendTestInvitesToAll = async (req, res) => {
 //   const { jobId, applicantIds } = req.body;
 
